@@ -40,6 +40,29 @@ Preferencia: GitHub integration no hPanel.
 8. Configurar variaveis em Environment Variables no hPanel.
 9. Fazer deploy apenas apos validacao local e confirmacao do usuario.
 
+## Erro de estrutura invalida no GitHub import
+
+Se a Hostinger mostrar:
+
+```text
+Estrutura de projeto invalida ou framework nao compativel.
+```
+
+A causa mais provavel neste repositorio e o formato monorepo: o app Next.js fica em `apps/web`, enquanto o detector da Hostinger procura a estrutura do framework na raiz do repositorio.
+
+Solucao imediata:
+
+1. Usar deploy por ZIP.
+2. Enviar `deploy/hostinger/ibob-agent-web-hostinger.zip`.
+3. Configurar como Next.js.
+
+Solucao posterior para GitHub integration:
+
+- Criar um repositorio separado contendo apenas o conteudo de `apps/web`, ou
+- Ajustar a estrutura para o Next.js ficar na raiz do repositorio.
+
+Por enquanto, o ZIP e o caminho mais rapido e seguro.
+
 ## Build settings
 
 Se a Hostinger aceitar o app em subpasta ou comandos customizados:
@@ -59,6 +82,12 @@ Se o hPanel nao lidar bem com monorepo:
    - Build command: `npm run build`
    - Start command: `npm run start`
    - Output directory: `.next`
+
+O ZIP pode ser gerado com:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-hostinger-zip.ps1
+```
 
 ## Secrets
 

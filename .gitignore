@@ -18,6 +18,10 @@ build/
 out/
 coverage/
 
+# Generated deploy packages
+deploy/hostinger/ibob-agent-web/
+deploy/hostinger/*.zip
+
 # Logs
 *.log
 .runtime/

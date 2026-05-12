@@ -51,6 +51,14 @@ Se usar ZIP da pasta `apps/web`:
 - Start command: `npm run start`
 - Output directory, se solicitado: `.next`
 
+ZIP preparado para Hostinger:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger.zip
+```
+
+Se aparecer erro de estrutura invalida no GitHub import, usar o ZIP acima.
+
 ## Variaveis esperadas
 
 Comecar sem secrets se o app ainda for apenas a tela inicial.
@@ -78,4 +86,3 @@ Quando houver integracoes, configurar no hPanel:
 - Inserir secrets reais em qualquer arquivo local.
 - Fazer deploy em producao se o alvo ainda nao estiver claro.
 - Apagar ou substituir uma aplicacao existente na Hostinger.
-

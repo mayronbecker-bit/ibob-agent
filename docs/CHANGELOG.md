@@ -25,3 +25,4 @@
 - Criada integracao do blueprint em `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.
 - Implementado MVP local do dashboard com dados mockados, Data Trust Layer, propostas, aprovacao humana, memoria de decisao e roadmap.
 - Criada documentacao do MVP local em `docs/LOCAL_MVP.md`.
+- Criado script e pacote local para deploy por ZIP na Hostinger quando o import Git nao detectar monorepo.
