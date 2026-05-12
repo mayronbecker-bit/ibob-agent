@@ -10,6 +10,7 @@ Projeto em preparacao local para desenvolvimento assistido no VS Code, com organ
 - Cloud escolhida: Hostinger.
 - Diretriz de produto: iBob como piloto/MVP, com evolucao planejada para produto vendavel e escalavel.
 - Blueprint da Claude importado como referencia funcional do agente de trafego pago.
+- MVP local navegavel implementado em Next.js com dados mockados e fluxo seguro.
 - Nenhum segredo deve ser salvo no repositorio.
 
 ## Estrutura
@@ -54,6 +55,7 @@ Os comandos do root encaminham para `apps/web`.
 - [Deploy](docs/DEPLOY.md)
 - [Hostinger](docs/HOSTINGER.md)
 - [Checklist do primeiro deploy](docs/FIRST_DEPLOY_CHECKLIST.md)
+- [MVP local](docs/LOCAL_MVP.md)
 - [Integracao do blueprint da Claude](docs/CLAUDE_BLUEPRINT_INTEGRATION.md)
 - [Estrategia de produto](docs/PRODUCT_STRATEGY.md)
 - [Decisoes](docs/DECISIONS.md)

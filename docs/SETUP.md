@@ -17,6 +17,7 @@ Este documento registra como preparar o projeto localmente.
 - Gerenciador de pacotes: npm.
 - Cloud alvo: Hostinger.
 - Blueprint funcional: `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.
+- MVP local: `docs/LOCAL_MVP.md`.
 
 ## Ambiente local
 
@@ -54,6 +55,15 @@ Validado em 2026-05-12:
 - `npm.cmd run lint`: passou.
 - `npm.cmd run build`: passou.
 - `npm.cmd run hostinger:build`: passou apos parar o servidor dev local.
+
+Rotas locais esperadas:
+
+- `http://localhost:3000/`
+- `http://localhost:3000/data-trust`
+- `http://localhost:3000/proposals`
+- `http://localhost:3000/approvals`
+- `http://localhost:3000/memory`
+- `http://localhost:3000/roadmap`
 
 ## Auditoria de dependencias
 

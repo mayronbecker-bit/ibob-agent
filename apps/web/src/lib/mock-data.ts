@@ -1,0 +1,294 @@
+import type {
+  DataTrustState,
+  Proposal,
+  ApprovalRecord,
+  DecisionMemoryEntry,
+  RoadmapStage,
+  OverviewMetric,
+} from '@/types';
+
+export const dataTrustState: DataTrustState = {
+  overallStatus: 'yellow',
+  checkedAt: '2026-05-12T14:30:00-03:00',
+  sources: [
+    {
+      id: 'google-ads',
+      name: 'Google Ads API',
+      status: 'green',
+      lastSync: '2026-05-12T14:18:00-03:00',
+    },
+    {
+      id: 'meta-ads',
+      name: 'Meta Marketing API',
+      status: 'yellow',
+      lastSync: '2026-05-12T12:15:00-03:00',
+      issue:
+        'Latência elevada. Última sincronização há 2h15min. Dados podem estar desatualizados.',
+    },
+    {
+      id: 'ga4',
+      name: 'GA4 / Analytics',
+      status: 'green',
+      lastSync: '2026-05-12T14:25:00-03:00',
+    },
+    {
+      id: 'orbita',
+      name: 'Orbita (margem)',
+      status: 'green',
+      lastSync: '2026-05-12T13:30:00-03:00',
+    },
+    {
+      id: 'crm',
+      name: 'CRM / Leads',
+      status: 'green',
+      lastSync: '2026-05-12T14:00:00-03:00',
+    },
+  ],
+  blockingReason:
+    'Meta Ads com dados possivelmente desatualizados. Propostas que dependem de Meta serão sinalizadas com aviso.',
+};
+
+export const proposals: Proposal[] = [
+  {
+    id: 'prop-001',
+    title: 'Aumentar budget Google Search – Marca',
+    channel: 'google_ads',
+    type: 'budget_increase',
+    reasoning:
+      'ROAS da campanha de Marca está em 6.8x nos últimos 7 dias, acima da meta de 4.5x. O budget esgota às 14h diariamente, deixando impressões na mesa.',
+    expectedImpact:
+      '+R$ 280/dia de gasto; projeção de +42 conversões/semana com ROAS mantido acima de 5x.',
+    status: 'pending',
+    riskLevel: 'low',
+    ruleValidatorPassed: true,
+    createdAt: '2026-05-12T08:00:00-03:00',
+    budgetDeltaBrl: 280,
+  },
+  {
+    id: 'prop-002',
+    title: 'Reduzir bid máx CPA – Campanha Frio',
+    channel: 'google_ads',
+    type: 'bid_adjustment',
+    reasoning:
+      'Campanha "Público Frio" com CPA atual de R$ 187; meta é R$ 140. Bid máximo de R$ 95 está gerando lances acima da eficiência esperada.',
+    expectedImpact:
+      'Redução estimada de 15–20% no CPA; possível queda de 10% no volume de conversões no curto prazo.',
+    status: 'pending',
+    riskLevel: 'medium',
+    ruleValidatorPassed: true,
+    ruleValidatorNotes:
+      'Volume abaixo do limiar mínimo de 30 conversões/semana. Ajuste pode impactar o aprendizado da campanha.',
+    createdAt: '2026-05-12T08:05:00-03:00',
+  },
+  {
+    id: 'prop-003',
+    title: 'Pausar anúncio baixo desempenho – Meta Reach',
+    channel: 'meta_ads',
+    type: 'campaign_pause',
+    reasoning:
+      'Anúncio "Video_v3_Maio" com CTR de 0.4% vs média de 1.2% no adset. CPM 34% acima dos demais. Sem conversões em 8 dias.',
+    expectedImpact:
+      'Redistribuição de R$ 90/dia para os anúncios de melhor desempenho no mesmo adset.',
+    status: 'approved',
+    riskLevel: 'low',
+    ruleValidatorPassed: true,
+    createdAt: '2026-05-11T10:00:00-03:00',
+  },
+  {
+    id: 'prop-004',
+    title: 'Expandir audiência Lookalike 3% – Meta',
+    channel: 'meta_ads',
+    type: 'audience_expansion',
+    reasoning:
+      'Lookalike 1% saturando com frequência 4.2 após 14 dias. Testar 3% pode ampliar alcance e reduzir frequência.',
+    expectedImpact:
+      'Ampliação de ~180k usuários. Possível queda de 10–15% na taxa de conversão durante o período de aprendizado.',
+    status: 'rejected',
+    riskLevel: 'medium',
+    ruleValidatorPassed: false,
+    ruleValidatorNotes:
+      'Meta Ads com dados desatualizados (>2h). Não é possível validar a performance atual do adset de forma confiável.',
+    createdAt: '2026-05-11T14:00:00-03:00',
+  },
+  {
+    id: 'prop-005',
+    title: 'Rotação de criativos Google Display',
+    channel: 'google_ads',
+    type: 'creative_rotation',
+    reasoning:
+      'Criativo "Banner_B_Abril" com CTR 2.1× maior que "Banner_A_Abril" após 10k impressões. Aumentar peso do B.',
+    expectedImpact:
+      'Estimativa de +0.3% no CTR geral da campanha Display, sem impacto em gasto.',
+    status: 'executed',
+    riskLevel: 'low',
+    ruleValidatorPassed: true,
+    createdAt: '2026-05-10T09:00:00-03:00',
+  },
+];
+
+export const approvalHistory: ApprovalRecord[] = [
+  {
+    proposalId: 'prop-003',
+    proposalTitle: 'Pausar anúncio baixo desempenho – Meta Reach',
+    approver: 'Mayron',
+    decision: 'approved',
+    justification:
+      'Dados claros de baixo desempenho. Risco mínimo de pausa, redistribuição de budget faz sentido.',
+    decidedAt: '2026-05-11T11:20:00-03:00',
+  },
+  {
+    proposalId: 'prop-004',
+    proposalTitle: 'Expandir audiência Lookalike 3% – Meta',
+    approver: 'Cassiano',
+    decision: 'rejected',
+    justification:
+      'Dados do Meta desatualizados. Aguardar sincronização antes de qualquer mudança de audiência.',
+    decidedAt: '2026-05-11T15:10:00-03:00',
+  },
+  {
+    proposalId: 'prop-005',
+    proposalTitle: 'Rotação de criativos Google Display',
+    approver: 'Mayron',
+    decision: 'approved',
+    justification:
+      'Diferença de CTR expressiva e amostra suficiente. Aprovado para execução imediata.',
+    decidedAt: '2026-05-10T10:05:00-03:00',
+  },
+];
+
+export const decisionMemory: DecisionMemoryEntry[] = [
+  {
+    id: 'mem-001',
+    proposalTitle: 'Aumentar budget Google Search – Marca (anterior)',
+    channel: 'google_ads',
+    decision: 'approved',
+    outcome: 'Executado em 2026-05-08. ROAS mantido em 6.2× após aumento de R$ 200/dia.',
+    impactMeasured: '+38 conversões em 4 dias. CPA estável em R$ 62.',
+    learning:
+      'Campanhas de Marca com ROAS > 6× e budget esgotando antes das 16h são candidatas seguras para aumento. Manter threshold de ROAS mínimo de 4.5× antes de aprovar.',
+    loggedAt: '2026-05-12T07:00:00-03:00',
+  },
+  {
+    id: 'mem-002',
+    proposalTitle: 'Testar audiência Interesse "Investimentos" – Meta',
+    channel: 'meta_ads',
+    decision: 'rejected',
+    outcome:
+      'Rejeitado por Cassiano em 2026-05-05. Justificativa: fora do perfil de público validado.',
+    learning:
+      'Audiências de interesse precisam de validação manual pelo time antes de qualquer teste. Não sugerir expansões fora das audiências aprovadas sem sinalização explícita.',
+    loggedAt: '2026-05-05T16:00:00-03:00',
+  },
+  {
+    id: 'mem-003',
+    proposalTitle: 'Reduzir budget Meta – Campanha Cold',
+    channel: 'meta_ads',
+    decision: 'approved',
+    outcome:
+      'Executado em 2026-05-03. Queda de 20% no gasto com manutenção de 85% do volume de leads.',
+    impactMeasured: 'CPL reduziu de R$ 48 para R$ 38 (−21%). Meta de CPL < R$ 40 atingida.',
+    learning:
+      'Campanhas Cold em Meta com CPL > 140% da meta por mais de 7 dias são candidatas a corte de budget. Padrão confirmado como possível regra determinística.',
+    loggedAt: '2026-05-07T10:00:00-03:00',
+  },
+  {
+    id: 'mem-004',
+    proposalTitle: 'Aumentar frequência de criativos Google Search',
+    channel: 'google_ads',
+    decision: 'rejected',
+    outcome:
+      'Rejeitado por Mayron em 2026-04-28. Preocupação com fadiga de audiência em público de remarketing.',
+    learning:
+      'Aumentar frequência em remarketing sem dados de fadiga (impressões por usuário) é arriscado. Incluir esse dado como pré-requisito antes de sugerir mudanças de frequência.',
+    loggedAt: '2026-04-28T14:30:00-03:00',
+  },
+];
+
+export const roadmapStages: RoadmapStage[] = [
+  {
+    number: 0,
+    title: 'Base local e deploy inicial',
+    status: 'done',
+    description:
+      'Next.js criado em apps/web, Hostinger como alvo de deploy, blueprint importado e primeiro commit local.',
+  },
+  {
+    number: 1,
+    title: 'Produto piloto iBob (MVP)',
+    status: 'in_progress',
+    description:
+      'Dashboard funcional com seções de visão geral, Data Trust Layer, propostas, aprovações, memória de decisão e roadmap. Arquitetura preparada para multi-cliente.',
+  },
+  {
+    number: 2,
+    title: 'Fundação de dados',
+    status: 'planned',
+    description:
+      'Definir banco (Supabase). Schema para clientes, usuários, fontes de dados, métricas brutas, propostas, aprovações, memória de decisão e versões do agente.',
+  },
+  {
+    number: 3,
+    title: 'Integrações em modo leitura',
+    status: 'planned',
+    description:
+      'Google Ads API, Meta Marketing API, GA4/Pixel, Orbita (margem) e CRM/Leads. Todas iniciando em DRY_RUN=true.',
+  },
+  {
+    number: 4,
+    title: 'Data Trust Layer',
+    status: 'planned',
+    description:
+      'Validações antes de qualquer análise. Bloqueio de propostas com dados inconsistentes. Estado verde/amarelo/vermelho exposto no dashboard.',
+  },
+  {
+    number: 5,
+    title: 'Decision Engine',
+    status: 'planned',
+    description:
+      'Integrar Claude API para gerar sugestões. Modelo nunca executa diretamente. Consulta à memória de decisão antes de cada sugestão. Registro de versão de prompt e threshold.',
+  },
+  {
+    number: 6,
+    title: 'Validação determinística (rule_validator)',
+    status: 'planned',
+    description:
+      'Limites de budget, estoque, margem, tracking e risco. Uma sugestão só vira proposta se passar por todas as regras determinísticas.',
+  },
+  {
+    number: 7,
+    title: 'Fila de aprovação humana',
+    status: 'planned',
+    description:
+      'Interface para Mayron e Cassiano aprovarem, rejeitarem ou adiarem propostas. Registro de quem decidiu, quando e com qual justificativa.',
+  },
+  {
+    number: 8,
+    title: 'Execution Engine (dry run)',
+    status: 'planned',
+    description:
+      'Executor separado do Decision Engine. Simulação completa antes de tocar contas reais. Logs e estado anterior para rollback.',
+  },
+  {
+    number: 9,
+    title: 'Execução controlada',
+    status: 'planned',
+    description:
+      'Ações reais com escopo limitado. Aprovação humana mantida. Monitoramento de impacto financeiro e processo de rollback validado.',
+  },
+  {
+    number: 10,
+    title: 'Produto escalável',
+    status: 'planned',
+    description:
+      'Generalizar configurações da iBob. Onboarding de novos clientes. Definir modelo de cobrança. Avaliar multi-tenant ou instâncias isoladas.',
+  },
+];
+
+export const overviewMetrics: OverviewMetric[] = [
+  { label: 'ROAS médio', value: '4.2×', trend: '+0.3 vs semana anterior', trendUp: true },
+  { label: 'Gasto total (mês)', value: 'R$ 18.400', trend: '+R$ 2.100 vs mês anterior', trendUp: true },
+  { label: 'CPA médio', value: 'R$ 68', trend: '−R$ 4 vs semana anterior', trendUp: true },
+  { label: 'Leads gerados', value: '271', trend: '+18 vs semana anterior', trendUp: true },
+  { label: 'Propostas pendentes', value: '2', trend: '3 criadas esta semana' },
+  { label: 'Aprovações esta semana', value: '3', trend: '0 rejeitadas', trendUp: true },
+];

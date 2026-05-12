@@ -23,3 +23,5 @@
 - Criado checklist operacional para o primeiro deploy na Hostinger.
 - Importado pacote da Claude em `docs/claude-blueprint/`.
 - Criada integracao do blueprint em `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.
+- Implementado MVP local do dashboard com dados mockados, Data Trust Layer, propostas, aprovacao humana, memoria de decisao e roadmap.
+- Criada documentacao do MVP local em `docs/LOCAL_MVP.md`.

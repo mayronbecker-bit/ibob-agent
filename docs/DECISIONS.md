@@ -128,3 +128,27 @@ Preservar o planejamento ja validado, evitar retrabalho e manter uma rota clara 
 Status:
 
 Aceita.
+
+## 2026-05-12 - MVP local em modo seguro
+
+Contexto:
+
+Antes do deploy na Hostinger, o usuario pediu para montar o projeto e rodar localmente.
+
+Decisao:
+
+Implementar um MVP navegavel em Next.js com dados mockados e fluxo do agente em modo seguro.
+
+Motivo:
+
+Permitir validacao visual e operacional do produto antes de conectar APIs reais, banco, secrets ou execucoes em contas de midia.
+
+Consequencias:
+
+- Google Ads, Meta Ads, GA4, Orbita, CRM, Supabase e Claude API ficam simulados nesta fase.
+- Nenhuma acao real e executada.
+- O fluxo de aprovacao humana e `rule_validator` ja aparecem na interface para orientar a evolucao.
+
+Status:
+
+Aceita.
