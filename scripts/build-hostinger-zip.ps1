@@ -1,5 +1,8 @@
 $ErrorActionPreference = "Stop"
 
+Add-Type -AssemblyName System.IO.Compression.FileSystem
+Add-Type -AssemblyName System.IO.Compression
+
 $root = Resolve-Path (Join-Path $PSScriptRoot "..")
 $source = Join-Path $root "apps\web"
 $deployRoot = Join-Path $root "deploy\hostinger"
@@ -45,7 +48,56 @@ foreach ($item in $itemsToCopy) {
   }
 }
 
-tar.exe -a -c -f $zipPath -C $staging .
+function ConvertTo-ZipPath {
+  param(
+    [string] $BasePath,
+    [string] $FullPath
+  )
+
+  $base = [System.IO.Path]::GetFullPath($BasePath).TrimEnd("\", "/")
+  $full = [System.IO.Path]::GetFullPath($FullPath)
+  $relative = $full.Substring($base.Length).TrimStart("\", "/")
+  return $relative.Replace("\", "/")
+}
+
+function Get-SignedExternalAttributes {
+  param([uint32] $Value)
+
+  return [System.BitConverter]::ToInt32([System.BitConverter]::GetBytes($Value), 0)
+}
+
+$fileAttributes = Get-SignedExternalAttributes ([Convert]::ToUInt32("81A40000", 16)) # 100644
+$directoryAttributes = Get-SignedExternalAttributes ([Convert]::ToUInt32("41ED0010", 16)) # 040755 + DOS directory flag
+
+$zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
+try {
+  $directories = Get-ChildItem -LiteralPath $staging -Recurse -Directory | Sort-Object FullName
+  foreach ($directory in $directories) {
+    $entryName = (ConvertTo-ZipPath $staging $directory.FullName).TrimEnd("/") + "/"
+    $entry = $zip.CreateEntry($entryName, [System.IO.Compression.CompressionLevel]::Optimal)
+    $entry.LastWriteTime = $directory.LastWriteTime
+    $entry.ExternalAttributes = $directoryAttributes
+  }
+
+  $files = Get-ChildItem -LiteralPath $staging -Recurse -File | Sort-Object FullName
+  foreach ($file in $files) {
+    $entryName = ConvertTo-ZipPath $staging $file.FullName
+    $entry = $zip.CreateEntry($entryName, [System.IO.Compression.CompressionLevel]::Optimal)
+    $entry.LastWriteTime = $file.LastWriteTime
+    $entry.ExternalAttributes = $fileAttributes
+
+    $entryStream = $entry.Open()
+    $fileStream = [System.IO.File]::OpenRead($file.FullName)
+    try {
+      $fileStream.CopyTo($entryStream)
+    } finally {
+      $fileStream.Dispose()
+      $entryStream.Dispose()
+    }
+  }
+} finally {
+  $zip.Dispose()
+}
 
 Write-Host "Hostinger ZIP generated:"
 Write-Host $zipPath

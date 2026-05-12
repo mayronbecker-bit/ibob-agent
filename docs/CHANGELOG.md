@@ -27,3 +27,4 @@
 - Criada documentacao do MVP local em `docs/LOCAL_MVP.md`.
 - Criado script e pacote local para deploy por ZIP na Hostinger quando o import Git nao detectar monorepo.
 - Ajustado empacotamento do ZIP da Hostinger para usar `tar.exe` e evitar erro de permissao em Linux.
+- Ajustado novamente o ZIP da Hostinger para manter caminhos na raiz e permissoes Unix explicitas.
