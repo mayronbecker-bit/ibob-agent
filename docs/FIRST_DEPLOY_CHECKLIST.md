@@ -59,6 +59,14 @@ deploy/hostinger/ibob-agent-web-hostinger.zip
 
 Se aparecer erro de estrutura invalida no GitHub import, usar o ZIP acima.
 
+Se aparecer erro de `permission denied` em `src/components`, gerar novamente o ZIP com:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-hostinger-zip.ps1
+```
+
+Depois fazer novo upload desse ZIP.
+
 ## Variaveis esperadas
 
 Comecar sem secrets se o app ainda for apenas a tela inicial.

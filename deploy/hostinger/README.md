@@ -20,3 +20,4 @@ powershell -ExecutionPolicy Bypass -File scripts/build-hostinger-zip.ps1
 
 O script copia apenas o app Next.js de `apps/web` para uma pasta temporaria e gera um ZIP com a estrutura esperada pela Hostinger.
 
+Ele usa `tar.exe` em vez de `Compress-Archive` para evitar erro de permissao no Linux da Hostinger ao acessar pastas como `src/components`.

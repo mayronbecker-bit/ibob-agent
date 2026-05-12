@@ -26,3 +26,4 @@
 - Implementado MVP local do dashboard com dados mockados, Data Trust Layer, propostas, aprovacao humana, memoria de decisao e roadmap.
 - Criada documentacao do MVP local em `docs/LOCAL_MVP.md`.
 - Criado script e pacote local para deploy por ZIP na Hostinger quando o import Git nao detectar monorepo.
+- Ajustado empacotamento do ZIP da Hostinger para usar `tar.exe` e evitar erro de permissao em Linux.

@@ -89,6 +89,10 @@ O ZIP pode ser gerado com:
 powershell -ExecutionPolicy Bypass -File scripts/build-hostinger-zip.ps1
 ```
 
+Observacao importante:
+
+O ZIP deve ser gerado pelo script acima. Nao use `Compress-Archive` manualmente, pois ele pode gerar metadados de permissao que causam erro de leitura em pastas como `src/components` durante o build na Hostinger.
+
 ## Secrets
 
 Nao salvar secrets no Git.

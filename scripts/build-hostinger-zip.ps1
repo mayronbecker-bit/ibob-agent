@@ -45,7 +45,7 @@ foreach ($item in $itemsToCopy) {
   }
 }
 
-Compress-Archive -Path (Join-Path $staging "*") -DestinationPath $zipPath -Force
+tar.exe -a -c -f $zipPath -C $staging .
 
 Write-Host "Hostinger ZIP generated:"
 Write-Host $zipPath
