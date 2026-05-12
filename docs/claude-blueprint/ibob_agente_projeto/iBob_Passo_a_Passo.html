@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iBob — Implementação do Agente</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy:   #0F1E3D;
+  --blue:   #1B3A6B;
+  --orange: #E8532B;
+  --cream:  #F7F4EE;
+  --white:  #FFFFFF;
+  --g1:     #2C2C2A;
+  --g2:     #5F5E5A;
+  --g3:     #888780;
+  --g4:     #C8C5BE;
+  --g5:     #E8E5DF;
+  --green:  #1A7A4A;
+  --greenl: #E8F5EE;
+  --red:    #A32D2D;
+  --redl:   #FCEBEB;
+  --yel:    #7A5A00;
+  --yell:   #FFF8E1;
+  --pur:    #4A1B7A;
+  --purl:   #F0E8FC;
+  --teal:   #0F6E56;
+  --teall:  #D4F3E8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--g1); }
+
+/* ─── VIEWS ─── */
+#cover   { display: flex; }
+#tracker { display: none; }
+
+/* ─── COVER ─── */
+#cover {
+  min-height: 100vh;
+  flex-direction: column;
+  background: var(--navy);
+  position: relative;
+  overflow: hidden;
+}
+#cover::before {
+  content:'';
+  position:absolute; top:-100px; right:-100px;
+  width:600px; height:600px;
+  background: radial-gradient(circle, rgba(232,83,43,.18) 0%, transparent 65%);
+  pointer-events:none;
+}
+#cover::after {
+  content:'';
+  position:absolute; bottom:-80px; left:-60px;
+  width:400px; height:400px;
+  background: radial-gradient(circle, rgba(27,58,107,.6) 0%, transparent 70%);
+  pointer-events:none;
+}
+
+.cover-inner {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  padding: 60px 32px;
+  position:relative;
+  z-index:1;
+}
+
+.cover-eyebrow {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.35);
+  margin-bottom:28px;
+}
+
+.cover-title {
+  font-family:'DM Serif Display', serif;
+  font-size: clamp(36px, 6vw, 68px);
+  color: var(--white);
+  text-align:center;
+  line-height:1.05;
+  margin-bottom:12px;
+}
+.cover-title em { font-style:normal; color:var(--orange); }
+
+.cover-sub {
+  font-size:15px;
+  color:rgba(255,255,255,.45);
+  text-align:center;
+  max-width:420px;
+  line-height:1.7;
+  margin-bottom:56px;
+}
+
+/* BIG RING */
+.ring-wrap {
+  position:relative;
+  width:220px; height:220px;
+  margin-bottom:48px;
+}
+.ring-svg { width:220px; height:220px; transform:rotate(-90deg); }
+.ring-bg   { fill:none; stroke:rgba(255,255,255,.08); stroke-width:14; }
+.ring-fill { fill:none; stroke:var(--orange); stroke-width:14; stroke-linecap:round; transition:stroke-dashoffset .6s ease; }
+.ring-label {
+  position:absolute; inset:0;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+}
+.ring-pct {
+  font-family:'DM Serif Display', serif;
+  font-size:52px;
+  color:var(--white);
+  line-height:1;
+}
+.ring-pct-sym { font-size:24px; color:var(--orange); }
+.ring-done { font-size:12px; color:rgba(255,255,255,.4); margin-top:4px; font-family:'IBM Plex Mono', monospace; }
+
+/* PHASE PILLS */
+.phase-pills {
+  display:flex; gap:12px; flex-wrap:wrap; justify-content:center;
+  margin-bottom:52px;
+}
+.pill {
+  display:flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.06);
+  border:0.5px solid rgba(255,255,255,.12);
+  border-radius:100px;
+  padding:8px 16px;
+  font-size:12px; color:rgba(255,255,255,.6);
+  cursor:default;
+}
+.pill-dot { width:8px; height:8px; border-radius:50%; }
+.pill-pct { font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--orange); margin-left:4px; }
+
+/* CTA */
+.cta-btn {
+  background:var(--orange);
+  color:white;
+  border:none; cursor:pointer;
+  padding:18px 48px;
+  border-radius:100px;
+  font-family:'DM Sans', sans-serif;
+  font-size:15px; font-weight:500;
+  letter-spacing:.01em;
+  transition:transform .15s, background .15s;
+  box-shadow:0 8px 32px rgba(232,83,43,.4);
+}
+.cta-btn:hover { background:#FF6B40; transform:translateY(-2px); }
+
+.cover-meta {
+  margin-top:40px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+  color:rgba(255,255,255,.2);
+  letter-spacing:.06em;
+  text-align:center;
+  line-height:2;
+}
+
+/* ─── TRACKER ─── */
+#tracker {
+  flex-direction:column;
+  min-height:100vh;
+}
+
+/* TOP BAR */
+.top-bar {
+  background:var(--navy);
+  padding:0 28px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  height:56px;
+  position:sticky; top:0; z-index:100;
+}
+.top-logo {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px; font-weight:500;
+  color:rgba(255,255,255,.7);
+  letter-spacing:.04em;
+}
+.top-logo span { color:var(--orange); }
+.top-progress {
+  display:flex; align-items:center; gap:12px;
+}
+.top-bar-ring { width:32px; height:32px; }
+.top-ring-bg   { fill:none; stroke:rgba(255,255,255,.12); stroke-width:4; }
+.top-ring-fill { fill:none; stroke:var(--orange); stroke-width:4; stroke-linecap:round; transition:stroke-dashoffset .4s; }
+.top-pct {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:13px; font-weight:500;
+  color:var(--white);
+}
+.back-btn {
+  background:transparent;
+  border:0.5px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.6);
+  padding:6px 14px;
+  border-radius:100px;
+  font-size:12px; cursor:pointer;
+  font-family:'DM Sans', sans-serif;
+  transition:all .15s;
+}
+.back-btn:hover { border-color:rgba(255,255,255,.4); color:white; }
+
+/* PHASE TABS */
+.phase-tabs {
+  background:var(--blue);
+  display:flex;
+  padding:0 28px;
+  gap:0;
+  overflow-x:auto;
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.ptab {
+  padding:14px 20px;
+  font-size:12px; color:rgba(255,255,255,.5);
+  cursor:pointer; white-space:nowrap;
+  border-bottom:2px solid transparent;
+  display:flex; align-items:center; gap:8px;
+  transition:all .15s;
+}
+.ptab:hover { color:rgba(255,255,255,.8); }
+.ptab.active { color:white; border-bottom-color:var(--orange); }
+.ptab-count {
+  background:rgba(255,255,255,.1);
+  border-radius:100px;
+  padding:1px 7px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px;
+}
+.ptab.active .ptab-count { background:var(--orange); }
+
+/* LAYOUT */
+.tracker-layout {
+  max-width:1060px;
+  margin:0 auto;
+  padding:32px 24px 80px;
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:28px;
+  align-items:start;
+}
+
+/* SIDEBAR */
+.sidebar {
+  position:sticky; top:80px;
+}
+.sb-card {
+  background:var(--white);
+  border-radius:12px;
+  border:.5px solid var(--g5);
+  padding:18px;
+  margin-bottom:14px;
+}
+.sb-label {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  color:var(--g3); margin-bottom:12px;
+}
+.sb-stat { margin-bottom:10px; }
+.sb-val { font-size:22px; font-weight:600; color:var(--orange); }
+.sb-desc { font-size:11px; color:var(--g3); margin-top:1px; }
+
+.phase-progress { margin-bottom:8px; }
+.pp-header { display:flex; justify-content:space-between; font-size:11px; color:var(--g2); margin-bottom:5px; }
+.pp-bar { height:5px; background:var(--g5); border-radius:100px; overflow:hidden; }
+.pp-fill { height:100%; border-radius:100px; transition:width .4s; }
+
+.legend-row {
+  display:flex; align-items:center; gap:8px;
+  font-size:11px; color:var(--g2);
+  margin-bottom:7px;
+}
+.leg-icon { font-size:14px; }
+
+/* STEPS CONTENT */
+.steps-content {}
+.phase-block { margin-bottom:40px; scroll-margin-top:80px; }
+.phase-hdr {
+  display:flex; align-items:center; gap:14px;
+  margin-bottom:16px;
+  padding-bottom:14px;
+  border-bottom:.5px solid var(--g5);
+}
+.ph-badge {
+  width:44px; height:44px;
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:11px; font-weight:500;
+  flex-shrink:0;
+}
+.ph-info {}
+.ph-eyebrow {
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px; letter-spacing:.08em; text-transform:uppercase;
+  margin-bottom:3px;
+}
+.ph-title {
+  font-family:'DM Serif Display', serif;
+  font-size:22px; line-height:1.1;
+}
+.ph-meta { font-size:11px; color:var(--g3); margin-top:3px; }
+
+/* STEP CARDS */
+.steps-list { display:flex; flex-direction:column; gap:8px; }
+
+.step-card {
+  background:var(--white);
+  border-radius:12px;
+  border:.5px solid var(--g5);
+  overflow:hidden;
+  transition:box-shadow .15s;
+}
+.step-card.done { border-color:#BDDECB; background:#FAFFFE; }
+.step-card.done .step-num { background:var(--green) !important; color:white !important; }
+.step-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.06); }
+
+.step-top {
+  display:flex;
+  align-items:flex-start;
+  gap:14px;
+  padding:16px 18px;
+}
+
+.step-num {
+  width:28px; height:28px;
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px; font-weight:500;
+  flex-shrink:0; margin-top:1px;
+}
+
+.step-body-top { flex:1; }
+.step-title {
+  font-size:14px; font-weight:500;
+  color:var(--g1); line-height:1.3;
+  margin-bottom:3px;
+  display:flex; align-items:center; gap:8px;
+  flex-wrap:wrap;
+}
+.step-title.done-text { text-decoration:line-through; color:var(--g3); }
+.done-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--greenl); color:var(--green);
+  padding:1px 8px; border-radius:100px;
+  font-size:10px; font-weight:500;
+  font-family:'IBM Plex Mono', monospace;
+  text-decoration:none;
+}
+.step-desc { font-size:12px; color:var(--g3); line-height:1.5; }
+
+.step-tags { display:flex; gap:5px; flex-wrap:wrap; margin-top:7px; }
+.tag {
+  display:inline-block;
+  padding:2px 7px; border-radius:100px;
+  font-size:10px; font-weight:500;
+}
+.th { background:#FFF3EF; color:#993C1D; }
+.tc { background:#2C2C2A; color:#C0DD97; font-family:'IBM Plex Mono', monospace; }
+.tf { background:var(--purl); color:var(--pur); }
+.tt { background:var(--greenl); color:var(--green); }
+.tr { background:var(--redl); color:var(--red); }
+
+.step-actions {
+  display:flex; align-items:center; gap:8px;
+  flex-shrink:0;
+}
+.check-btn {
+  width:34px; height:34px;
+  border-radius:50%;
+  border:2px solid var(--g4);
+  background:transparent;
+  cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px;
+  transition:all .15s;
+  color:transparent;
+}
+.check-btn:hover { border-color:var(--green); }
+.step-card.done .check-btn {
+  background:var(--green);
+  border-color:var(--green);
+  color:white;
+}
+.expand-btn {
+  background:transparent; border:none;
+  cursor:pointer; padding:4px;
+  color:var(--g4); font-size:11px;
+  transition:transform .2s;
+}
+.step-card.open .expand-btn { transform:rotate(180deg); }
+
+.step-detail {
+  display:none;
+  padding:0 18px 18px 60px;
+  border-top:.5px solid var(--g5);
+}
+.step-card.open .step-detail { display:block; padding-top:14px; }
+
+.step-detail ul { list-style:none; padding:0; margin-bottom:12px; }
+.step-detail ul li {
+  font-size:12px; color:var(--g2); line-height:1.8;
+  padding-left:14px; position:relative;
+}
+.step-detail ul li::before { content:'→'; position:absolute; left:0; color:var(--g4); font-size:10px; top:4px; }
+
+.note  { background:var(--yell); border-left:3px solid #BA7517; border-radius:0 7px 7px 0; padding:9px 13px; font-size:11px; color:var(--yel); line-height:1.6; margin-top:10px; }
+.warn  { background:var(--redl); border-left:3px solid #E24B4A; border-radius:0 7px 7px 0; padding:9px 13px; font-size:11px; color:var(--red); line-height:1.6; margin-top:10px; }
+.ok    { background:var(--greenl); border-left:3px solid var(--green); border-radius:0 7px 7px 0; padding:9px 13px; font-size:11px; color:var(--green); line-height:1.6; margin-top:10px; }
+
+.code-block {
+  background:var(--g1); color:#C0DD97;
+  padding:12px 14px; border-radius:8px;
+  font-family:'IBM Plex Mono', monospace;
+  font-size:10px; line-height:1.8;
+  margin-top:10px; overflow-x:auto;
+  white-space:pre;
+}
+
+@media(max-width:780px){
+  .tracker-layout { grid-template-columns:1fr; }
+  .sidebar { display:none; }
+  .cover-title { font-size:32px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════════ -->
+<div id="cover">
+  <div class="cover-inner">
+    <div class="cover-eyebrow">iBob Motores Elétricos · Caxias do Sul · Maio 2025</div>
+
+    <h1 class="cover-title">Implementação do<br><em>Agente de Tráfego</em></h1>
+    <p class="cover-sub">Acompanhe cada etapa, marque o que foi feito e veja o andamento em tempo real.</p>
+
+    <div class="ring-wrap">
+      <svg class="ring-svg" viewBox="0 0 220 220">
+        <circle class="ring-bg" cx="110" cy="110" r="96"/>
+        <circle class="ring-fill" id="cover-ring" cx="110" cy="110" r="96"
+          stroke-dasharray="603" stroke-dashoffset="603"/>
+      </svg>
+      <div class="ring-label">
+        <div class="ring-pct"><span id="cover-pct">0</span><span class="ring-pct-sym">%</span></div>
+        <div class="ring-done" id="cover-done">0 / 18 etapas</div>
+      </div>
+    </div>
+
+    <div class="phase-pills">
+      <div class="pill">
+        <div class="pill-dot" style="background:#888780"></div>
+        Pré-requisitos
+        <span class="pill-pct" id="pill-pre">0%</span>
+      </div>
+      <div class="pill">
+        <div class="pill-dot" style="background:#E24B4A"></div>
+        Fase 1 — Fundação
+        <span class="pill-pct" id="pill-f1">0%</span>
+      </div>
+      <div class="pill">
+        <div class="pill-dot" style="background:#BA7517"></div>
+        Fase 2 — Nível 1
+        <span class="pill-pct" id="pill-f2">0%</span>
+      </div>
+      <div class="pill">
+        <div class="pill-dot" style="background:#1A7A4A"></div>
+        Fase 3 — Nível 2
+        <span class="pill-pct" id="pill-f3">0%</span>
+      </div>
+    </div>
+
+    <button class="cta-btn" onclick="showTracker()">Ver todas as etapas →</button>
+
+    <div class="cover-meta">
+      Blueprint v3.2 · 18 etapas · 3 fases · Deadline 31/mai<br>
+      Google Ads · Meta Ads · Supabase · Railway · Claude API
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     TRACKER
+════════════════════════════════════════════════ -->
+<div id="tracker">
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="top-logo">iBob <span>Agente</span></div>
+    <div class="top-progress">
+      <svg class="top-bar-ring" viewBox="0 0 32 32">
+        <circle class="top-ring-bg" cx="16" cy="16" r="12" transform="rotate(-90 16 16)"/>
+        <circle class="top-ring-fill" id="top-ring" cx="16" cy="16" r="12"
+          stroke-dasharray="75.4" stroke-dashoffset="75.4" transform="rotate(-90 16 16)"/>
+      </svg>
+      <span class="top-pct"><span id="top-pct">0</span>%</span>
+    </div>
+    <button class="back-btn" onclick="showCover()">← Capa</button>
+  </div>
+
+  <!-- PHASE TABS -->
+  <div class="phase-tabs">
+    <div class="ptab active" onclick="scrollTo('pre')">Pré-requisitos <span class="ptab-count" id="tab-pre">0/4</span></div>
+    <div class="ptab" onclick="scrollTo('f1')">Fase 1 — Fundação <span class="ptab-count" id="tab-f1">0/6</span></div>
+    <div class="ptab" onclick="scrollTo('f2')">Fase 2 — Nível 1 <span class="ptab-count" id="tab-f2">0/4</span></div>
+    <div class="ptab" onclick="scrollTo('f3')">Fase 3 — Nível 2 <span class="ptab-count" id="tab-f3">0/4</span></div>
+  </div>
+
+  <div class="tracker-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sb-card">
+        <div class="sb-label">Progresso geral</div>
+        <div class="sb-stat">
+          <div class="sb-val" id="sb-pct">0%</div>
+          <div class="sb-desc" id="sb-done">0 de 18 etapas concluídas</div>
+        </div>
+        <div style="height:.5px;background:var(--g5);margin:12px 0"></div>
+        <div class="phase-progress">
+          <div class="pp-header"><span>Pré-requisitos</span><span id="sbp-pre">0/4</span></div>
+          <div class="pp-bar"><div class="pp-fill" id="ppb-pre" style="width:0%;background:#888780"></div></div>
+        </div>
+        <div class="phase-progress">
+          <div class="pp-header"><span>Fase 1</span><span id="sbp-f1">0/6</span></div>
+          <div class="pp-bar"><div class="pp-fill" id="ppb-f1" style="width:0%;background:#E24B4A"></div></div>
+        </div>
+        <div class="phase-progress">
+          <div class="pp-header"><span>Fase 2</span><span id="sbp-f2">0/4</span></div>
+          <div class="pp-bar"><div class="pp-fill" id="ppb-f2" style="width:0%;background:#BA7517"></div></div>
+        </div>
+        <div class="phase-progress">
+          <div class="pp-header"><span>Fase 3</span><span id="sbp-f3">0/4</span></div>
+          <div class="pp-bar"><div class="pp-fill" id="ppb-f3" style="width:0%;background:#1A7A4A"></div></div>
+        </div>
+      </div>
+
+      <div class="sb-card">
+        <div class="sb-label">Legenda</div>
+        <div class="legend-row"><span class="leg-icon">👤</span><span class="tag th">humano</span> Você faz</div>
+        <div class="legend-row"><span class="leg-icon">🤖</span><span class="tag tc">claude code</span></div>
+        <div class="legend-row"><span class="leg-icon">⚙️</span><span class="tag tf">config</span> Configuração</div>
+        <div class="legend-row"><span class="leg-icon">✅</span><span class="tag tt">teste</span> Validar</div>
+        <div class="legend-row"><span class="leg-icon">🔴</span><span class="tag tr">crítico</span> Não pule</div>
+      </div>
+    </aside>
+
+    <!-- STEPS -->
+    <main class="steps-content">
+
+      <!-- PRÉ-REQUISITOS -->
+      <div class="phase-block" id="pre">
+        <div class="phase-hdr">
+          <div class="ph-badge" style="background:#F1EFE8;color:#888780">PRÉ</div>
+          <div class="ph-info">
+            <div class="ph-eyebrow" style="color:var(--g3)">Antes de tudo</div>
+            <div class="ph-title">Pré-requisitos</div>
+            <div class="ph-meta">Contas e acessos — antes de abrir o Claude Code</div>
+          </div>
+        </div>
+        <div class="steps-list">
+
+          <div class="step-card" data-phase="pre" data-id="1">
+            <div class="step-top">
+              <div class="step-num" style="background:#F1EFE8;color:#888780">01</div>
+              <div class="step-body-top">
+                <div class="step-title">Criar conta no Supabase</div>
+                <div class="step-desc">Banco de dados central do agente. Gratuito para começar.</div>
+                <div class="step-tags">
+                  <span class="tag th">humano</span><span class="tag tf">config</span><span class="tag tr">crítico</span>
+                </div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Acesse <strong>supabase.com</strong> e crie uma conta gratuita</li>
+                <li>Crie um novo projeto — nome sugerido: <strong>ibob-agent</strong></li>
+                <li>Salve a senha do banco que o Supabase vai gerar</li>
+                <li>Vá em <strong>Settings → API</strong> e anote: <strong>Project URL</strong>, <strong>anon key</strong> e <strong>service_role key</strong></li>
+                <li>A service_role key vai apenas para o Railway — nunca para o código</li>
+              </ul>
+              <div class="note"><strong>Atenção:</strong> a service_role key dá acesso total ao banco. Guarde em local seguro.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="pre" data-id="2">
+            <div class="step-top">
+              <div class="step-num" style="background:#F1EFE8;color:#888780">02</div>
+              <div class="step-body-top">
+                <div class="step-title">Criar conta no Railway e repositório GitHub privado</div>
+                <div class="step-desc">Onde os scripts Python vão rodar. Deploy automático via GitHub.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Crie um repositório <strong>privado</strong> no GitHub: <strong>ibob-agent</strong></li>
+                <li>Adicione <code>.env</code> e <code>*.env</code> no <code>.gitignore</code> antes do primeiro commit</li>
+                <li>Acesse <strong>railway.app</strong> e crie conta com GitHub</li>
+                <li>Crie um novo projeto vazio — nome: <strong>ibob-agent</strong></li>
+                <li>Não conecte o repositório ainda — isso acontece na Fase 2</li>
+              </ul>
+              <div class="warn">Repositório deve ser <strong>privado</strong>. Nunca deixe tokens no histórico de commits.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="pre" data-id="3">
+            <div class="step-top">
+              <div class="step-num" style="background:#F1EFE8;color:#888780">03</div>
+              <div class="step-body-top">
+                <div class="step-title">Criar conta no Vercel</div>
+                <div class="step-desc">Dashboard de aprovação do agente. Gratuito no plano hobby.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Acesse <strong>vercel.com</strong> e crie conta com GitHub</li>
+                <li>Não crie o projeto no Vercel ainda — Claude Code gera o código do dashboard primeiro</li>
+                <li>Você vai conectar o repositório no Vercel na Fase 3</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="pre" data-id="4">
+            <div class="step-top">
+              <div class="step-num" style="background:#F1EFE8;color:#888780">04</div>
+              <div class="step-body-top">
+                <div class="step-title">Obter chave da Anthropic API</div>
+                <div class="step-desc">O Claude será o cérebro do Decision Engine.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Acesse <strong>console.anthropic.com</strong> → API Keys</li>
+                <li>Crie uma chave — nome: <strong>ibob-agent-production</strong></li>
+                <li>Copie a chave imediatamente — não fica visível depois</li>
+                <li>Adicione créditos — estimativa: ~R$50–80/mês para 500 chamadas</li>
+              </ul>
+              <div class="warn">Esta chave vai <strong>apenas</strong> para as variáveis de ambiente do Railway. Nunca no código.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FASE 1 -->
+      <div class="phase-block" id="f1">
+        <div class="phase-hdr">
+          <div class="ph-badge" style="background:var(--redl);color:var(--red)">F1</div>
+          <div class="ph-info">
+            <div class="ph-eyebrow" style="color:var(--red)">5 a 12 de maio · Dias 1–7</div>
+            <div class="ph-title">Fundação</div>
+            <div class="ph-meta">APIs, tracking e estrutura do banco.</div>
+          </div>
+        </div>
+        <div class="steps-list">
+
+          <div class="step-card" data-phase="f1" data-id="5">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">05</div>
+              <div class="step-body-top">
+                <div class="step-title">Solicitar Developer Token do Google Ads</div>
+                <div class="step-desc">Pode levar 1–3 dias. Solicite agora para não travar a Fase 2.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Acesse <strong>ads.google.com → Ferramentas → Central da API</strong></li>
+                <li>Solicite o Developer Token — escolha acesso <strong>padrão</strong></li>
+                <li>Acesse <strong>console.cloud.google.com</strong> e crie um projeto: <strong>ibob-agent</strong></li>
+                <li>Ative a <strong>Google Ads API</strong> no projeto</li>
+                <li>Vá em <strong>Credenciais → Criar → OAuth 2.0 Client ID</strong> (tipo: Desktop App)</li>
+                <li>Baixe o JSON de credenciais</li>
+                <li>Execute o fluxo OAuth uma vez para gerar o <strong>refresh token</strong></li>
+              </ul>
+              <div class="note"><strong>Faça isso hoje.</strong> A aprovação do Developer Token é imprevisível e pode travar toda a Fase 2 se deixar para depois.</div>
+              <div class="code-block">GOOGLE_ADS_DEVELOPER_TOKEN=xxxxx
+GOOGLE_ADS_CLIENT_ID=xxxxx.apps.googleusercontent.com
+GOOGLE_ADS_CLIENT_SECRET=xxxxx
+GOOGLE_ADS_REFRESH_TOKEN=xxxxx
+GOOGLE_ADS_CUSTOMER_ID=123-456-7890</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f1" data-id="6">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">06</div>
+              <div class="step-body-top">
+                <div class="step-title">Configurar Meta Marketing API</div>
+                <div class="step-desc">Token de longa duração com escopo mínimo ads_management.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Acesse <strong>developers.facebook.com</strong> → Criar App → tipo <strong>Business</strong></li>
+                <li>Adicione o produto <strong>Marketing API</strong> ao app</li>
+                <li>Gere token com permissões: <strong>ads_management</strong> e <strong>ads_read</strong> apenas</li>
+                <li>Converta para <strong>Long-Lived Token</strong> via endpoint /oauth/access_token</li>
+                <li>Token dura 60 dias — o agente renova automaticamente a cada 55</li>
+              </ul>
+              <div class="warn"><strong>Não adicione</strong> permissões de pages, Instagram ou dados de usuário. Escopo mínimo protege a conta.</div>
+              <div class="code-block">META_ACCESS_TOKEN=xxxxx
+META_AD_ACCOUNT_ID=act_123456789</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f1" data-id="7">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">07</div>
+              <div class="step-body-top">
+                <div class="step-title">Auditar e corrigir rastreamento (tracking)</div>
+                <div class="step-desc">Pré-requisito absoluto do Data Trust Layer. Não pule.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tr">crítico</span><span class="tag tt">teste</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Instale <strong>Tag Assistant</strong> (Chrome) e navegue pelo e-commerce — confirme evento <strong>purchase</strong> com value e items</li>
+                <li>Instale <strong>Meta Pixel Helper</strong> — confirme evento <strong>Purchase</strong> com valor</li>
+                <li>No Google Ads: <strong>Ferramentas → Conversões</strong> — confirme que há valor de conversão registrado</li>
+                <li>No GA4: <strong>Relatórios → Receita</strong> deve bater com o faturamento real (tolerância 10%)</li>
+                <li>Divergência encontrada? Corrija antes de avançar</li>
+              </ul>
+              <div class="warn">Se o tracking estiver errado, o DTL vai ficar em VERMELHO o tempo todo e o agente não vai propor nada.</div>
+              <div class="ok"><strong>Critério de aprovação:</strong> divergência entre GA4 e plataformas &lt; 15% por 3 dias.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f1" data-id="8">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">08</div>
+              <div class="step-body-top">
+                <div class="step-title">Padronizar UTMs e nomenclatura de campanhas</div>
+                <div class="step-desc">Padrão que o agente vai usar para cruzar dados entre fontes.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Renomeie campanhas: <strong>[plataforma]_[funil]_[produto]_[tipo]</strong></li>
+                <li>Exemplo: <code>google_ecommerce_motor_weg_search</code></li>
+                <li>Configure UTMs em todos os anúncios: utm_source, utm_medium, utm_campaign, utm_content</li>
+                <li>Para funil consultivo: adicione utm_term com o produto/solução</li>
+                <li>No CRM: crie campos obrigatórios utm_source e utm_campaign no cadastro de lead</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f1" data-id="9">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">09</div>
+              <div class="step-body-top">
+                <div class="step-title">Classificar produtos e conectar o Orbita</div>
+                <div class="step-desc">Separar físico vs encomenda e obter acesso ao endpoint de margem.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Crie uma planilha: coluna <strong>SKU</strong> e coluna <strong>tipo</strong> (fisico / encomenda)</li>
+                <li>Físico → pausa automática se estoque &lt; 5 unidades</li>
+                <li>Sob encomenda → nunca pausa, sempre ativo, vira lead para o comercial</li>
+                <li>Contate a equipe do Orbita: solicite acesso ao endpoint de margem líquida por SKU</li>
+                <li>Peça a documentação do endpoint — o Claude Code vai precisar do formato exato da resposta JSON</li>
+              </ul>
+              <div class="note">Confirme com o Orbita: a margem retornada já desconta <strong>frete, comissão de marketplace e impostos</strong>?</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f1" data-id="10">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--redl);color:var(--red)">10</div>
+              <div class="step-body-top">
+                <div class="step-title">Criar schema do Supabase com Claude Code</div>
+                <div class="step-desc">Primeira sessão de código — estrutura completa do banco.</div>
+                <div class="step-tags"><span class="tag tc">claude code</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Abra o Claude Code e cole o prompt abaixo</li>
+                <li>Revise o SQL gerado antes de rodar</li>
+                <li>Execute o migration no Supabase via <strong>SQL Editor</strong></li>
+                <li>Confirme que todas as 10 tabelas foram criadas</li>
+              </ul>
+              <div class="code-block">Crie o schema SQL completo para o Supabase do agente de tráfego
+pago da iBob. Tabelas necessárias:
+
+- proposals (id, action_type, campaign_id, proposed_change,
+  impact_score, status, approved_by, approved_at, rationale,
+  outcome_d7, prompt_version, threshold_version, created_at)
+- decision_memory (id, proposal_id, action_type, result,
+  approved, rejection_reason, causal_effect, confidence)
+- execution_log (id, proposal_id, executed_at, api_service,
+  api_endpoint, api_request, api_response, previous_state,
+  rollback_available, approved_by, prompt_version)
+- agent_versions (id, version_id, version_type, component,
+  previous_value, new_value, proposed_by, approved_by,
+  approved_at, active_since, rationale, rollback_to, status)
+- agent_state (dtl_blocked, dtl_reason, dtl_state,
+  last_collection, orbita_last_pull, current_autonomy_level)
+- agent_config (config_key, config_value, version_id)
+- orbita_margins (sku_id, product_name, net_margin, valid_until)
+- stock_status (sku_id, product_type, quantity, updated_at)
+- raw_metrics (source, campaign_id, metric_date, metrics_json)
+- experiments (proposal_id, hypothesis, control_campaign,
+  baseline, result_d7, control_d7, causal_effect,
+  cassiano_verdict, confidence)
+
+Adicione RLS em todas as tabelas.
+Gere como migration SQL pronto para rodar no Supabase.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FASE 2 -->
+      <div class="phase-block" id="f2">
+        <div class="phase-hdr">
+          <div class="ph-badge" style="background:var(--yell);color:var(--yel)">F2</div>
+          <div class="ph-info">
+            <div class="ph-eyebrow" style="color:var(--yel)">13 a 22 de maio · Dias 8–17</div>
+            <div class="ph-title">Nível 1 de autonomia</div>
+            <div class="ph-meta">Agente coleta, valida e executa automações de estoque. Sem propostas ainda.</div>
+          </div>
+        </div>
+        <div class="steps-list">
+
+          <div class="step-card" data-phase="f2" data-id="11">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--yell);color:var(--yel)">11</div>
+              <div class="step-body-top">
+                <div class="step-title">Configurar variáveis de ambiente no Railway</div>
+                <div class="step-desc">Todos os tokens — nunca no código, sempre no Railway.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tf">config</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>No Railway: <strong>seu projeto → Variables</strong> → adicione cada variável individualmente</li>
+              </ul>
+              <div class="code-block">ANTHROPIC_API_KEY=anthropic_api_key_placeholder
+GOOGLE_ADS_DEVELOPER_TOKEN=xxxxx
+GOOGLE_ADS_CLIENT_ID=xxxxx
+GOOGLE_ADS_CLIENT_SECRET=xxxxx
+GOOGLE_ADS_REFRESH_TOKEN=xxxxx
+GOOGLE_ADS_CUSTOMER_ID=xxxxx
+META_ACCESS_TOKEN=xxxxx
+META_AD_ACCOUNT_ID=act_xxxxx
+SUPABASE_URL=https://xxxxx.supabase.co
+SUPABASE_SERVICE_KEY=xxxxx
+ORBITA_API_KEY=xxxxx
+ORBITA_BASE_URL=https://api.orbita.com.br
+NOTIFICATION_EMAIL_CASSIANO=cassiano@ibob.com.br
+NOTIFICATION_EMAIL_MAYRON=mayron@ibob.com.br
+DRY_RUN=true</div>
+              <div class="warn">Comece com <code>DRY_RUN=true</code>. Só mude para false na etapa 18 após validação completa.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f2" data-id="12">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--yell);color:var(--yel)">12</div>
+              <div class="step-body-top">
+                <div class="step-title">Construir collector, trust_layer e stock_watcher</div>
+                <div class="step-desc">Três sessões no Claude Code — uma por módulo.</div>
+                <div class="step-tags"><span class="tag tc">claude code</span><span class="tag tt">teste</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li><strong>Sessão A:</strong> collector.py + orbita_pull.py</li>
+                <li><strong>Sessão B:</strong> trust_layer.py com 7 checks + 7 testes pytest</li>
+                <li><strong>Sessão C:</strong> stock_watcher.py com lógica físico vs encomenda</li>
+                <li>Após cada sessão: rode os testes localmente antes de fazer push</li>
+              </ul>
+              <div class="code-block"># Prompt Sessão B — trust_layer.py
+Construa o trust_layer.py para o agente de tráfego pago
+da iBob com os 7 checks obrigatórios:
+1. Pixel/Tag parado (0 conversões por 6h em horário comercial)
+2. Divergência GA4 vs Google Ads > 40%
+3. Orbita desatualizado > 35 dias
+4. Estoque sem atualização > 24h
+5. Pico inconsistente de cliques
+6. CRM sem leads por 48h úteis
+7. Queda brusca de conversões (<30% da média 7 dias)
+
+Seta agent_state.dtl_blocked e dtl_state no Supabase.
+Envia alerta por email quando estado mudar.
+Escreva também os 7 testes pytest obrigatórios.
+Use supabase-py e python-dotenv.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f2" data-id="13">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--yell);color:var(--yel)">13</div>
+              <div class="step-body-top">
+                <div class="step-title">Configurar CI no GitHub Actions e primeiro deploy no Railway</div>
+                <div class="step-desc">Testes obrigatórios bloqueiam qualquer merge com falha.</div>
+                <div class="step-tags"><span class="tag tc">claude code</span><span class="tag tf">config</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Claude Code gera o arquivo <code>.github/workflows/tests.yml</code></li>
+                <li>Adicione os secrets no GitHub: <strong>Settings → Secrets → Actions</strong></li>
+                <li>Conecte o repositório GitHub ao Railway: <strong>Railway → Deploy → Connect GitHub</strong></li>
+                <li>Push para main → testes rodam → se verde → Railway faz deploy automaticamente</li>
+              </ul>
+              <div class="ok">Fluxo ideal: push → CI verde → Railway redeploy automático.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f2" data-id="14">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--yell);color:var(--yel)">14</div>
+              <div class="step-body-top">
+                <div class="step-title">Validação com Cassiano — os dados fazem sentido?</div>
+                <div class="step-desc">Não avance para a Fase 3 sem esta confirmação.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tt">teste</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Cassiano abre <strong>raw_metrics</strong> no Supabase e compara com Google Ads e Meta</li>
+                <li>Verifica <strong>orbita_margins</strong>: as margens estão corretas?</li>
+                <li>Verifica <strong>stock_status</strong>: os estoques estão atualizados?</li>
+                <li>Se algum dado não bater: corrige o módulo antes de avançar</li>
+              </ul>
+              <div class="warn">Decision Engine usa esses dados para propor ações. Dados errados = propostas erradas.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FASE 3 -->
+      <div class="phase-block" id="f3">
+        <div class="phase-hdr">
+          <div class="ph-badge" style="background:var(--greenl);color:var(--green)">F3</div>
+          <div class="ph-info">
+            <div class="ph-eyebrow" style="color:var(--green)">23 a 31 de maio · Dias 18–25</div>
+            <div class="ph-title">Nível 2 de autonomia</div>
+            <div class="ph-meta">Agente propõe, você aprova, agente executa. Virada final.</div>
+          </div>
+        </div>
+        <div class="steps-list">
+
+          <div class="step-card" data-phase="f3" data-id="15">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--greenl);color:var(--green)">15</div>
+              <div class="step-body-top">
+                <div class="step-title">Construir Decision Engine, rule_validator e executor</div>
+                <div class="step-desc">Quatro sessões no Claude Code — uma por módulo.</div>
+                <div class="step-tags"><span class="tag tc">claude code</span><span class="tag tt">teste</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li><strong>Sessão A:</strong> decision_engine.py — chama Claude API com contexto + Memória</li>
+                <li><strong>Sessão B:</strong> rule_validator.py — valida sugestões do Claude + budget gate</li>
+                <li><strong>Sessão C:</strong> prioritizer.py — ranqueia por impact_score → proposals</li>
+                <li><strong>Sessão D:</strong> executor.py — executa apenas o aprovado + execution_log</li>
+                <li>Após cada sessão: testes obrigatórios antes do push</li>
+              </ul>
+              <div class="code-block"># Prompt Sessão D — executor.py
+Construa o executor.py para o agente de tráfego pago
+da iBob com as regras obrigatórias:
+
+1. Só processar proposals com status = 'approved'
+2. Budget gate: action_type == 'budget_change' exige
+   approved_by == 'mayron@ibob.com.br' no banco
+3. Verificar agent_state.dtl_blocked == false
+4. Gravar execution_log com: executed_at, api_service,
+   api_request, api_response, previous_state,
+   prompt_version, approved_by
+5. Suporte a rollback via previous_state
+6. dry_run=true: gravar log mas não chamar API
+
+Escreva os 7 testes pytest incluindo
+test_budget_requires_mayron.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f3" data-id="16">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--greenl);color:var(--green)">16</div>
+              <div class="step-body-top">
+                <div class="step-title">Construir dashboard de aprovação com Claude Code</div>
+                <div class="step-desc">Interface Next.js no Vercel para Cassiano e Mayron aprovarem propostas.</div>
+                <div class="step-tags"><span class="tag tc">claude code</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Claude Code gera o projeto Next.js do dashboard</li>
+                <li>Conecte no Vercel: <strong>Import Git Repository → ibob-agent</strong></li>
+                <li>Configure no Vercel: <code>NEXT_PUBLIC_SUPABASE_URL</code> e <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></li>
+                <li>Teste login com email de Cassiano e Mayron</li>
+                <li>Confirme que aprovar/rejeitar atualiza o status no Supabase</li>
+              </ul>
+              <div class="code-block">Crie um dashboard Next.js para aprovação de propostas
+do agente de tráfego pago da iBob.
+
+- Login via Supabase Auth (email + senha)
+- Lista de proposals com status=pending por impact_score
+- Card: campanha, ação, impacto estimado, justificativa
+- Botões: Aprovar (verde) e Rejeitar (vermelho)
+  com campo rationale obrigatório
+- Aprovação grava: approved_by, approved_at, rationale
+- Status do DTL visível no topo (verde/amarelo/vermelho)
+- Histórico com resultado D+7
+- Use Tailwind CSS e supabase-js</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f3" data-id="17">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--greenl);color:var(--green)">17</div>
+              <div class="step-body-top">
+                <div class="step-title">Ciclo completo end-to-end em DRY RUN</div>
+                <div class="step-desc">Valide o fluxo inteiro antes de ligar a escrita real.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tt">teste</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Confirme que <code>DRY_RUN=true</code> está ativo no Railway</li>
+                <li>Aguarde o ciclo das 06h rodar completamente</li>
+                <li>Confirme que propostas apareceram no dashboard</li>
+                <li>Cassiano aprova uma proposta de teste</li>
+                <li>Confirme que o execution_log foi gravado com a ação que seria executada</li>
+                <li>Confirme que <strong>nenhuma chamada real</strong> foi feita para Google Ads ou Meta</li>
+                <li>Confirme que o <code>prompt_version</code> está registrado no log</li>
+              </ul>
+              <div class="warn">Não ative DRY_RUN=false sem este ciclo validado. A próxima etapa executa ações reais.</div>
+            </div>
+          </div>
+
+          <div class="step-card" data-phase="f3" data-id="18">
+            <div class="step-top">
+              <div class="step-num" style="background:var(--greenl);color:var(--green)">18</div>
+              <div class="step-body-top">
+                <div class="step-title">Go live — ativar escrita e revisar guardrails</div>
+                <div class="step-desc">Agente operacional no Nível 2. Monitorar o primeiro ciclo real de perto.</div>
+                <div class="step-tags"><span class="tag th">humano</span><span class="tag tr">crítico</span></div>
+              </div>
+              <div class="step-actions">
+                <button class="check-btn" onclick="toggleDone(this)" title="Marcar como feito">✓</button>
+                <button class="expand-btn" onclick="toggleDetail(this)">▼</button>
+              </div>
+            </div>
+            <div class="step-detail">
+              <ul>
+                <li>Mude <code>DRY_RUN=false</code> no Railway</li>
+                <li>Mayron e Cassiano revisam os thresholds em <strong>agent_config</strong></li>
+                <li>Confirme o budget gate: qualquer mudança de budget exige aprovação de Mayron</li>
+                <li>Monitore o primeiro ciclo real — acompanhe o execution_log ao vivo</li>
+                <li>Algo executar errado: rollback via dashboard imediatamente</li>
+              </ul>
+              <div class="ok">
+                <strong>Critério de sucesso — 31 de maio:</strong>
+                DTL verde · Budget gate testado · CI verde · Versionamento ativo · Primeiro ciclo real executado.
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ─── STATE ─────────────────────────────────
+const TOTAL = 18;
+const PHASES = {
+  pre: { total: 4, ids: [1,2,3,4] },
+  f1:  { total: 6, ids: [5,6,7,8,9,10] },
+  f2:  { total: 4, ids: [11,12,13,14] },
+  f3:  { total: 4, ids: [15,16,17,18] },
+};
+const STORAGE_KEY = 'ibob_agent_progress';
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+}
+function saveState(s) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); } catch {}
+}
+
+let state = loadState();
+
+// ─── VIEWS ─────────────────────────────────
+function showCover() {
+  document.getElementById('cover').style.display = 'flex';
+  document.getElementById('tracker').style.display = 'none';
+}
+function showTracker() {
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('tracker').style.display = 'flex';
+}
+
+// ─── STEPS ─────────────────────────────────
+function toggleDetail(btn) {
+  const card = btn.closest('.step-card');
+  card.classList.toggle('open');
+}
+
+function toggleDone(btn) {
+  const card = btn.closest('.step-card');
+  const id = card.dataset.id;
+  card.classList.toggle('done');
+  const isDone = card.classList.contains('done');
+  state[id] = isDone;
+  saveState(state);
+
+  // update title strikethrough
+  const title = card.querySelector('.step-title');
+  title.classList.toggle('done-text', isDone);
+
+  // add/remove done badge
+  let badge = title.querySelector('.done-badge');
+  if (isDone && !badge) {
+    badge = document.createElement('span');
+    badge.className = 'done-badge';
+    badge.textContent = '✓ feito';
+    title.appendChild(badge);
+  } else if (!isDone && badge) {
+    badge.remove();
+  }
+
+  updateProgress();
+}
+
+function scrollTo(id) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+  const tabs = ['pre','f1','f2','f3'];
+  const idx = tabs.indexOf(id);
+  if (idx >= 0) document.querySelectorAll('.ptab')[idx].classList.add('active');
+}
+
+// ─── PROGRESS ─────────────────────────────
+function countDone(ids) {
+  return ids.filter(id => state[String(id)]).length;
+}
+
+function updateProgress() {
+  const total = countDone(Object.keys(state).map(Number).filter(n => n >= 1 && n <= 18));
+  // re-count properly
+  let done = 0;
+  for (let i = 1; i <= 18; i++) { if (state[String(i)]) done++; }
+  const pct = Math.round((done / TOTAL) * 100);
+
+  // Cover ring
+  const circumference = 2 * Math.PI * 96; // 603.18
+  const offset = circumference - (pct / 100) * circumference;
+  const coverRing = document.getElementById('cover-ring');
+  if (coverRing) { coverRing.setAttribute('stroke-dashoffset', offset.toFixed(1)); }
+  const el = document.getElementById('cover-pct');
+  if (el) el.textContent = pct;
+  const el2 = document.getElementById('cover-done');
+  if (el2) el2.textContent = done + ' / ' + TOTAL + ' etapas';
+
+  // Top bar ring
+  const topCircumference = 2 * Math.PI * 12; // 75.4
+  const topOffset = topCircumference - (pct / 100) * topCircumference;
+  const topRing = document.getElementById('top-ring');
+  if (topRing) topRing.setAttribute('stroke-dashoffset', topOffset.toFixed(1));
+  const topPct = document.getElementById('top-pct');
+  if (topPct) topPct.textContent = pct;
+
+  // Sidebar
+  const sbPct = document.getElementById('sb-pct');
+  if (sbPct) sbPct.textContent = pct + '%';
+  const sbDone = document.getElementById('sb-done');
+  if (sbDone) sbDone.textContent = done + ' de ' + TOTAL + ' etapas concluídas';
+
+  // Phase pills & bars
+  Object.entries(PHASES).forEach(([key, ph]) => {
+    const d = countDone(ph.ids);
+    const p = Math.round((d / ph.total) * 100);
+
+    const pill = document.getElementById('pill-' + key);
+    if (pill) pill.textContent = p + '%';
+
+    const tab = document.getElementById('tab-' + key);
+    if (tab) tab.textContent = d + '/' + ph.total;
+
+    const sbp = document.getElementById('sbp-' + key);
+    if (sbp) sbp.textContent = d + '/' + ph.total;
+
+    const ppb = document.getElementById('ppb-' + key);
+    if (ppb) ppb.style.width = p + '%';
+  });
+}
+
+// ─── RESTORE STATE ────────────────────────
+function restoreState() {
+  document.querySelectorAll('.step-card').forEach(card => {
+    const id = card.dataset.id;
+    if (state[id]) {
+      card.classList.add('done');
+      const title = card.querySelector('.step-title');
+      title.classList.add('done-text');
+      if (!title.querySelector('.done-badge')) {
+        const badge = document.createElement('span');
+        badge.className = 'done-badge';
+        badge.textContent = '✓ feito';
+        title.appendChild(badge);
+      }
+      // update step-num
+      const num = card.querySelector('.step-num');
+      if (num) { num.style.background = 'var(--green)'; num.style.color = 'white'; }
+    }
+  });
+  updateProgress();
+}
+
+// Scroll spy for phase tabs
+window.addEventListener('scroll', () => {
+  const phases = ['pre','f1','f2','f3'];
+  let current = 'pre';
+  phases.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 120) current = id;
+  });
+  document.querySelectorAll('.ptab').forEach((t, i) => {
+    t.classList.toggle('active', phases[i] === current);
+  });
+}, { passive: true });
+
+// Init
+restoreState();
+</script>
+</body>
+</html>

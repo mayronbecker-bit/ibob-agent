@@ -16,6 +16,7 @@ Este documento registra como preparar o projeto localmente.
 - Lint: ESLint.
 - Gerenciador de pacotes: npm.
 - Cloud alvo: Hostinger.
+- Blueprint funcional: `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.
 
 ## Ambiente local
 
@@ -63,3 +64,13 @@ O `npm audit fix --force` nao foi aplicado porque a correcao sugerida instalaria
 ## Observacao de seguranca
 
 Nunca colocar valores reais de tokens, senhas ou chaves em arquivos versionados.
+
+## Blueprint da Claude
+
+O pacote original da Claude foi importado em:
+
+```text
+docs/claude-blueprint/ibob_agente_projeto/
+```
+
+Use `docs/CLAUDE_BLUEPRINT_INTEGRATION.md` como ponte entre o blueprint original e a implementacao atual em Next.js + Hostinger.

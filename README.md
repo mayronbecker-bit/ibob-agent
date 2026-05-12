@@ -9,6 +9,7 @@ Projeto em preparacao local para desenvolvimento assistido no VS Code, com organ
 - Stack escolhida: Next.js em `apps/web`.
 - Cloud escolhida: Hostinger.
 - Diretriz de produto: iBob como piloto/MVP, com evolucao planejada para produto vendavel e escalavel.
+- Blueprint da Claude importado como referencia funcional do agente de trafego pago.
 - Nenhum segredo deve ser salvo no repositorio.
 
 ## Estrutura
@@ -53,6 +54,17 @@ Os comandos do root encaminham para `apps/web`.
 - [Deploy](docs/DEPLOY.md)
 - [Hostinger](docs/HOSTINGER.md)
 - [Checklist do primeiro deploy](docs/FIRST_DEPLOY_CHECKLIST.md)
+- [Integracao do blueprint da Claude](docs/CLAUDE_BLUEPRINT_INTEGRATION.md)
 - [Estrategia de produto](docs/PRODUCT_STRATEGY.md)
 - [Decisoes](docs/DECISIONS.md)
 - [Changelog](docs/CHANGELOG.md)
+
+## Blueprint importado
+
+O material original da Claude esta versionado em:
+
+```text
+docs/claude-blueprint/ibob_agente_projeto/
+```
+
+Esses arquivos sao referencia de planejamento e nao devem ser publicados no app sem confirmacao, pois o pacote original esta marcado como confidencial.

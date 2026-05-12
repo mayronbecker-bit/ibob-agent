@@ -13,12 +13,14 @@ Data: 2026-05-11
 - App Next.js em `apps/web`.
 - Scripts no root delegando para `apps/web`.
 - Diretriz registrada: iBob como piloto/MVP, com evolucao para produto vendavel e escalavel.
+- Blueprint da Claude importado como referencia funcional e arquitetural do agente.
 
 ## O que falta configurar
 
 - Backend separado ou rotas server-side dentro do Next.js, se necessario.
 - Banco de dados.
 - Configuracao real na Hostinger.
+- Adaptacao da arquitetura Claude para Hostinger, Supabase e possiveis workers separados.
 - CI/CD, caso o usuario queira automatizar validacoes e deploy.
 - Ambientes: local, staging e producao.
 
@@ -98,6 +100,8 @@ Dependencias instaladas em `apps/web`:
 - Quais variaveis secretas o app precisara.
 - Como separar configuracoes da iBob do core reutilizavel do produto.
 - Qual modelo futuro sera usado para clientes: multi-tenant ou instancias isoladas.
+- Quando iniciar Supabase, Google Ads, Meta Ads, GA4, Orbita e CRM.
+- Onde rodarao os workers do agente quando sairmos da tela inicial.
 - Quando criar o primeiro commit Git.
 - Se o projeto sera conectado a um repositorio remoto.
 

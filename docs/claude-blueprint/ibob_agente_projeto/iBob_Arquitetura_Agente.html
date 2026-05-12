@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iBob — Blueprint do Agente de IA v3.2</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #F5F4F0; color: #2C2C2A; }
+
+header { background: #1B3A6B; padding: 24px 40px 20px; display: flex; justify-content: space-between; align-items: flex-end; }
+header .brand { font-size: 12px; color: #8899BB; margin-bottom: 3px; }
+header h1 { font-size: 22px; font-weight: 500; color: white; line-height: 1.2; }
+header h1 span { color: #E8532B; }
+header .meta { font-size: 11px; color: #667799; text-align: right; line-height: 1.6; }
+
+.kpi-bar { background: white; border-bottom: 0.5px solid #D3D1C7; display: flex; justify-content: center; flex-wrap: wrap; }
+.kpi-item { padding: 11px 22px; text-align: center; border-right: 0.5px solid #D3D1C7; }
+.kpi-item:last-child { border-right: none; }
+.kpi-val { font-size: 16px; font-weight: 500; color: #E8532B; display: block; }
+.kpi-label { font-size: 10px; color: #888780; margin-top: 1px; display: block; }
+
+.tabs { background: white; border-bottom: 0.5px solid #D3D1C7; display: flex; padding: 0 20px; overflow-x: auto; }
+.tab { padding: 12px 16px; font-size: 12px; color: #888780; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: all 0.15s; }
+.tab:hover { color: #2C2C2A; }
+.tab.active { color: #1B3A6B; border-bottom-color: #E8532B; font-weight: 500; }
+
+.main { max-width: 1200px; margin: 0 auto; padding: 28px 18px 56px; }
+.stitle { font-size: 11px; font-weight: 500; color: #888780; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+
+.panel { display: none; }
+.panel.active { display: block; }
+
+.card { background: white; border: 0.5px solid #D3D1C7; border-radius: 12px; padding: 24px 18px 18px; margin-bottom: 22px; overflow-x: auto; }
+
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; padding: 12px 0 0; border-top: 0.5px solid #D3D1C7; margin-top: 12px; font-size: 11px; color: #5F5E5A; }
+.ld  { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 4px; vertical-align: middle; }
+.ldd { display: inline-block; width: 14px; height: 0; border-top: 2px dashed; margin-right: 4px; vertical-align: middle; }
+
+.tooltip { position: fixed; background: #1B3A6B; color: white; padding: 8px 12px; border-radius: 8px; font-size: 12px; max-width: 300px; line-height: 1.5; pointer-events: none; opacity: 0; transition: opacity 0.12s; z-index: 9999; box-shadow: 0 4px 18px rgba(0,0,0,0.2); }
+
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 22px; }
+.g3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 22px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 22px; }
+.ic { background: white; border: 0.5px solid #D3D1C7; border-radius: 10px; padding: 14px 16px; }
+.ic h3 { font-size: 12px; font-weight: 500; color: #1B3A6B; margin-bottom: 8px; }
+.ic p,.ic ul { font-size: 11px; color: #5F5E5A; line-height: 1.7; }
+.ic ul { list-style: none; padding: 0; }
+.ic ul li { padding-left: 12px; position: relative; }
+.ic ul li::before { content: "·"; position: absolute; left: 3px; }
+
+.badge { display: inline-block; padding: 2px 6px; border-radius: 10px; font-size: 10px; font-weight: 500; margin: 2px 2px 2px 0; }
+.r  { background:#FCEBEB; color:#A32D2D; }
+.g  { background:#EAF3DE; color:#3B6D11; }
+.y  { background:#FAEEDA; color:#633806; }
+.b  { background:#E6F1FB; color:#0C447C; }
+.p  { background:#EEEDFE; color:#26215C; }
+.o  { background:#FFF3EF; color:#993C1D; }
+.t  { background:#E1F5EE; color:#085041; }
+.tl { background:#D4F3E8; color:#0F6E56; }
+.dk { background:#2C2C2A; color:#C0DD97; font-family:monospace; }
+.ora { background:#FFF3EF; color:#8B3A00; }
+
+.ph { border-radius: 10px; padding: 14px 16px; border: 0.5px solid; }
+.ph1 { background:#FCEBEB; border-color:#F09595; }
+.ph2 { background:#FAEEDA; border-color:#FAC775; }
+.ph3 { background:#EAF3DE; border-color:#C0DD97; }
+.ph h3 { font-size: 12px; font-weight: 500; margin-bottom: 3px; }
+.ph .dt { font-size: 10px; margin-bottom: 8px; }
+.ph ul { list-style: none; padding: 0; }
+.ph ul li { font-size: 11px; line-height: 1.7; padding-left: 12px; position: relative; color: #444441; }
+.ph ul li::before { content: "·"; position: absolute; left: 3px; }
+.ph1 h3,.ph1 .dt { color:#791F1F; }
+.ph2 h3,.ph2 .dt { color:#633806; }
+.ph3 h3,.ph3 .dt { color:#173404; }
+
+.etable { width:100%; border-collapse:collapse; font-size:11px; margin-bottom: 18px; }
+.etable th { background:#1B3A6B; color:white; padding:7px 10px; text-align:left; font-weight:500; }
+.etable td { padding:5px 10px; border-bottom:0.5px solid #E8E6DF; color:#444441; vertical-align:top; }
+.etable tr:nth-child(even) td { background:#F5F4F0; }
+.etable tr:last-child td { border-bottom:none; }
+.etable code { background:#F1EFE8; padding:1px 4px; border-radius:3px; font-family:monospace; font-size:10px; }
+.etable .rr { background:#FCEBEB; }
+.etable .gg { background:#EAF3DE; }
+
+.alert-box { border-radius: 8px; padding: 14px 16px; margin-bottom: 16px; font-size: 12px; line-height: 1.6; }
+.alert-red { background:#FCEBEB; border: 0.5px solid #E24B4A; color:#791F1F; }
+.alert-green { background:#EAF3DE; border: 0.5px solid #3B6D11; color:#173404; }
+.alert-purple { background:#EEEDFE; border: 0.5px solid #7F77DD; color:#26215C; }
+.alert-yellow { background:#FAEEDA; border: 0.5px solid #BA7517; color:#633806; }
+
+footer { background:#1B3A6B; color:#667799; text-align:center; padding:14px; font-size:11px; }
+
+@media(max-width:700px){
+  header { flex-direction:column; gap:10px; }
+  header .meta { text-align:left; }
+  .g4,.g3 { grid-template-columns:1fr 1fr; }
+  .g2 { grid-template-columns:1fr; }
+  .tabs { overflow-x:auto; }
+}
+@media(max-width:460px){
+  .g4,.g3 { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+<div class="tooltip" id="tt"></div>
+
+<header>
+  <div>
+    <div class="brand">iBob Motores Elétricos e Automação Industrial</div>
+    <h1>Blueprint do Agente de IA para <span>Tráfego Pago</span></h1>
+  </div>
+  <div class="meta">Google Ads + Meta Ads · Versão 3.2<br>Railway · Supabase · Claude API<br>Maio 2025 · Confidencial</div>
+</header>
+
+<div class="kpi-bar">
+  <div class="kpi-item"><span class="kpi-val">R$10–30k</span><span class="kpi-label">Investimento/mês</span></div>
+  <div class="kpi-item"><span class="kpi-val">20x</span><span class="kpi-label">ROAS alvo</span></div>
+  <div class="kpi-item"><span class="kpi-val">R$60</span><span class="kpi-label">CPL alvo</span></div>
+  <div class="kpi-item"><span class="kpi-val">18%</span><span class="kpi-label">Margem líquida</span></div>
+  <div class="kpi-item"><span class="kpi-val">31/mai</span><span class="kpi-label">Prazo Nível 2</span></div>
+  <div class="kpi-item"><span class="kpi-val">90d</span><span class="kpi-label">Aprendizado adaptativo</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('arch')">Arquitetura</div>
+  <div class="tab" onclick="showTab('validation')">Validação determinística</div>
+  <div class="tab" onclick="showTab('security')">Segurança e tokens</div>
+  <div class="tab" onclick="showTab('tests')">Testes e CI</div>
+  <div class="tab" onclick="showTab('versions')">Versionamento</div>
+  <div class="tab" onclick="showTab('infra')">Infraestrutura</div>
+  <div class="tab" onclick="showTab('roadmap')">Roadmap</div>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 1 — ARQUITETURA GERAL
+═══════════════════════════════════════════════════════ -->
+<div id="panel-arch" class="panel active">
+<p class="stitle">7 camadas + Validação determinística + Memória + Experimentação</p>
+<div class="card">
+<svg width="100%" viewBox="0 0 980 1920" role="img">
+  <title>Blueprint Agente iBob v3.2 — Arquitetura completa</title>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+
+  <!-- SOURCES -->
+  <g class="nt" data-tip="Google Ads API · OAuth2 · Escopo mínimo ads.manage" style="cursor:pointer"><rect x="20" y="28" width="132" height="50" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/><text x="86" y="48" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#0C447C">Google Ads</text><text x="86" y="64" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">API · OAuth2</text></g>
+  <g class="nt" data-tip="Meta Marketing API · Long-lived token · Escopo ads_management apenas" style="cursor:pointer"><rect x="170" y="28" width="132" height="50" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/><text x="236" y="48" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#0C447C">Meta Ads</text><text x="236" y="64" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">API · Token</text></g>
+  <g class="nt" data-tip="Orbita webhook pull mensal · GET /skus/margins · Margem LÍQUIDA por SKU · Token read-only" style="cursor:pointer"><rect x="320" y="28" width="160" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/><text x="400" y="46" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#085041">Orbita</text><text x="400" y="62" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Pull mensal · Margem líq.</text></g>
+  <g class="nt" data-tip="GA4 Data API + Pixel · Receita com SKU e valor · Base para divergência check" style="cursor:pointer"><rect x="498" y="28" width="140" height="50" rx="8" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/><text x="568" y="46" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#0C447C">GA4 + Pixel</text><text x="568" y="62" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#185FA5">Receita · SKU · Valor</text></g>
+  <g class="nt" data-tip="Estoque em tempo real · Físico: pausa &lt;5un · Sob encomenda: nunca pausa" style="cursor:pointer"><rect x="656" y="28" width="120" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/><text x="716" y="48" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#085041">Estoque</text><text x="716" y="64" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Tempo real</text></g>
+  <g class="nt" data-tip="CRM via webhook · Leads consultivos com UTM · Funil R$10k" style="cursor:pointer"><rect x="794" y="28" width="160" height="50" rx="8" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/><text x="874" y="48" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#085041">CRM</text><text x="874" y="64" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Leads · UTM</text></g>
+
+  <line x1="86"  y1="78" x2="86"  y2="116" stroke="#378ADD" stroke-width="1" marker-end="url(#a)" opacity="0.6"/>
+  <line x1="236" y1="78" x2="226" y2="116" stroke="#378ADD" stroke-width="1" marker-end="url(#a)" opacity="0.6"/>
+  <line x1="400" y1="78" x2="370" y2="116" stroke="#1D9E75" stroke-width="1.2" marker-end="url(#a)" opacity="0.7"/>
+  <line x1="568" y1="78" x2="520" y2="116" stroke="#378ADD" stroke-width="1" marker-end="url(#a)" opacity="0.6"/>
+  <line x1="716" y1="78" x2="660" y2="116" stroke="#1D9E75" stroke-width="1" marker-end="url(#a)" opacity="0.6"/>
+  <line x1="874" y1="78" x2="790" y2="116" stroke="#1D9E75" stroke-width="1" marker-end="url(#a)" opacity="0.6"/>
+
+  <!-- C1 COLETA -->
+  <text x="14" y="154" text-anchor="end" font-size="9" fill="#888780" dominant-baseline="central">C1</text>
+  <g class="nt" data-tip="collector.py · Railway cron 06h · Grava em Supabase raw_metrics" style="cursor:pointer">
+    <rect x="20" y="118" width="934" height="68" rx="12" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+    <text x="487" y="146" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#444441">Camada 1 — Coleta de dados</text>
+    <text x="487" y="164" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#5F5E5A">collector.py · Railway cron 06h · Todas as fontes → Supabase PostgreSQL</text>
+  </g>
+  <line x1="487" y1="186" x2="487" y2="222" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C2 DATA TRUST -->
+  <text x="14" y="284" text-anchor="end" font-size="9" fill="#A32D2D" dominant-baseline="central">C2</text>
+  <g class="nt" data-tip="trust_layer.py · Valida consistência · dtl_blocked flag no Supabase · 7 checks obrigatórios · Orbita &gt;35d bloqueia escala de margem" style="cursor:pointer">
+    <rect x="20" y="224" width="934" height="118" rx="12" fill="#FCEBEB" stroke="#E24B4A" stroke-width="1"/>
+    <text x="487" y="256" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#791F1F">Camada 2 — Data Trust Layer</text>
+    <text x="487" y="275" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#A32D2D">trust_layer.py · 7 checks · dtl_blocked flag · Alerta email/Slack</text>
+    <rect x="140" y="293" width="160" height="26" rx="13" fill="#EAF3DE" stroke="#639922" stroke-width="0.5"/>
+    <text x="220" y="306" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#3B6D11">● Verde</text>
+    <rect x="320" y="293" width="180" height="26" rx="13" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+    <text x="410" y="306" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#854F0B">● Amarelo — restrição</text>
+    <rect x="520" y="293" width="200" height="26" rx="13" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+    <text x="620" y="306" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#A32D2D">● Vermelho — trava tudo</text>
+    <rect x="740" y="293" width="190" height="26" rx="6" fill="#E1F5EE" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="835" y="306" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#085041">Orbita &gt;35d → bloqueia margem</text>
+  </g>
+  <path d="M954 250 L970 250 L970 660 L954 660" fill="none" stroke="#E24B4A" stroke-width="1" stroke-dasharray="5 4" opacity="0.4"/>
+  <text x="973" y="455" font-size="9" fill="#A32D2D" dominant-baseline="central" transform="rotate(90,973,455)">dtl_blocked=true</text>
+  <line x1="487" y1="342" x2="487" y2="378" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C3 DECISION ENGINE -->
+  <text x="14" y="446" text-anchor="end" font-size="9" fill="#534AB7" dominant-baseline="central">C3</text>
+  <g class="nt" data-tip="decision_engine.py · Claude API (claude-sonnet-4-20250514) · Retorna JSON de ações candidatas · Nunca acessa APIs de escrita diretamente" style="cursor:pointer">
+    <rect x="20" y="380" width="934" height="130" rx="12" fill="#EEEDFE" stroke="#534AB7" stroke-width="1"/>
+    <text x="487" y="410" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#26215C">Camada 3 — Decision Engine (Claude API)</text>
+    <text x="487" y="429" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3C3489">decision_engine.py · Claude sugere · NÃO executa · Consulta Memória e agent_versions</text>
+    <rect x="40" y="446" width="420" height="46" rx="8" fill="#F8F6FF" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="250" y="464" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#3C3489">Google Ads</text>
+    <text x="250" y="480" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#534AB7">Search · Shopping · PMax · Keywords · Budget</text>
+    <rect x="474" y="446" width="460" height="46" rx="8" fill="#F8F6FF" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="704" y="464" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#3C3489">Meta Ads</text>
+    <text x="704" y="480" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#534AB7">Criativos · Frequência · CPL · Públicos · Budget</text>
+  </g>
+  <line x1="487" y1="510" x2="487" y2="546" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C3.5 RULE VALIDATOR — NEW -->
+  <text x="14" y="598" text-anchor="end" font-size="9" fill="#8B3A00" dominant-baseline="central">C3.5</text>
+  <g class="nt" data-tip="rule_validator.py · NOVO · Claude sugere → regras Python validam → só então vira proposta · Se a regra bloqueia, a proposta não existe" style="cursor:pointer">
+    <rect x="20" y="548" width="934" height="116" rx="12" fill="#FFF3EF" stroke="#E8532B" stroke-width="1.5"/>
+    <text x="487" y="578" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#8B3A00">Validação Determinística — rule_validator.py</text>
+    <text x="487" y="596" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#993C1D">Claude sugere → regras Python validam → só então vira proposta · Budget gate obrigatório</text>
+    <!-- validation steps -->
+    <rect x="40"  y="612" width="132" height="34" rx="6" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+    <text x="106" y="629" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#791F1F">Schema check</text>
+    <rect x="188" y="612" width="132" height="34" rx="6" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+    <text x="254" y="629" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#791F1F">Guardrail check</text>
+    <rect x="336" y="612" width="148" height="34" rx="6" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+    <text x="410" y="621" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#791F1F">Budget gate</text>
+    <text x="410" y="637" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#A32D2D">approved_by=mayron</text>
+    <rect x="500" y="612" width="148" height="34" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+    <text x="574" y="629" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#633806">Threshold check</text>
+    <rect x="664" y="612" width="148" height="34" rx="6" fill="#EAF3DE" stroke="#639922" stroke-width="0.5"/>
+    <text x="738" y="629" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#173404">Conflict check</text>
+    <rect x="828" y="612" width="100" height="34" rx="6" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
+    <text x="878" y="621" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#173404">→ proposals</text>
+    <text x="878" y="637" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#27500A">status=pending</text>
+  </g>
+  <line x1="487" y1="664" x2="487" y2="700" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C4 PRIORIZAÇÃO -->
+  <text x="14" y="756" text-anchor="end" font-size="9" fill="#72243E" dominant-baseline="central">C4</text>
+  <g class="nt" data-tip="prioritizer.py · impact_score ranqueado · Máx. 5/dia · Hierarquia: Tracking &gt; Estoque &gt; Margem &gt; Performance" style="cursor:pointer">
+    <rect x="20" y="702" width="934" height="120" rx="12" fill="#FBEAF0" stroke="#D4537E" stroke-width="0.5"/>
+    <text x="487" y="730" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#4B1528">Camada 4 — Priorização e resolução de conflitos</text>
+    <text x="487" y="749" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#72243E">prioritizer.py · impact_score = (financial_impact × urgency) / risk · Máx. 5/dia</text>
+    <rect x="40"  y="766" width="196" height="34" rx="6" fill="#FCEBEB" stroke="#E24B4A" stroke-width="0.5"/>
+    <text x="138" y="783" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#791F1F">1° Tracking</text>
+    <rect x="254" y="766" width="196" height="34" rx="6" fill="#FAEEDA" stroke="#BA7517" stroke-width="0.5"/>
+    <text x="352" y="783" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#633806">2° Estoque</text>
+    <rect x="468" y="766" width="196" height="34" rx="6" fill="#E6F1FB" stroke="#378ADD" stroke-width="0.5"/>
+    <text x="566" y="783" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#042C53">3° Margem líquida</text>
+    <rect x="682" y="766" width="226" height="34" rx="6" fill="#EAF3DE" stroke="#639922" stroke-width="0.5"/>
+    <text x="795" y="783" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#173404">4° Performance</text>
+  </g>
+  <line x1="487" y1="822" x2="487" y2="858" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C5 APROVAÇÃO -->
+  <text x="14" y="920" text-anchor="end" font-size="9" fill="#085041" dominant-baseline="central">C5</text>
+  <g class="nt" data-tip="Dashboard Next.js · Email diário 08h · Aprovação grava approved_by, approved_at e rationale no Supabase antes de qualquer execução" style="cursor:pointer">
+    <rect x="20" y="860" width="934" height="148" rx="12" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1"/>
+    <text x="487" y="888" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#04342C">Camada 5 — Fila de aprovação humana</text>
+    <text x="487" y="907" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#085041">Dashboard Next.js · Aprovação → status=approved + approved_by gravado → executor liberado</text>
+    <rect x="40" y="922" width="430" height="66" rx="8" fill="#FFFFFF" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="255" y="944" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#04342C">Mayron — Estratégico</text>
+    <text x="255" y="961" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Budget · Pausar campanha · Nova estratégia</text>
+    <text x="255" y="977" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Aprovar mudança de prompt · Avançar nível</text>
+    <rect x="484" y="922" width="450" height="66" rx="8" fill="#FFFFFF" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="709" y="944" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#04342C">Cassiano — Operacional</text>
+    <text x="709" y="961" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Lances · Criativos · Negativações · Realocação</text>
+    <text x="709" y="977" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#0F6E56">Propor threshold · Validar experimentos C7</text>
+  </g>
+  <path d="M20 930 L4 930 L4 394 L20 394" fill="none" stroke="#E24B4A" stroke-width="1" stroke-dasharray="5 4" opacity="0.4"/>
+  <text x="-30" y="662" font-size="9" fill="#A32D2D" dominant-baseline="central" transform="rotate(-90,-30,662)">Rejeitado → Memória</text>
+  <line x1="487" y1="1008" x2="487" y2="1044" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- C6 EXECUTION -->
+  <text x="14" y="1086" text-anchor="end" font-size="9" fill="#3B6D11" dominant-baseline="central">C6</text>
+  <g class="nt" data-tip="executor.py · Verifica approved_by + dtl_blocked antes de qualquer chamada · Log imutável com prompt_version e threshold_version · Rollback via previous_state" style="cursor:pointer">
+    <rect x="20" y="1046" width="934" height="122" rx="12" fill="#EAF3DE" stroke="#3B6D11" stroke-width="1"/>
+    <text x="487" y="1076" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#173404">Camada 6 — Execution Engine</text>
+    <text x="487" y="1095" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#27500A">executor.py · Budget gate programático · execution_log imutável · prompt_version registrado</text>
+    <rect x="40"  y="1110" width="200" height="38" rx="6" fill="#C0DD97" stroke="#639922" stroke-width="0.5"/>
+    <text x="140" y="1124" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#173404">Budget gate</text>
+    <text x="140" y="1139" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#27500A">mayron check obrigatório</text>
+    <rect x="260" y="1110" width="200" height="38" rx="6" fill="#C0DD97" stroke="#639922" stroke-width="0.5"/>
+    <text x="360" y="1124" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#173404">API mutate</text>
+    <text x="360" y="1139" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#27500A">Google / Meta API call</text>
+    <rect x="480" y="1110" width="200" height="38" rx="6" fill="#C0DD97" stroke="#639922" stroke-width="0.5"/>
+    <text x="580" y="1124" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#173404">execution_log</text>
+    <text x="580" y="1139" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#27500A">Imutável · prompt_version</text>
+    <rect x="700" y="1110" width="214" height="38" rx="6" fill="#C0DD97" stroke="#639922" stroke-width="0.5"/>
+    <text x="807" y="1124" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#173404">Rollback</text>
+    <text x="807" y="1139" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#27500A">previous_state · mesma alçada</text>
+  </g>
+  <line x1="487" y1="1168" x2="487" y2="1204" stroke="#888780" stroke-width="1.5" marker-end="url(#a)" opacity="0.5"/>
+
+  <!-- RESULTADO -->
+  <g class="nt" data-tip="Medido automaticamente D+7 por measurement.py · Grava outcome em proposals e decision_memory" style="cursor:pointer">
+    <rect x="210" y="1206" width="554" height="50" rx="12" fill="#F1EFE8" stroke="#888780" stroke-width="0.5"/>
+    <text x="487" y="1226" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#2C2C2A">Resultado nas campanhas</text>
+    <text x="487" y="1243" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#5F5E5A">ROAS ↑ · CPL ↓ · Margem líquida protegida · measurement.py D+7</text>
+  </g>
+
+  <!-- MEMÓRIA -->
+  <g class="nt" data-tip="Supabase · tabela decision_memory · Registra proposta, aprovação, rationale, outcome_d7, prompt_version ativa e causal_effect da C7" style="cursor:pointer">
+    <rect x="20" y="1282" width="934" height="140" rx="12" fill="#EEEDFE" stroke="#7F77DD" stroke-width="1" stroke-dasharray="6 3"/>
+    <text x="487" y="1312" text-anchor="middle" dominant-baseline="central" font-size="13" font-weight="500" fill="#26215C">Memória de Decisão — Supabase · decision_memory</text>
+    <text x="487" y="1331" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#3C3489">Registra: proposta · aprovação · prompt_version · outcome_d7 · dados causais (C7)</text>
+    <rect x="40"  y="1348" width="186" height="28" rx="6" fill="#F8F6FF" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="133" y="1362" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3C3489">approved_by · rationale</text>
+    <rect x="240" y="1348" width="186" height="28" rx="6" fill="#F8F6FF" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="333" y="1362" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3C3489">prompt_version ativa</text>
+    <rect x="440" y="1348" width="186" height="28" rx="6" fill="#F8F6FF" stroke="#AFA9EC" stroke-width="0.5"/>
+    <text x="533" y="1362" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#3C3489">threshold_version ativa</text>
+    <rect x="640" y="1348" width="274" height="28" rx="6" fill="#D4F3E8" stroke="#5DCAA5" stroke-width="0.5"/>
+    <text x="777" y="1362" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#085041">causal_effect · confidence (C7)</text>
+  </g>
+  <!-- result → memory -->
+  <path d="M487 1256 L487 1270 L958 1270 L958 1312 L954 1312" fill="none" stroke="#7F77DD" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#a)" opacity="0.5"/>
+  <!-- memory → C3 feedback -->
+  <path d="M20 1312 L4 1312 L4 446 L20 446" fill="none" stroke="#7F77DD" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#a)" opacity="0.5"/>
+  <!-- memory → C7 -->
+  <line x1="487" y1="1422" x2="487" y2="1462" stroke="#5DCAA5" stroke-width="1.5" marker-end="url(#a)" opacity="0.7"/>
+
+  <!-- AGENT VERSIONS — transversal security layer -->
+  <g class="nt" data-tip="agent_versions table · Todos os prompts e thresholds versionados · Cassiano propõe threshold · Mayron aprova tudo · Rollback em 1 clique" style="cursor:pointer">
+    <rect x="20" y="1422" width="460" height="68" rx="8" fill="#FAEEDA" stroke="#BA7517" stroke-width="1" stroke-dasharray="5 3"/>
+    <text x="250" y="1448" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#633806">agent_versions — Versionamento</text>
+    <text x="250" y="1465" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#854F0B">Prompts e thresholds · Cassiano propõe · Mayron aprova</text>
+    <text x="250" y="1480" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#854F0B">Rollback disponível · Nunca hardcoded</text>
+  </g>
+  <!-- agent_versions → C3 -->
+  <path d="M250 1422 L250 1390 L20 1390 L20 446" fill="none" stroke="#BA7517" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#a)" opacity="0.45"/>
+
+  <!-- C7 EXPERIMENTAÇÃO -->
+  <text x="14" y="1548" text-anchor="end" font-size="9" fill="#0F6E56" dominant-baseline="central">C7</text>
+  <g class="nt" data-tip="experiment_engine.py · Fase 4 — junho · Hipótese + controle duplo + validação por Cassiano · Após 90 dias → aprendizado adaptativo" style="cursor:pointer">
+    <rect x="494" y="1422" width="460" height="212" rx="12" fill="#E1F5EE" stroke="#1D9E75" stroke-width="1.5" stroke-dasharray="8 4"/>
+    <text x="724" y="1452" text-anchor="middle" dominant-baseline="central" font-size="12" font-weight="500" fill="#04342C">Camada 7 — Experimentação Controlada</text>
+    <text x="724" y="1469" text-anchor="middle" dominant-baseline="central" font-size="10" fill="#085041">Fase 4 · experiment_engine.py</text>
+    <rect x="514" y="1484" width="126" height="120" rx="8" fill="#FFFFFF" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="577" y="1502" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#04342C">Hipótese</text>
+    <text x="577" y="1518" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Cada ação =</text>
+    <text x="577" y="1532" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">hipótese testável</text>
+    <text x="577" y="1546" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Usa margem Orbita</text>
+    <text x="577" y="1564" text-anchor="middle" dominant-baseline="central" font-size="9" font-weight="500" fill="#3B6D11">Fase 4</text>
+    <rect x="656" y="1484" width="138" height="120" rx="8" fill="#FFFFFF" stroke="#1D9E75" stroke-width="0.5"/>
+    <text x="725" y="1502" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#04342C">Controle duplo</text>
+    <text x="725" y="1518" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Campanha espelho</text>
+    <text x="725" y="1532" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">+ ajuste temporal</text>
+    <text x="725" y="1546" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Desconta mercado</text>
+    <text x="725" y="1564" text-anchor="middle" dominant-baseline="central" font-size="9" font-weight="500" fill="#3B6D11">causal_effect</text>
+    <rect x="810" y="1484" width="124" height="120" rx="8" fill="#FFFFFF" stroke="#5DCAA5" stroke-width="0.5"/>
+    <text x="872" y="1502" text-anchor="middle" dominant-baseline="central" font-size="10" font-weight="500" fill="#04342C">Cassiano valida</text>
+    <text x="872" y="1518" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Conclusivo?</text>
+    <text x="872" y="1532" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">Alta/Média/Baixa</text>
+    <text x="872" y="1546" text-anchor="middle" dominant-baseline="central" font-size="9" fill="#085041">conf. futura auto</text>
+    <text x="872" y="1564" text-anchor="middle" dominant-baseline="central" font-size="9" font-weight="500" fill="#3B6D11">90d → adaptativo</text>
+  </g>
+  <!-- C7 → memory -->
+  <path d="M724 1634 L724 1660 L44 1660 L44 1422" fill="none" stroke="#5DCAA5" stroke-width="1" stroke-dasharray="5 4" marker-end="url(#a)" opacity="0.55"/>
+  <text x="50" y="1660" font-size="9" fill="#0F6E56" dominant-baseline="central">dados causais → decision_memory</text>
+
+  <!-- AUTOMAÇÕES -->
+  <rect x="20" y="1680" width="934" height="40" rx="8" fill="#EAF3DE" stroke="#639922" stroke-width="0.5"/>
+  <text x="487" y="1700" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#27500A">Automações sem aprovação: stock_watcher.py · estoque físico (&lt;5 pausa · &gt;10 reativa) · alertas · relatórios · encomenda nunca pausa</text>
+
+  <!-- APRENDIZADO ADAPTATIVO -->
+  <rect x="20" y="1738" width="934" height="40" rx="8" fill="#EEEDFE" stroke="#7F77DD" stroke-width="0.5" stroke-dasharray="6 3"/>
+  <text x="487" y="1758" text-anchor="middle" dominant-baseline="central" font-size="11" font-weight="500" fill="#3C3489">Aprendizado adaptativo — adaptive_learner.py · após 90 dias de experimentos · Mayron aprova ajuste de threshold</text>
+
+  <!-- INFRA BAR -->
+  <rect x="20" y="1796" width="934" height="28" rx="6" fill="#2C2C2A"/>
+  <text x="487" y="1810" text-anchor="middle" dominant-baseline="central" font-size="11" fill="#C0DD97" font-family="monospace">Railway · Supabase PostgreSQL · Next.js/Vercel · Claude API · Tokens em env vars · CI via GitHub Actions</text>
+
+</svg>
+
+<div class="legend">
+  <span><span class="ld" style="background:#378ADD"></span>Google Ads · Meta · GA4</span>
+  <span><span class="ld" style="background:#1D9E75"></span>Orbita · Estoque · CRM · C5 · C7</span>
+  <span><span class="ld" style="background:#E24B4A"></span>Data Trust Layer</span>
+  <span><span class="ld" style="background:#E8532B"></span>Validação determinística (NOVO)</span>
+  <span><span class="ld" style="background:#534AB7"></span>Claude API — sugere apenas</span>
+  <span><span class="ld" style="background:#D4537E"></span>Priorização</span>
+  <span><span class="ld" style="background:#3B6D11"></span>Execução aprovada</span>
+  <span><span class="ld" style="background:#7F77DD"></span>Memória de decisão</span>
+  <span><span class="ld" style="background:#5DCAA5"></span>Experimentação controlada</span>
+  <span><span class="ld" style="background:#BA7517"></span>Versionamento (NOVO)</span>
+  <span><span class="ldd" style="border-color:#888780"></span>Fase 4+</span>
+</div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 2 — VALIDAÇÃO DETERMINÍSTICA
+═══════════════════════════════════════════════════════ -->
+<div id="panel-validation" class="panel">
+<p class="stitle">rule_validator.py — Claude sugere, regras Python decidem</p>
+
+<div class="alert-box alert-red">
+  <strong>Princípio fundamental:</strong> Claude API nunca tem acesso direto ao Execution Engine. O fluxo é sempre:<br>
+  <strong>Claude → rule_validator.py → proposals table → aprovação humana → executor.py</strong><br>
+  Se a regra bloqueia, a proposta não existe — independente do que o Claude sugeriu.
+</div>
+
+<table class="etable">
+  <thead><tr><th>Etapa</th><th>O que valida</th><th>Se falha</th></tr></thead>
+  <tbody>
+    <tr class="gg"><td>1. Schema validation</td><td>JSON do Claude tem estrutura válida e todos os campos obrigatórios</td><td>Descarta proposta inteira · log de schema_error</td></tr>
+    <tr><td>2. Guardrail check</td><td>Budget +30%/dia · campanha &lt;7 dias · sem margem Orbita · estoque · tracking</td><td>Descarta a ação específica · motivo registrado</td></tr>
+    <tr class="rr"><td>3. Budget gate</td><td><code>action_type == budget_change</code> exige <code>approved_by = mayron</code> explícito no banco</td><td>Não cria proposta de budget · bloqueio programático</td></tr>
+    <tr><td>4. Threshold check</td><td>Valores propostos dentro dos thresholds da versão ativa em <code>agent_config</code></td><td>Ajusta para o limite ou descarta</td></tr>
+    <tr><td>5. Conflict check</td><td>Hierarquia Tracking &gt; Estoque &gt; Margem &gt; Performance · remove conflitos</td><td>Remove proposta de menor prioridade</td></tr>
+    <tr class="gg"><td>6. Proposta criada</td><td>Só após todos os checks passarem</td><td>Grava em <code>proposals</code> com <code>status=pending</code></td></tr>
+  </tbody>
+</table>
+
+<div class="g2">
+  <div class="ic">
+    <h3>Claude PODE fazer</h3>
+    <ul>
+      <li>Analisar métricas e identificar anomalias</li>
+      <li>Sugerir ações dentro dos guardrails</li>
+      <li>Gerar texto de proposta para o time</li>
+      <li>Consultar histórico da Memória de Decisão</li>
+      <li>Recomendar prioridade entre campanhas</li>
+      <li>Explicar o raciocínio de cada sugestão</li>
+    </ul>
+  </div>
+  <div class="ic">
+    <h3>Claude NÃO PODE fazer</h3>
+    <ul>
+      <li>Chamar APIs do Google Ads ou Meta diretamente</li>
+      <li>Escrever em proposals sem passar pelo rule_validator</li>
+      <li>Alterar thresholds ou guardrails</li>
+      <li>Acessar tokens de autenticação</li>
+      <li>Executar qualquer ação sem aprovação no banco</li>
+      <li>Bypassar o budget gate mesmo com justificativa</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 3 — SEGURANÇA E TOKENS
+═══════════════════════════════════════════════════════ -->
+<div id="panel-security" class="panel">
+<p class="stitle">Segurança, tokens e auditoria — acesso de escrita em contas de mídia</p>
+
+<div class="alert-box alert-red">
+  <strong>O agente tem acesso de escrita em contas com investimento real.</strong> Cada camada de segurança é independente — o comprometimento de uma não compromete as outras.
+</div>
+
+<table class="etable">
+  <thead><tr><th>Serviço</th><th>Tipo</th><th>Escopo mínimo</th><th>Renovação</th></tr></thead>
+  <tbody>
+    <tr><td>Google Ads API</td><td>OAuth2 + refresh token</td><td><code>ads.manage</code> apenas — sem billing ou usuários</td><td>Auto via refresh · Developer Token permanente</td></tr>
+    <tr><td>Meta Marketing API</td><td>Long-lived token</td><td><code>ads_management</code> apenas — sem pages, Instagram ou dados pessoais</td><td>Cron renovação a cada 55 dias</td></tr>
+    <tr><td>Supabase (backend)</td><td>Service role key</td><td>Só no Railway · nunca exposto ao browser</td><td>Rotação semestral manual</td></tr>
+    <tr><td>Supabase (dashboard)</td><td>Anon key + RLS</td><td>Row Level Security — cada usuário vê só o seu</td><td>—</td></tr>
+    <tr><td>Orbita</td><td>API key</td><td>Read-only — sem permissão de escrita</td><td>Conforme política do Orbita</td></tr>
+    <tr><td>Claude API</td><td>Anthropic API key</td><td>Standard — sem ferramentas de sistema</td><td>Rotação trimestral</td></tr>
+  </tbody>
+</table>
+
+<div class="alert-box alert-red" style="margin-top:16px">
+  <strong>Budget Gate — proteção programática no executor.py (não é só UI):</strong><br>
+  Antes de qualquer chamada de API com budget, o executor verifica no banco:<br>
+  1. <code>proposal.action_type == 'budget_change'</code><br>
+  2. <code>proposal.approved_by == 'mayron@ibob.com.br'</code><br>
+  3. <code>proposal.approved_at IS NOT NULL</code><br>
+  4. <code>agent_state.dtl_blocked == false</code><br>
+  Se qualquer condição falhar → execução abortada + log de tentativa bloqueada.
+</div>
+
+<p class="stitle" style="margin-top:20px">Auditoria imutável — execution_log</p>
+<table class="etable">
+  <thead><tr><th>Campo auditado</th><th>O que registra</th></tr></thead>
+  <tbody>
+    <tr><td><code>executed_at</code></td><td>Timestamp exato da chamada de API</td></tr>
+    <tr><td><code>approved_by</code></td><td>Email de quem aprovou — Mayron ou Cassiano</td></tr>
+    <tr><td><code>prompt_version</code></td><td>Versão do prompt ativo no momento da decisão</td></tr>
+    <tr><td><code>threshold_version</code></td><td>Versão dos thresholds ativos no momento</td></tr>
+    <tr><td><code>api_service</code></td><td>google_ads ou meta — qual plataforma foi chamada</td></tr>
+    <tr><td><code>api_request</code></td><td>Payload completo enviado (sem tokens)</td></tr>
+    <tr><td><code>api_response</code></td><td>Resposta completa da API — sucesso ou erro</td></tr>
+    <tr><td><code>previous_state</code></td><td>Estado anterior em JSON — base para rollback</td></tr>
+    <tr><td><code>rollback_available</code></td><td>Boolean — true enquanto rollback for possível</td></tr>
+  </tbody>
+</table>
+
+<p class="stitle" style="margin-top:20px">Resposta a incidentes</p>
+<table class="etable">
+  <thead><tr><th>Incidente</th><th>Ação imediata</th><th>Ação corretiva</th></tr></thead>
+  <tbody>
+    <tr><td>Token comprometido</td><td>Revogar na plataforma + atualizar Railway env var em &lt;15 min</td><td>Auditar execution_log das últimas 24h</td></tr>
+    <tr><td>Ação incorreta executada</td><td>Rollback via dashboard em &lt;5 min via previous_state</td><td>Investigar rule_validator · corrigir e versionar</td></tr>
+    <tr class="rr"><td>Budget sem aprovação de Mayron</td><td>Impossível por design — budget gate programático bloqueia</td><td>Se ocorrer: bug crítico · rollback + novo teste obrigatório</td></tr>
+    <tr><td>Agente em loop</td><td>Guardrail de 30 dias na Memória bloqueia automaticamente</td><td>Investigar decision_engine · versionar novo prompt</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 4 — TESTES E CI
+═══════════════════════════════════════════════════════ -->
+<div id="panel-tests" class="panel">
+<p class="stitle">Testes automatizados — nenhum deploy sem suite verde</p>
+
+<div class="alert-box alert-green">
+  <strong>Política de CI:</strong> push para qualquer branch → roda suite completa · merge para main bloqueado se qualquer teste falhar · deploy para Railway só após merge com testes verdes · staging com <code>dry_run=true</code> antes de produção.
+</div>
+
+<p class="stitle" style="margin-top:16px">trust_layer.py — 7 testes obrigatórios</p>
+<table class="etable">
+  <thead><tr><th>Teste</th><th>O que simula</th><th>Critério de aprovação</th></tr></thead>
+  <tbody>
+    <tr><td><code>test_pixel_stopped</code></td><td>0 eventos de conversão por 6h em horário comercial</td><td><code>dtl_blocked=true</code> + alerta gerado</td></tr>
+    <tr><td><code>test_ga4_divergence</code></td><td>Divergência receita GA4 vs Google Ads &gt;40%</td><td><code>dtl_blocked=true</code> + fonte identificada</td></tr>
+    <tr><td><code>test_orbita_stale</code></td><td>Última atualização do Orbita há 36 dias</td><td>Bloqueio de ações de margem + alerta</td></tr>
+    <tr><td><code>test_stock_stale</code></td><td>Estoque sem atualização por 25h</td><td>Regras de estoque ignoradas + alerta</td></tr>
+    <tr><td><code>test_all_sources_ok</code></td><td>Todas as fontes com dados válidos e recentes</td><td><code>dtl_blocked=false</code> · estado VERDE</td></tr>
+    <tr><td><code>test_yellow_state</code></td><td>Uma fonte suspeita, demais OK</td><td>Opera com restrição · estado AMARELO</td></tr>
+    <tr><td><code>test_crm_silent</code></td><td>Sem leads no CRM por 48h úteis</td><td>Alerta gerado · operação continua</td></tr>
+  </tbody>
+</table>
+
+<p class="stitle" style="margin-top:16px">executor.py — 7 testes obrigatórios</p>
+<table class="etable">
+  <thead><tr><th>Teste</th><th>O que valida</th><th>Critério de aprovação</th></tr></thead>
+  <tbody>
+    <tr><td><code>test_only_approved_executed</code></td><td>Tenta executar proposal com <code>status=pending</code></td><td>Execução bloqueada — apenas approved</td></tr>
+    <tr class="rr"><td><code>test_budget_requires_mayron</code></td><td>Proposta de budget sem <code>approved_by=mayron</code></td><td>Execução bloqueada — erro explícito</td></tr>
+    <tr><td><code>test_execution_log_written</code></td><td>Execução bem-sucedida de proposta aprovada</td><td>Log gravado com timestamp, request, response, prompt_version</td></tr>
+    <tr><td><code>test_previous_state_saved</code></td><td>Execução de qualquer ação de escrita</td><td><code>previous_state</code> gravado antes da chamada de API</td></tr>
+    <tr><td><code>test_api_failure_handling</code></td><td>Simula erro 500 da Google Ads API</td><td>Marcado como failed · sem retry automático · alerta</td></tr>
+    <tr><td><code>test_dtl_blocks_executor</code></td><td><code>dtl_blocked=true</code> no <code>agent_state</code></td><td>Executor não processa nenhuma proposta</td></tr>
+    <tr><td><code>test_dry_run_mode</code></td><td>Modo <code>dry_run=true</code> em staging</td><td>Log gravado mas API não é chamada</td></tr>
+  </tbody>
+</table>
+
+<p class="stitle" style="margin-top:16px">rollback — 6 testes obrigatórios</p>
+<table class="etable">
+  <thead><tr><th>Teste</th><th>O que valida</th><th>Critério de aprovação</th></tr></thead>
+  <tbody>
+    <tr><td><code>test_previous_state_exists</code></td><td>Toda execução tem <code>previous_state</code> no log</td><td><code>rollback_available=true</code> em 100% das execuções</td></tr>
+    <tr><td><code>test_rollback_restores_budget</code></td><td>Rollback de ação de budget</td><td>Budget restaurado ao valor exato do <code>previous_state</code></td></tr>
+    <tr><td><code>test_rollback_restores_status</code></td><td>Rollback de pausa/reativação</td><td>Status restaurado ao valor anterior</td></tr>
+    <tr><td><code>test_rollback_idempotent</code></td><td>Rollback executado duas vezes</td><td>Segundo rollback detecta estado já restaurado e não age</td></tr>
+    <tr class="rr"><td><code>test_rollback_requires_mayron</code></td><td>Rollback de budget sem autorização</td><td>Bloqueado — exige mesma alçada da ação original</td></tr>
+    <tr><td><code>test_rollback_log</code></td><td>Rollback bem-sucedido</td><td>Log gravado com referência ao <code>execution_log</code> original</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 5 — VERSIONAMENTO
+═══════════════════════════════════════════════════════ -->
+<div id="panel-versions" class="panel">
+<p class="stitle">Versionamento de prompts e thresholds — agent_versions</p>
+
+<div class="alert-box alert-yellow">
+  <strong>Política:</strong> Cassiano pode propor mudança de threshold. Mayron aprova qualquer mudança. Mudança de prompt: apenas Mayron propõe e aprova. Nenhum prompt hardcoded no código — sempre carregado do banco.
+</div>
+
+<table class="etable">
+  <thead><tr><th>Campo</th><th>Descrição</th><th>Exemplo</th></tr></thead>
+  <tbody>
+    <tr><td><code>version_id</code></td><td>ID sequencial da versão</td><td>v1.4.2</td></tr>
+    <tr><td><code>version_type</code></td><td>prompt / threshold / guardrail</td><td>threshold</td></tr>
+    <tr><td><code>component</code></td><td>Qual módulo foi alterado</td><td><code>decision_engine · ROAS_scale_threshold</code></td></tr>
+    <tr><td><code>previous_value</code></td><td>Valor anterior (JSON)</td><td><code>{"roas_scale_min": 25}</code></td></tr>
+    <tr><td><code>new_value</code></td><td>Novo valor aprovado (JSON)</td><td><code>{"roas_scale_min": 22}</code></td></tr>
+    <tr><td><code>proposed_by</code></td><td>Quem propôs a mudança</td><td>cassiano@ibob.com.br</td></tr>
+    <tr><td><code>approved_by</code></td><td>Sempre Mayron para prompts</td><td>mayron@ibob.com.br</td></tr>
+    <tr><td><code>rationale</code></td><td>Justificativa da mudança</td><td>Experimentos mostraram que 22x é o threshold real da iBob</td></tr>
+    <tr><td><code>rollback_to</code></td><td>ID da versão anterior</td><td>v1.4.1</td></tr>
+    <tr><td><code>status</code></td><td>active / rolled_back / superseded</td><td>active</td></tr>
+  </tbody>
+</table>
+
+<div class="alert-box alert-purple" style="margin-top:16px">
+  <strong>Regra de prompt:</strong> nenhum prompt é editado diretamente no código em produção. Prompts ficam na tabela <code>agent_versions</code>. O <code>decision_engine.py</code> sempre carrega o prompt da versão com <code>status=active</code> no banco. Rollback de prompt é instantâneo sem novo deploy.
+</div>
+
+<p class="stitle" style="margin-top:20px">Processo de mudança</p>
+<div class="g2">
+  <div class="ic">
+    <h3>Mudança de threshold (Cassiano propõe)</h3>
+    <ul>
+      <li>Cassiano identifica necessidade com base em dados ou experimentos</li>
+      <li>Abre proposta no dashboard: componente, valor atual, valor proposto, justificativa</li>
+      <li>Sistema grava em <code>agent_versions</code> com <code>status=pending_approval</code></li>
+      <li>Mayron recebe notificação e revisa no dashboard</li>
+      <li>Mayron aprova ou rejeita com comentário</li>
+      <li>Se aprovado: entra em vigor no próximo ciclo (06h)</li>
+      <li>Se problemas: rollback em 1 clique — versão anterior restaurada</li>
+    </ul>
+  </div>
+  <div class="ic">
+    <h3>Mudança de prompt (apenas Mayron)</h3>
+    <ul>
+      <li>Mayron identifica necessidade de ajuste no comportamento do Claude</li>
+      <li>Edita o prompt diretamente no dashboard (nunca no código)</li>
+      <li>Sistema grava nova versão com <code>status=pending_approval</code></li>
+      <li>Mayron revisa e auto-aprova (ou pede revisão externa)</li>
+      <li>Novo prompt ativo no próximo ciclo — sem novo deploy</li>
+      <li>execution_log sempre registra qual <code>prompt_version</code> estava ativa</li>
+      <li>Rollback disponível para qualquer versão anterior</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 6 — INFRAESTRUTURA
+═══════════════════════════════════════════════════════ -->
+<div id="panel-infra" class="panel">
+<p class="stitle">Stack técnico e infraestrutura</p>
+
+<div class="g2">
+  <div>
+    <div class="ic" style="margin-bottom:14px">
+      <h3>Railway — Python Workers</h3>
+      <p>Roda todos os scripts. Deploy via GitHub push. APScheduler para crons. ~R$50–100/mês.<br><br>
+      <span class="badge dk">collector.py</span> <span class="badge dk">trust_layer.py</span> <span class="badge dk">rule_validator.py</span> <span class="badge dk">decision_engine.py</span> <span class="badge dk">prioritizer.py</span> <span class="badge dk">executor.py</span> <span class="badge dk">measurement.py</span> <span class="badge dk">stock_watcher.py</span> <span class="badge dk">orbita_pull.py</span></p>
+    </div>
+    <div class="ic" style="margin-bottom:14px">
+      <h3>Supabase — PostgreSQL gerenciado</h3>
+      <p>Banco central. Row Level Security ativo. Plano gratuito Fase 1–2.<br><br>
+      <span class="badge p">proposals</span> <span class="badge p">decision_memory</span> <span class="badge p">execution_log</span> <span class="badge p">agent_versions</span> <span class="badge tl">experiments</span> <span class="badge t">orbita_margins</span> <span class="badge t">stock_status</span> <span class="badge r">agent_state</span> <span class="badge y">agent_config</span></p>
+    </div>
+    <div class="ic">
+      <h3>Custo estimado/mês</h3>
+      <ul>
+        <li>Railway: ~R$50–100</li>
+        <li>Supabase (Fase 1–2): R$0</li>
+        <li>Vercel (hobby): R$0</li>
+        <li>Claude API (~500 calls/mês): ~R$50–80</li>
+        <li><strong>Total Fase 1–2: ~R$50–180</strong></li>
+        <li>Fase 3+: ~R$150–350/mês</li>
+      </ul>
+    </div>
+  </div>
+  <div>
+    <div class="ic" style="margin-bottom:14px">
+      <h3>Vercel — Dashboard Next.js</h3>
+      <p>Interface de aprovação para Mayron e Cassiano. Supabase Auth. Deploy automático via GitHub. Gratuito.<br><br>
+      Fila de aprovações · Observabilidade do agente · Versionamento de prompts/thresholds · Validação de experimentos C7</p>
+    </div>
+    <div class="ic" style="margin-bottom:14px">
+      <h3>Segurança de infraestrutura</h3>
+      <ul>
+        <li>Nenhuma credencial hardcoded no código</li>
+        <li>Railway Secrets criptografados em repouso</li>
+        <li>Repositório GitHub privado</li>
+        <li>Supabase RLS em todas as tabelas</li>
+        <li>Dashboard autenticado (email + senha)</li>
+        <li>Logs do Railway sem valores de tokens</li>
+      </ul>
+    </div>
+    <div class="ic">
+      <h3>Claude Code para construir</h3>
+      <ul>
+        <li><code>claude "scaffold agent with supabase and railway"</code></li>
+        <li><code>claude "write rule_validator with budget gate"</code></li>
+        <li><code>claude "write tests for trust_layer and executor"</code></li>
+        <li><code>claude "create approval dashboard in nextjs"</code></li>
+        <li>CI via GitHub Actions — bloqueia merge se testes falham</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     TAB 7 — ROADMAP
+═══════════════════════════════════════════════════════ -->
+<div id="panel-roadmap" class="panel">
+<p class="stitle">Roadmap — até 31 de maio</p>
+<div class="g3">
+  <div class="ph ph1">
+    <h3>Fase 1 — Fundação</h3>
+    <div class="dt">5 a 12 de maio</div>
+    <ul>
+      <li>Auditar Google Tag + Meta Pixel (SKU + valor)</li>
+      <li>Padronizar nomenclatura de campanhas</li>
+      <li>Configurar UTMs padronizados</li>
+      <li>Classificar produtos: físico vs encomenda</li>
+      <li>Configurar webhook pull do Orbita</li>
+      <li>Integrar CRM com UTM</li>
+      <li>Criar schema Supabase completo (incl. agent_versions e execution_log)</li>
+      <li>Configurar tokens em Railway env vars</li>
+      <li>Configurar trust_layer + agent_state</li>
+      <li>Scaffold Railway + GitHub + CI</li>
+    </ul>
+  </div>
+  <div class="ph ph2">
+    <h3>Fase 2 — Nível 1</h3>
+    <div class="dt">13 a 22 de maio</div>
+    <ul>
+      <li>collector.py com todas as 6 fontes</li>
+      <li>trust_layer.py com 7 checks</li>
+      <li>Suite de testes trust_layer passando no CI</li>
+      <li>Dashboard básico Next.js no Vercel</li>
+      <li>stock_watcher.py ativo</li>
+      <li>notifier.py com alertas</li>
+      <li>Validação com Cassiano — dados OK?</li>
+      <li>Ajustes de tracking</li>
+    </ul>
+  </div>
+  <div class="ph ph3">
+    <h3>Fase 3 — Nível 2</h3>
+    <div class="dt">23 a 31 de maio</div>
+    <ul>
+      <li>decision_engine.py com Claude API</li>
+      <li>rule_validator.py com budget gate</li>
+      <li>prioritizer.py com impact_score</li>
+      <li>executor.py com execution_log</li>
+      <li>Suite de testes executor + rollback no CI</li>
+      <li>Dashboard completo de aprovação</li>
+      <li>Versionamento de prompts e thresholds ativo</li>
+      <li>Primeiro ciclo completo end-to-end</li>
+    </ul>
+  </div>
+</div>
+
+<p class="stitle" style="margin-top:16px">Critério de sucesso — 31 de maio</p>
+<div class="alert-box alert-green">
+  <ul style="list-style:none;padding:0;font-size:12px;line-height:1.8">
+    <li>✓ Data Trust Layer verde — dados confiáveis</li>
+    <li>✓ Budget gate programático testado — Mayron sempre aprovando budget</li>
+    <li>✓ Suite de testes trust_layer, executor e rollback passando no CI</li>
+    <li>✓ Tabela agent_versions ativa — prompts e thresholds versionados</li>
+    <li>✓ Tokens em Railway env vars — nenhum hardcoded</li>
+    <li>✓ Fila de aprovação funcionando e processada diariamente</li>
+    <li>✓ Estrutura de experimento (C7) pronta para Fase 4</li>
+    <li style="margin-top:8px;color:#3B6D11"><strong>Não é: o agente estar rodando. É: ROAS subiu, CPL caiu, time gasta menos tempo manual.</strong></li>
+  </ul>
+</div>
+</div>
+
+</div><!-- end main -->
+
+<footer>
+  iBob Motores Elétricos e Automação Industrial — Caxias do Sul, RS &nbsp;·&nbsp; Blueprint v3.2 &nbsp;·&nbsp;
+  Railway · Supabase · Claude API · Validação determinística · Testes CI · Maio 2025 · Confidencial
+</footer>
+
+<script>
+  function showTab(id) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+  const tt = document.getElementById('tt');
+  document.querySelectorAll('.nt').forEach(el => {
+    el.addEventListener('mouseenter', () => { tt.textContent = el.dataset.tip; tt.style.opacity = '1'; });
+    el.addEventListener('mousemove', e => {
+      let x = e.clientX + 14, y = e.clientY + 14;
+      if (x + 310 > window.innerWidth) x = e.clientX - 314;
+      if (y + 70 > window.innerHeight) y = e.clientY - 68;
+      tt.style.left = x + 'px'; tt.style.top = y + 'px';
+    });
+    el.addEventListener('mouseleave', () => { tt.style.opacity = '0'; });
+  });
+</script>
+</body>
+</html>

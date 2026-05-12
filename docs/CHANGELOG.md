@@ -21,3 +21,5 @@
 - Registrada observacao de auditoria npm sem aplicar correcao forcada.
 - Criada estrategia de produto tratando a iBob como piloto/MVP para futuro produto escalavel.
 - Criado checklist operacional para o primeiro deploy na Hostinger.
+- Importado pacote da Claude em `docs/claude-blueprint/`.
+- Criada integracao do blueprint em `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.

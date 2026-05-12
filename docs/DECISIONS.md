@@ -26,6 +26,7 @@ Aceita.
 - Fluxo de CI/CD.
 - Estrategia de ambientes: local, staging e producao.
 - Modelo de multi-cliente: single-tenant inicial, multi-tenant futuro ou instancias isoladas.
+- Provedor final dos workers do agente, caso sejam separados da Hostinger.
 
 ## 2026-05-11 - Git local
 
@@ -101,6 +102,28 @@ Preparar o projeto para deploy supervisionado via Hostinger Node.js Web Apps, pr
 Motivo:
 
 A documentacao atual da Hostinger informa suporte a Next.js em Node.js Web Apps, com deploy por GitHub ou upload de arquivos.
+
+Status:
+
+Aceita.
+
+## 2026-05-12 - Blueprint Claude como plano funcional
+
+Contexto:
+
+O usuario forneceu o pacote `iBob_Projeto_Agente_Trafego.zip`, criado anteriormente pela Claude, contendo blueprint DOCX, arquitetura HTML interativa e guia HTML passo a passo.
+
+Decisao:
+
+Importar o pacote em `docs/claude-blueprint/` e adotar o blueprint como referencia funcional e arquitetural do agente de trafego pago.
+
+Adaptacao:
+
+O blueprint original sugere Supabase, Railway e Vercel. A decisao atual do projeto usa Hostinger como hospedagem inicial do app Next.js. Supabase e workers separados continuam como opcoes previstas para as proximas fases.
+
+Motivo:
+
+Preservar o planejamento ja validado, evitar retrabalho e manter uma rota clara para transformar o piloto iBob em produto vendavel.
 
 Status:
 
