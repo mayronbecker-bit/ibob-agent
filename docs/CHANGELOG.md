@@ -28,3 +28,4 @@
 - Criado script e pacote local para deploy por ZIP na Hostinger quando o import Git nao detectar monorepo.
 - Ajustado empacotamento do ZIP da Hostinger para usar `tar.exe` e evitar erro de permissao em Linux.
 - Ajustado novamente o ZIP da Hostinger para manter caminhos na raiz e permissoes Unix explicitas.
+- Ajustado ZIP da Hostinger para conter apenas entradas de arquivos, com `package.json` como primeira entrada, e validado build apos extracao temporaria.

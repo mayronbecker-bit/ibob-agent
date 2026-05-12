@@ -91,7 +91,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-hostinger-zip.ps1
 
 Observacao importante:
 
-O ZIP deve ser gerado pelo script acima. Nao use `Compress-Archive` manualmente, pois ele pode gerar metadados de permissao que causam erro de leitura em pastas como `src/components` durante o build na Hostinger. Tambem nao use um ZIP que coloque todos os caminhos com prefixo `./`, porque o detector da Hostinger pode nao reconhecer a estrutura do Next.js.
+O ZIP deve ser gerado pelo script acima. Nao use `Compress-Archive` manualmente, pois ele pode gerar metadados de permissao que causam erro de leitura em pastas como `src/components` durante o build na Hostinger. Tambem nao use um ZIP que coloque todos os caminhos com prefixo `./` ou entradas explicitas de diretorio antes de `package.json`, porque o detector da Hostinger pode nao reconhecer a estrutura do Next.js.
 
 ## Secrets
 

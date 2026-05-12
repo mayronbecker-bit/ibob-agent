@@ -27,6 +27,7 @@ $itemsToCopy = @(
   "package.json",
   "package-lock.json",
   "next.config.ts",
+  "next-env.d.ts",
   "tsconfig.json",
   "postcss.config.mjs",
   "eslint.config.mjs",
@@ -67,19 +68,25 @@ function Get-SignedExternalAttributes {
 }
 
 $fileAttributes = Get-SignedExternalAttributes ([Convert]::ToUInt32("81A40000", 16)) # 100644
-$directoryAttributes = Get-SignedExternalAttributes ([Convert]::ToUInt32("41ED0010", 16)) # 040755 + DOS directory flag
-
 $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.ZipArchiveMode]::Create)
 try {
-  $directories = Get-ChildItem -LiteralPath $staging -Recurse -Directory | Sort-Object FullName
-  foreach ($directory in $directories) {
-    $entryName = (ConvertTo-ZipPath $staging $directory.FullName).TrimEnd("/") + "/"
-    $entry = $zip.CreateEntry($entryName, [System.IO.Compression.CompressionLevel]::Optimal)
-    $entry.LastWriteTime = $directory.LastWriteTime
-    $entry.ExternalAttributes = $directoryAttributes
+  $priorityFiles = @(
+    "package.json",
+    "package-lock.json",
+    "next.config.ts",
+    "tsconfig.json",
+    "postcss.config.mjs",
+    "eslint.config.mjs",
+    "next-env.d.ts"
+  )
+
+  $files = Get-ChildItem -LiteralPath $staging -Recurse -File | Sort-Object {
+    $entryName = ConvertTo-ZipPath $staging $_.FullName
+    $priorityIndex = [Array]::IndexOf($priorityFiles, $entryName)
+    if ($priorityIndex -ge 0) { return "{0:D3}-{1}" -f $priorityIndex, $entryName }
+    return "999-$entryName"
   }
 
-  $files = Get-ChildItem -LiteralPath $staging -Recurse -File | Sort-Object FullName
   foreach ($file in $files) {
     $entryName = ConvertTo-ZipPath $staging $file.FullName
     $entry = $zip.CreateEntry($entryName, [System.IO.Compression.CompressionLevel]::Optimal)
