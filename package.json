@@ -1,0 +1,19 @@
+{
+  "name": "ibob-agent",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Projeto iBob Agent com app Next.js preparado para deploy supervisionado na Hostinger.",
+  "scripts": {
+    "dev": "npm --prefix apps/web run dev",
+    "build": "npm --prefix apps/web run build",
+    "start": "npm --prefix apps/web run start",
+    "lint": "npm --prefix apps/web run lint",
+    "audit:web": "npm --prefix apps/web audit",
+    "hostinger:install": "npm --prefix apps/web ci",
+    "hostinger:build": "npm run hostinger:install && npm --prefix apps/web run build",
+    "hostinger:start": "npm --prefix apps/web run start"
+  },
+  "engines": {
+    "node": ">=24 <25"
+  }
+}
