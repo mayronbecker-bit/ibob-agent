@@ -31,3 +31,4 @@
 - Ajustado ZIP da Hostinger para conter apenas entradas de arquivos, com `package.json` como primeira entrada, e validado build apos extracao temporaria.
 - Publicado MVP em `adsia.ia.br` e validado status HTTP 200.
 - Implementada fundacao de dados local com contratos de dominio, configuracao da iBob e pagina `/settings`.
+- Publicada atualizacao da fundacao de dados em `https://adsia.ia.br`, incluindo rota `/settings`.

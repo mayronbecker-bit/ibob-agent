@@ -122,3 +122,19 @@ Validado em 2026-05-12:
 - `npm.cmd run hostinger:build`
 
 Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o servidor dev antes de repetir o comando.
+
+## Deploys realizados
+
+- 2026-05-16: publicado MVP com fundacao de dados local e rota `/settings` em `https://adsia.ia.br`.
+
+Validacao publica:
+
+- `/`
+- `/data-trust`
+- `/proposals`
+- `/approvals`
+- `/memory`
+- `/roadmap`
+- `/settings`
+
+Todas as rotas responderam HTTP 200 apos o deploy.
