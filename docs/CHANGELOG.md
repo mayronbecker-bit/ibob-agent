@@ -35,3 +35,4 @@
 - Implementado controle de acesso temporario por HTTP Basic Auth via Next.js Proxy.
 - Publicada versao protegida em `https://adsia.ia.br`; acesso sem credenciais retorna HTTP 401.
 - Substituido o Basic Auth via Next.js Proxy por servidor Node customizado para corrigir 503 na Hostinger.
+- Validada a reimplantacao v8 na Hostinger com HTTP 401 sem credenciais em `/` e `/settings`.

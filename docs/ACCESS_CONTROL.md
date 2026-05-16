@@ -44,6 +44,7 @@ Validado em 2026-05-16:
 
 - A primeira versao protegida chegou a retornar HTTP 401, mas depois apresentou HTTP 503 na Hostinger.
 - A correcao v8 moveu a protecao para `apps/web/server.js` para usar variaveis de ambiente em runtime.
+- A v8 foi reimplantada e validada em `https://adsia.ia.br/` e `https://adsia.ia.br/settings`: ambas as rotas retornam HTTP 401 sem credenciais, com `WWW-Authenticate: Basic realm="iBob Agent"`.
 
 ## Escopo
 
