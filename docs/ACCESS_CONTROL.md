@@ -36,6 +36,13 @@ Nao colocar usuario/senha reais em arquivos do repositorio.
 - Com usuario/senha incorretos, o app responde `401 Authentication required`.
 - Com usuario/senha corretos, o dashboard carrega normalmente.
 
+## Status de publicacao
+
+Validado em 2026-05-16:
+
+- `https://adsia.ia.br/` sem credenciais retorna HTTP 401.
+- `https://adsia.ia.br/settings` sem credenciais retorna HTTP 401.
+
 ## Escopo
 
 Protege as rotas do dashboard, incluindo:
@@ -61,4 +68,3 @@ Na fase de fundacao real de dados, substituir por:
 - Roles: admin, approver, viewer.
 - Row Level Security por `clientId`.
 - Logs de acesso e auditoria.
-

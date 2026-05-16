@@ -33,3 +33,4 @@
 - Implementada fundacao de dados local com contratos de dominio, configuracao da iBob e pagina `/settings`.
 - Publicada atualizacao da fundacao de dados em `https://adsia.ia.br`, incluindo rota `/settings`.
 - Implementado controle de acesso temporario por HTTP Basic Auth via Next.js Proxy.
+- Publicada versao protegida em `https://adsia.ia.br`; acesso sem credenciais retorna HTTP 401.

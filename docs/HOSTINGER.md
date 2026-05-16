@@ -140,6 +140,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 ## Deploys realizados
 
 - 2026-05-16: publicado MVP com fundacao de dados local e rota `/settings` em `https://adsia.ia.br`.
+- 2026-05-16: publicada versao com HTTP Basic Auth; acesso anonimo retorna HTTP 401.
 
 Validacao publica:
 
