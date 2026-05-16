@@ -2,6 +2,7 @@ import type { ReactNode } from 'react';
 import { activeClient } from '@/config';
 import { mockAgentVersion, mockUsers, dataTrustState } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
+import { getSupabasePublicEnv } from '@/lib/supabase/env';
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
@@ -25,6 +26,7 @@ function SectionTitle({ children }: { children: ReactNode }) {
 export default function SettingsPage() {
   const sourcesOk = dataTrustState.sources.filter((s) => s.status === 'green').length;
   const sourcesTotal = dataTrustState.sources.length;
+  const supabaseEnv = getSupabasePublicEnv();
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-8">
@@ -145,6 +147,24 @@ export default function SettingsPage() {
               />
             </Field>
           ))}
+        </dl>
+      </div>
+
+      {/* Auth/database foundation */}
+      <SectionTitle>Banco e autenticacao</SectionTitle>
+      <div className="rounded-xl border border-[#d7ddd2] bg-white px-6 shadow-sm">
+        <dl className="divide-y divide-[#edf0eb]">
+          <Field label="Supabase">
+            <Badge variant={supabaseEnv.configured ? 'blue' : 'gray'}>
+              {supabaseEnv.configured ? 'Configurado' : 'Pendente'}
+            </Badge>
+          </Field>
+          <Field label="Schema">
+            <code className="rounded bg-[#f0f5f1] px-1.5 py-0.5 text-xs font-mono">
+              infra/supabase/migrations/20260516170000_initial_platform_auth.sql
+            </code>
+          </Field>
+          <Field label="Isolamento">RLS por cliente, roles owner/admin/approver/viewer</Field>
         </dl>
       </div>
 

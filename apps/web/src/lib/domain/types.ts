@@ -21,7 +21,7 @@ export interface Client {
 
 // ===== User =====
 
-export type UserRole = 'admin' | 'approver' | 'viewer';
+export type UserRole = 'owner' | 'admin' | 'approver' | 'viewer';
 
 export interface User {
   id: string;

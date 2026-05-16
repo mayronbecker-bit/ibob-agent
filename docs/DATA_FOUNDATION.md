@@ -134,6 +134,8 @@ O campo `clientId` em todos os tipos de domínio existe especificamente para hab
 
 ## Estado atual vs. planejado
 
+Atualizacao em 2026-05-16: a fundacao Supabase foi preparada com dependencias, helpers SSR e schema SQL versionado em `infra/supabase/migrations/20260516170000_initial_platform_auth.sql`. A migration ainda nao foi aplicada em ambiente real.
+
 | Camada | Estado atual | Quando migrar |
 |---|---|---|
 | Tipos | ✅ Contratos completos | — |

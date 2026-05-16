@@ -225,3 +225,28 @@ Consequencias:
 Status:
 
 Aceita.
+
+## 2026-05-16 - Supabase como fundacao de Auth e banco
+
+Contexto:
+
+Com o piloto publicado e protegido, o proximo passo e substituir mocks por dados reais e preparar o produto para multiplos clientes.
+
+Decisao:
+
+Adotar Supabase como fundacao inicial de autenticacao, banco Postgres e Row Level Security, mantendo Hostinger para hospedar o app Next.js.
+
+Motivo:
+
+Supabase entrega Auth, Postgres, policies de RLS e fluxo de migrations com baixa friccao para o MVP, sem prender o app a um unico cliente.
+
+Consequencias:
+
+- O Basic Auth da Hostinger continua temporario ate o login real ser validado.
+- O schema inicial fica versionado em `infra/supabase/migrations`.
+- Todos os dados persistentes devem carregar `client_id` para isolamento por cliente.
+- Secrets do Supabase ficam apenas no ambiente local/Hostinger, nunca no Git.
+
+Status:
+
+Aceita.

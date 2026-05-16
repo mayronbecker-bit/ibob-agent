@@ -59,6 +59,7 @@ Os comandos do root encaminham para `apps/web`.
 - [Checklist do primeiro deploy](docs/FIRST_DEPLOY_CHECKLIST.md)
 - [MVP local](docs/LOCAL_MVP.md)
 - [Fundacao de dados](docs/DATA_FOUNDATION.md)
+- [Autenticacao e banco de dados](docs/AUTH_AND_DATABASE.md)
 - [Controle de acesso](docs/ACCESS_CONTROL.md)
 - [Integracao do blueprint da Claude](docs/CLAUDE_BLUEPRINT_INTEGRATION.md)
 - [Estrategia de produto](docs/PRODUCT_STRATEGY.md)
