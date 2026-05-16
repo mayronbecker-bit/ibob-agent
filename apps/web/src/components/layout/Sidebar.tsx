@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/approvals', label: 'Aprovação Humana' },
   { href: '/memory', label: 'Memória de Decisão' },
   { href: '/roadmap', label: 'Roadmap' },
+  { href: '/settings', label: 'Configurações' },
 ];
 
 function NavIcon({ href }: { href: string }) {
@@ -72,6 +73,17 @@ function NavIcon({ href }: { href: string }) {
         <path
           fillRule="evenodd"
           d="M12 1.586l-4 4v12.828l4-4V1.586zM3.707 3.293A1 1 0 002 4v10a1 1 0 00.293.707L6 18.414V5.586L3.707 3.293zM17.707 5.293L14 1.586v12.828l2.293 2.293A1 1 0 0018 16V6a1 1 0 00-.293-.707z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/settings') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
           clipRule="evenodd"
         />
       </svg>

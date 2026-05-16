@@ -20,6 +20,7 @@ Rotas criadas:
 - `/approvals`: fila de aprovacao humana.
 - `/memory`: memoria de decisao.
 - `/roadmap`: plano de evolucao.
+- `/settings`: configuracao ativa do cliente piloto e modo do agente.
 
 ## O que funciona localmente
 
@@ -31,6 +32,8 @@ Rotas criadas:
 - Historico de aprovacoes.
 - Memoria de decisao com aprendizados.
 - Roadmap do piloto iBob ate produto escalavel.
+- Configuracao do cliente iBob separada do core do produto.
+- Contratos de dominio preparados para futura migracao para Supabase.
 - Layout responsivo para desktop e telas menores.
 
 ## O que ainda e simulado
@@ -44,6 +47,22 @@ Rotas criadas:
 - Claude API.
 - Execution Engine.
 - Rollback real.
+
+## Fundacao de dados
+
+Os tipos canonicos ficam em:
+
+```text
+apps/web/src/lib/domain/types.ts
+```
+
+A configuracao especifica da iBob fica em:
+
+```text
+apps/web/src/config/clients/ibob.ts
+```
+
+Detalhes: `docs/DATA_FOUNDATION.md`.
 
 ## Regra operacional
 
@@ -77,6 +96,18 @@ Depois abrir:
 http://localhost:3000
 ```
 
+Rotas principais:
+
+```text
+http://localhost:3000/
+http://localhost:3000/data-trust
+http://localhost:3000/proposals
+http://localhost:3000/approvals
+http://localhost:3000/memory
+http://localhost:3000/roadmap
+http://localhost:3000/settings
+```
+
 ## Validacoes
 
 Antes de qualquer deploy:
@@ -85,4 +116,3 @@ Antes de qualquer deploy:
 npm.cmd run lint
 npm.cmd run build
 ```
-

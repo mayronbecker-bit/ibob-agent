@@ -1,81 +1,59 @@
-export type AgentStatus = 'green' | 'yellow' | 'red';
+/**
+ * Re-exports all domain types from the canonical source.
+ * Import from here for backward compatibility; prefer
+ * importing directly from '@/lib/domain/types' in new files.
+ */
+export type {
+  // Shared primitives
+  AgentStatus,
+  Channel,
+  MetricChannel,
 
-export type Channel = 'google_ads' | 'meta_ads';
+  // Client / Tenant
+  ClientStatus,
+  ClientPlan,
+  Client,
 
-export type ProposalType =
-  | 'budget_increase'
-  | 'budget_decrease'
-  | 'bid_adjustment'
-  | 'audience_expansion'
-  | 'campaign_pause'
-  | 'creative_rotation';
+  // User
+  UserRole,
+  User,
 
-export type ProposalStatus = 'pending' | 'approved' | 'rejected' | 'executed' | 'deferred';
+  // Data Source
+  DataSourceType,
+  DataSource,
+  DataTrustState,
 
-export type RiskLevel = 'low' | 'medium' | 'high';
+  // Raw Metric
+  RawMetric,
 
-export type RoadmapStageStatus = 'done' | 'in_progress' | 'planned';
+  // Agent
+  AgentMode,
+  AgentState,
+  AgentVersion,
 
-export interface DataSource {
-  id: string;
-  name: string;
-  status: AgentStatus;
-  lastSync: string;
-  issue?: string;
-}
+  // Proposal
+  ProposalType,
+  ProposalStatus,
+  RiskLevel,
+  Proposal,
 
-export interface DataTrustState {
-  overallStatus: AgentStatus;
-  checkedAt: string;
-  sources: DataSource[];
-  blockingReason?: string;
-}
+  // Approval
+  ApprovalDecision,
+  Approval,
+  ApprovalRecord,
 
-export interface Proposal {
-  id: string;
-  title: string;
-  channel: Channel;
-  type: ProposalType;
-  reasoning: string;
-  expectedImpact: string;
-  status: ProposalStatus;
-  riskLevel: RiskLevel;
-  ruleValidatorPassed: boolean;
-  ruleValidatorNotes?: string;
-  createdAt: string;
-  budgetDeltaBrl?: number;
-}
+  // Decision Memory
+  DecisionMemory,
+  DecisionMemoryEntry,
 
-export interface ApprovalRecord {
-  proposalId: string;
-  proposalTitle: string;
-  approver: string;
-  decision: 'approved' | 'rejected' | 'deferred';
-  justification: string;
-  decidedAt: string;
-}
+  // Execution
+  ExecutionResult,
+  ExecutionLog,
 
-export interface DecisionMemoryEntry {
-  id: string;
-  proposalTitle: string;
-  channel: Channel;
-  decision: 'approved' | 'rejected';
-  outcome: string;
-  impactMeasured?: string;
-  learning: string;
-  loggedAt: string;
-}
+  // Roadmap
+  RoadmapStageStatus,
+  RoadmapStage,
 
-export interface RoadmapStage {
-  number: number;
-  title: string;
-  status: RoadmapStageStatus;
-  description: string;
-}
-
-export interface OverviewMetric {
-  label: string;
-  value: string;
-  trend?: string;
-  trendUp?: boolean;
-}
+  // Dashboard
+  OverviewMetric,
+} from '@/lib/domain/types';

@@ -18,6 +18,7 @@ Este documento registra como preparar o projeto localmente.
 - Cloud alvo: Hostinger.
 - Blueprint funcional: `docs/CLAUDE_BLUEPRINT_INTEGRATION.md`.
 - MVP local: `docs/LOCAL_MVP.md`.
+- Fundacao de dados: `docs/DATA_FOUNDATION.md`.
 
 ## Ambiente local
 
@@ -64,6 +65,7 @@ Rotas locais esperadas:
 - `http://localhost:3000/approvals`
 - `http://localhost:3000/memory`
 - `http://localhost:3000/roadmap`
+- `http://localhost:3000/settings`
 
 ## Auditoria de dependencias
 

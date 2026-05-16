@@ -152,3 +152,28 @@ Consequencias:
 Status:
 
 Aceita.
+
+## 2026-05-16 - Fundacao de dados local
+
+Contexto:
+
+Depois do MVP publicado, o proximo passo foi preparar a base para transformar os mocks em dados reais sem prender o produto apenas a iBob.
+
+Decisao:
+
+Criar contratos canonicos de dominio em `apps/web/src/lib/domain/types.ts` e separar a configuracao especifica da iBob em `apps/web/src/config/clients/ibob.ts`.
+
+Motivo:
+
+Permitir migracao futura para Supabase, Row Level Security, multi-cliente e auditoria sem reescrever as telas do dashboard.
+
+Consequencias:
+
+- O MVP continua usando dados mockados.
+- Cada entidade persistente passa a ter `clientId` para isolamento futuro por cliente.
+- A rota `/settings` mostra a configuracao ativa do piloto e reforca o modo `DRY_RUN`.
+- Supabase ainda nao foi integrado; esta decisao apenas prepara o contrato.
+
+Status:
+
+Aceita.

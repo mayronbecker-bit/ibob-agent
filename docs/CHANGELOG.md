@@ -29,3 +29,5 @@
 - Ajustado empacotamento do ZIP da Hostinger para usar `tar.exe` e evitar erro de permissao em Linux.
 - Ajustado novamente o ZIP da Hostinger para manter caminhos na raiz e permissoes Unix explicitas.
 - Ajustado ZIP da Hostinger para conter apenas entradas de arquivos, com `package.json` como primeira entrada, e validado build apos extracao temporaria.
+- Publicado MVP em `adsia.ia.br` e validado status HTTP 200.
+- Implementada fundacao de dados local com contratos de dominio, configuracao da iBob e pagina `/settings`.

@@ -1,25 +1,78 @@
 import type {
+  Client,
+  User,
+  AgentVersion,
+  AgentState,
   DataTrustState,
   Proposal,
-  ApprovalRecord,
-  DecisionMemoryEntry,
+  Approval,
+  DecisionMemory,
   RoadmapStage,
   OverviewMetric,
-} from '@/types';
+} from '@/lib/domain/types';
+
+// ── Active client reference ───────────────────────────────────────────────────
+const CLIENT_ID = 'client-ibob';
+
+// ── Client & users ────────────────────────────────────────────────────────────
+
+export const mockClient: Client = {
+  id: CLIENT_ID,
+  name: 'iBob',
+  slug: 'ibob',
+  status: 'active',
+  plan: 'pilot',
+  createdAt: '2026-05-12T00:00:00-03:00',
+};
+
+export const mockUsers: User[] = [
+  {
+    id: 'user-mayron',
+    clientId: CLIENT_ID,
+    name: 'Mayron',
+    email: 'mayron.becker@gmail.com',
+    role: 'admin',
+  },
+  {
+    id: 'user-cassiano',
+    clientId: CLIENT_ID,
+    name: 'Cassiano',
+    email: 'cassiano@ibob.com.br',
+    role: 'approver',
+  },
+];
+
+// ── Agent version ─────────────────────────────────────────────────────────────
+
+export const mockAgentVersion: AgentVersion = {
+  version: '0.1.0',
+  releasedAt: '2026-05-12T00:00:00-03:00',
+  promptVersion: 'v1.0',
+  thresholdVersion: 'v1.0',
+  changelog: 'MVP local — dados mockados, sem integrações reais, DRY_RUN ativo.',
+  isActive: true,
+};
+
+// ── Data Trust State ──────────────────────────────────────────────────────────
 
 export const dataTrustState: DataTrustState = {
+  clientId: CLIENT_ID,
   overallStatus: 'yellow',
   checkedAt: '2026-05-12T14:30:00-03:00',
   sources: [
     {
       id: 'google-ads',
+      clientId: CLIENT_ID,
       name: 'Google Ads API',
+      type: 'google_ads',
       status: 'green',
       lastSync: '2026-05-12T14:18:00-03:00',
     },
     {
       id: 'meta-ads',
+      clientId: CLIENT_ID,
       name: 'Meta Marketing API',
+      type: 'meta_ads',
       status: 'yellow',
       lastSync: '2026-05-12T12:15:00-03:00',
       issue:
@@ -27,19 +80,25 @@ export const dataTrustState: DataTrustState = {
     },
     {
       id: 'ga4',
+      clientId: CLIENT_ID,
       name: 'GA4 / Analytics',
+      type: 'ga4',
       status: 'green',
       lastSync: '2026-05-12T14:25:00-03:00',
     },
     {
       id: 'orbita',
+      clientId: CLIENT_ID,
       name: 'Orbita (margem)',
+      type: 'custom',
       status: 'green',
       lastSync: '2026-05-12T13:30:00-03:00',
     },
     {
       id: 'crm',
+      clientId: CLIENT_ID,
       name: 'CRM / Leads',
+      type: 'crm',
       status: 'green',
       lastSync: '2026-05-12T14:00:00-03:00',
     },
@@ -48,9 +107,23 @@ export const dataTrustState: DataTrustState = {
     'Meta Ads com dados possivelmente desatualizados. Propostas que dependem de Meta serão sinalizadas com aviso.',
 };
 
+// ── Agent State (derived from Data Trust State) ───────────────────────────────
+
+export const mockAgentState: AgentState = {
+  clientId: CLIENT_ID,
+  status: dataTrustState.overallStatus,
+  mode: 'DRY_RUN',
+  checkedAt: dataTrustState.checkedAt,
+  blockingReason: dataTrustState.blockingReason,
+  agentVersion: mockAgentVersion.version,
+};
+
+// ── Proposals ─────────────────────────────────────────────────────────────────
+
 export const proposals: Proposal[] = [
   {
     id: 'prop-001',
+    clientId: CLIENT_ID,
     title: 'Aumentar budget Google Search – Marca',
     channel: 'google_ads',
     type: 'budget_increase',
@@ -63,9 +136,12 @@ export const proposals: Proposal[] = [
     ruleValidatorPassed: true,
     createdAt: '2026-05-12T08:00:00-03:00',
     budgetDeltaBrl: 280,
+    agentVersion: '0.1.0',
+    promptVersion: 'v1.0',
   },
   {
     id: 'prop-002',
+    clientId: CLIENT_ID,
     title: 'Reduzir bid máx CPA – Campanha Frio',
     channel: 'google_ads',
     type: 'bid_adjustment',
@@ -79,9 +155,12 @@ export const proposals: Proposal[] = [
     ruleValidatorNotes:
       'Volume abaixo do limiar mínimo de 30 conversões/semana. Ajuste pode impactar o aprendizado da campanha.',
     createdAt: '2026-05-12T08:05:00-03:00',
+    agentVersion: '0.1.0',
+    promptVersion: 'v1.0',
   },
   {
     id: 'prop-003',
+    clientId: CLIENT_ID,
     title: 'Pausar anúncio baixo desempenho – Meta Reach',
     channel: 'meta_ads',
     type: 'campaign_pause',
@@ -93,9 +172,12 @@ export const proposals: Proposal[] = [
     riskLevel: 'low',
     ruleValidatorPassed: true,
     createdAt: '2026-05-11T10:00:00-03:00',
+    agentVersion: '0.1.0',
+    promptVersion: 'v1.0',
   },
   {
     id: 'prop-004',
+    clientId: CLIENT_ID,
     title: 'Expandir audiência Lookalike 3% – Meta',
     channel: 'meta_ads',
     type: 'audience_expansion',
@@ -109,9 +191,12 @@ export const proposals: Proposal[] = [
     ruleValidatorNotes:
       'Meta Ads com dados desatualizados (>2h). Não é possível validar a performance atual do adset de forma confiável.',
     createdAt: '2026-05-11T14:00:00-03:00',
+    agentVersion: '0.1.0',
+    promptVersion: 'v1.0',
   },
   {
     id: 'prop-005',
+    clientId: CLIENT_ID,
     title: 'Rotação de criativos Google Display',
     channel: 'google_ads',
     type: 'creative_rotation',
@@ -123,11 +208,17 @@ export const proposals: Proposal[] = [
     riskLevel: 'low',
     ruleValidatorPassed: true,
     createdAt: '2026-05-10T09:00:00-03:00',
+    agentVersion: '0.1.0',
+    promptVersion: 'v1.0',
   },
 ];
 
-export const approvalHistory: ApprovalRecord[] = [
+// ── Approval history ──────────────────────────────────────────────────────────
+
+export const approvalHistory: Approval[] = [
   {
+    id: 'appr-001',
+    clientId: CLIENT_ID,
     proposalId: 'prop-003',
     proposalTitle: 'Pausar anúncio baixo desempenho – Meta Reach',
     approver: 'Mayron',
@@ -137,6 +228,8 @@ export const approvalHistory: ApprovalRecord[] = [
     decidedAt: '2026-05-11T11:20:00-03:00',
   },
   {
+    id: 'appr-002',
+    clientId: CLIENT_ID,
     proposalId: 'prop-004',
     proposalTitle: 'Expandir audiência Lookalike 3% – Meta',
     approver: 'Cassiano',
@@ -146,6 +239,8 @@ export const approvalHistory: ApprovalRecord[] = [
     decidedAt: '2026-05-11T15:10:00-03:00',
   },
   {
+    id: 'appr-003',
+    clientId: CLIENT_ID,
     proposalId: 'prop-005',
     proposalTitle: 'Rotação de criativos Google Display',
     approver: 'Mayron',
@@ -156,9 +251,12 @@ export const approvalHistory: ApprovalRecord[] = [
   },
 ];
 
-export const decisionMemory: DecisionMemoryEntry[] = [
+// ── Decision memory ───────────────────────────────────────────────────────────
+
+export const decisionMemory: DecisionMemory[] = [
   {
     id: 'mem-001',
+    clientId: CLIENT_ID,
     proposalTitle: 'Aumentar budget Google Search – Marca (anterior)',
     channel: 'google_ads',
     decision: 'approved',
@@ -170,6 +268,7 @@ export const decisionMemory: DecisionMemoryEntry[] = [
   },
   {
     id: 'mem-002',
+    clientId: CLIENT_ID,
     proposalTitle: 'Testar audiência Interesse "Investimentos" – Meta',
     channel: 'meta_ads',
     decision: 'rejected',
@@ -181,6 +280,7 @@ export const decisionMemory: DecisionMemoryEntry[] = [
   },
   {
     id: 'mem-003',
+    clientId: CLIENT_ID,
     proposalTitle: 'Reduzir budget Meta – Campanha Cold',
     channel: 'meta_ads',
     decision: 'approved',
@@ -193,6 +293,7 @@ export const decisionMemory: DecisionMemoryEntry[] = [
   },
   {
     id: 'mem-004',
+    clientId: CLIENT_ID,
     proposalTitle: 'Aumentar frequência de criativos Google Search',
     channel: 'google_ads',
     decision: 'rejected',
@@ -203,6 +304,8 @@ export const decisionMemory: DecisionMemoryEntry[] = [
     loggedAt: '2026-04-28T14:30:00-03:00',
   },
 ];
+
+// ── Roadmap ───────────────────────────────────────────────────────────────────
 
 export const roadmapStages: RoadmapStage[] = [
   {
@@ -283,6 +386,8 @@ export const roadmapStages: RoadmapStage[] = [
       'Generalizar configurações da iBob. Onboarding de novos clientes. Definir modelo de cobrança. Avaliar multi-tenant ou instâncias isoladas.',
   },
 ];
+
+// ── Overview metrics ──────────────────────────────────────────────────────────
 
 export const overviewMetrics: OverviewMetric[] = [
   { label: 'ROAS médio', value: '4.2×', trend: '+0.3 vs semana anterior', trendUp: true },
