@@ -37,3 +37,4 @@
 - Substituido o Basic Auth via Next.js Proxy por servidor Node customizado para corrigir 503 na Hostinger.
 - Validada a reimplantacao v8 na Hostinger com HTTP 401 sem credenciais em `/` e `/settings`.
 - Preparada fundacao Supabase com dependencias, helpers SSR, migration inicial, RLS por cliente e documentacao operacional.
+- Aplicada a migration inicial no projeto Supabase `euedumaappfxqabgdizi` e validado historico remoto.

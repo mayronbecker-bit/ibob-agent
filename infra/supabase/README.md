@@ -6,7 +6,7 @@ Fundacao de banco e autenticacao para transformar o piloto iBob em produto multi
 
 - Migration inicial criada em `migrations/20260516170000_initial_platform_auth.sql`.
 - CLI local inicializada em `config.toml`.
-- Ainda nao aplicada em producao.
+- Aplicada no projeto Supabase `euedumaappfxqabgdizi` em 2026-05-16.
 - Nenhum segredo do Supabase deve ser salvo no repositorio.
 
 ## Variaveis
@@ -23,7 +23,7 @@ SUPABASE_SECRET_KEY=
 
 ## Como aplicar a migration
 
-Quando o projeto Supabase existir:
+Quando novas migrations forem criadas:
 
 ```powershell
 npx supabase login
@@ -33,6 +33,15 @@ npx supabase --workdir infra db push
 ```
 
 Antes de aplicar em qualquer ambiente real, revisar o SQL e confirmar com o usuario.
+
+## Historico remoto
+
+Validado em 2026-05-16:
+
+```text
+Local          | Remote
+20260516170000 | 20260516170000
+```
 
 ## Primeiro cliente
 

@@ -125,10 +125,25 @@ Esses comandos nao devem ser executados contra ambiente real sem confirmacao exp
 
 - Dependencias instaladas.
 - Helpers criados.
-- Schema SQL versionado.
+- Schema SQL versionado e aplicado no projeto Supabase `euedumaappfxqabgdizi`.
 - `/settings` mostra se o Supabase esta configurado.
 - Nenhum deploy realizado nesta etapa.
 - Nenhuma chave real configurada.
+
+## Validacao da migration
+
+Validado em 2026-05-16:
+
+```text
+npx.cmd supabase --workdir infra db push
+npx.cmd supabase --workdir infra migration list
+npx.cmd supabase --workdir infra gen types typescript --linked --schema public
+```
+
+Resultado:
+
+- Migration remota `20260516170000` aplicada.
+- Tabelas, enums e funcoes aparecem na geracao de tipos remotos.
 
 ## Proxima etapa tecnica
 
