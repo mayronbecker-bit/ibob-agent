@@ -8,13 +8,15 @@ Proteger o dashboard publicado enquanto o produto ainda nao tem autenticacao com
 
 ## Implementacao atual
 
-O app usa HTTP Basic Auth no `proxy.ts` do Next.js:
+O app usa HTTP Basic Auth no servidor Node customizado:
 
 ```text
-apps/web/src/proxy.ts
+apps/web/server.js
 ```
 
-Essa camada roda antes das paginas e protege as rotas do dashboard.
+Essa camada roda antes das paginas e protege as rotas do dashboard lendo as variaveis de ambiente em runtime.
+
+Observacao: a primeira versao usava `apps/web/src/proxy.ts`, mas ela foi substituida porque a Hostinger retornou 503 apos o deploy protegido, indicando que o proxy do Next nao recebeu as variaveis no momento esperado.
 
 ## Variaveis de ambiente
 
@@ -40,8 +42,8 @@ Nao colocar usuario/senha reais em arquivos do repositorio.
 
 Validado em 2026-05-16:
 
-- `https://adsia.ia.br/` sem credenciais retorna HTTP 401.
-- `https://adsia.ia.br/settings` sem credenciais retorna HTTP 401.
+- A primeira versao protegida chegou a retornar HTTP 401, mas depois apresentou HTTP 503 na Hostinger.
+- A correcao v8 moveu a protecao para `apps/web/server.js` para usar variaveis de ambiente em runtime.
 
 ## Escopo
 
@@ -55,7 +57,7 @@ Protege as rotas do dashboard, incluindo:
 - `/roadmap`
 - `/settings`
 
-Arquivos estaticos do Next.js e imagens publicas sao ignorados pelo proxy para manter o carregamento da interface.
+Arquivos estaticos do Next.js e imagens publicas sao ignorados pelo servidor de autenticacao para manter o carregamento da interface.
 
 ## Evolucao planejada
 

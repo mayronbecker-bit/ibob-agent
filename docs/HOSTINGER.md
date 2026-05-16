@@ -83,6 +83,8 @@ Se o hPanel nao lidar bem com monorepo:
    - Start command: `npm run start`
    - Output directory: `.next`
 
+Na versao protegida, `npm run start` executa `node server.js`. Esse servidor inicia o Next.js e aplica HTTP Basic Auth usando as variaveis configuradas na Hostinger em runtime.
+
 O ZIP pode ser gerado com:
 
 ```powershell
@@ -112,7 +114,7 @@ BASIC_AUTH_USERNAME=<usuario escolhido>
 BASIC_AUTH_PASSWORD=<senha forte escolhida>
 ```
 
-Sem `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD`, a versao protegida bloqueia o acesso em producao com status 503.
+Sem `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD`, a versao protegida bloqueia o acesso em producao com status 503. Se isso acontecer mesmo com as variaveis configuradas, reimplantar usando o ZIP v8 ou posterior, que usa `server.js` em vez do proxy do Next.js.
 
 Detalhes: `docs/ACCESS_CONTROL.md`.
 
@@ -141,6 +143,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 
 - 2026-05-16: publicado MVP com fundacao de dados local e rota `/settings` em `https://adsia.ia.br`.
 - 2026-05-16: publicada versao com HTTP Basic Auth; acesso anonimo retorna HTTP 401.
+- 2026-05-16: corrigida protecao para rodar em `server.js`, evitando 503 causado por variaveis nao disponiveis no proxy do Next.js na Hostinger.
 
 Validacao publica:
 

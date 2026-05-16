@@ -24,6 +24,7 @@ New-Item -ItemType Directory -Force -Path $staging | Out-Null
 $itemsToCopy = @(
   "src",
   "public",
+  "server.js",
   "package.json",
   "package-lock.json",
   "next.config.ts",
@@ -72,6 +73,7 @@ $zip = [System.IO.Compression.ZipFile]::Open($zipPath, [System.IO.Compression.Zi
 try {
   $priorityFiles = @(
     "package.json",
+    "server.js",
     "package-lock.json",
     "next.config.ts",
     "tsconfig.json",

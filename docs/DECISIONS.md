@@ -201,3 +201,27 @@ Consequencias:
 Status:
 
 Aceita.
+
+## 2026-05-16 - Autenticacao temporaria em runtime Node
+
+Contexto:
+
+A versao protegida por `apps/web/src/proxy.ts` chegou a validar HTTP 401 sem credenciais, mas depois a Hostinger passou a retornar HTTP 503 mesmo com variaveis configuradas no painel.
+
+Decisao:
+
+Substituir o proxy do Next.js por `apps/web/server.js`, mantendo HTTP Basic Auth temporario e lendo `BASIC_AUTH_ENABLED`, `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD` em runtime no processo Node.
+
+Motivo:
+
+Reduzir dependencias do runtime especifico do proxy do Next.js na Hostinger e manter a protecao simples enquanto a autenticacao real do produto ainda nao foi implementada.
+
+Consequencias:
+
+- `npm run start` passa a executar `node server.js`.
+- O pacote ZIP da Hostinger precisa incluir `server.js`.
+- A protecao continua temporaria e sera substituida por Supabase Auth, roles e isolamento por cliente.
+
+Status:
+
+Aceita.
