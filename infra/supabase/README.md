@@ -5,6 +5,7 @@ Fundacao de banco e autenticacao para transformar o piloto iBob em produto multi
 ## Estado
 
 - Migration inicial criada em `migrations/20260516170000_initial_platform_auth.sql`.
+- CLI local inicializada em `config.toml`.
 - Ainda nao aplicada em producao.
 - Nenhum segredo do Supabase deve ser salvo no repositorio.
 
