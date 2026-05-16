@@ -12,6 +12,7 @@ Projeto em preparacao local para desenvolvimento assistido no VS Code, com organ
 - Blueprint da Claude importado como referencia funcional do agente de trafego pago.
 - MVP local navegavel implementado em Next.js com dados mockados e fluxo seguro.
 - Fundacao de dados local implementada com contratos de dominio e configuracao da iBob preparada para multi-cliente.
+- Controle de acesso temporario por usuario/senha via variaveis de ambiente.
 - Nenhum segredo deve ser salvo no repositorio.
 
 ## Estrutura
@@ -58,6 +59,7 @@ Os comandos do root encaminham para `apps/web`.
 - [Checklist do primeiro deploy](docs/FIRST_DEPLOY_CHECKLIST.md)
 - [MVP local](docs/LOCAL_MVP.md)
 - [Fundacao de dados](docs/DATA_FOUNDATION.md)
+- [Controle de acesso](docs/ACCESS_CONTROL.md)
 - [Integracao do blueprint da Claude](docs/CLAUDE_BLUEPRINT_INTEGRATION.md)
 - [Estrategia de produto](docs/PRODUCT_STRATEGY.md)
 - [Decisoes](docs/DECISIONS.md)

@@ -102,6 +102,20 @@ Variaveis devem ser configuradas:
 - Localmente em `.env`.
 - Na Hostinger em Environment Variables.
 
+## Controle de acesso
+
+Antes de publicar versoes protegidas, configurar na Hostinger:
+
+```text
+BASIC_AUTH_ENABLED=true
+BASIC_AUTH_USERNAME=<usuario escolhido>
+BASIC_AUTH_PASSWORD=<senha forte escolhida>
+```
+
+Sem `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD`, a versao protegida bloqueia o acesso em producao com status 503.
+
+Detalhes: `docs/ACCESS_CONTROL.md`.
+
 ## Pendencias antes do primeiro deploy
 
 - Confirmar plano Hostinger: Business, Cloud ou VPS.

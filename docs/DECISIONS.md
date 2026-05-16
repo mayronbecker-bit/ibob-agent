@@ -177,3 +177,27 @@ Consequencias:
 Status:
 
 Aceita.
+
+## 2026-05-16 - Controle de acesso temporario
+
+Contexto:
+
+O dashboard publicado em `adsia.ia.br` ficou acessivel publicamente durante a fase de MVP.
+
+Decisao:
+
+Adicionar protecao temporaria por HTTP Basic Auth usando `apps/web/src/proxy.ts`, com usuario e senha definidos apenas por variaveis de ambiente.
+
+Motivo:
+
+Reduzir exposicao publica imediatamente, sem antecipar a implementacao completa de autenticacao com Supabase Auth.
+
+Consequencias:
+
+- A versao protegida exige `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD` na Hostinger.
+- Se as credenciais nao forem configuradas em producao, o app bloqueia acesso com status 503.
+- Esta abordagem e temporaria e deve ser substituida por autenticacao real com usuarios, roles e RLS.
+
+Status:
+
+Aceita.

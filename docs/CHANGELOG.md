@@ -32,3 +32,4 @@
 - Publicado MVP em `adsia.ia.br` e validado status HTTP 200.
 - Implementada fundacao de dados local com contratos de dominio, configuracao da iBob e pagina `/settings`.
 - Publicada atualizacao da fundacao de dados em `https://adsia.ia.br`, incluindo rota `/settings`.
+- Implementado controle de acesso temporario por HTTP Basic Auth via Next.js Proxy.
