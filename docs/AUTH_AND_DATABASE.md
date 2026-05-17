@@ -196,3 +196,23 @@ client_id: client-ibob
 role: owner
 status: active
 ```
+
+Depois da validacao do novo login, o usuario antigo foi removido manualmente no painel Supabase pelo usuario. Consulta remota confirmou que apenas o novo `owner` ativo permanece em `client-ibob`.
+
+## Deploy v9
+
+Pacote gerado em 2026-05-17:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v9-supabase-auth.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.

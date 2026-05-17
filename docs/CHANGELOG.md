@@ -43,3 +43,5 @@
 - Implementado login/logout via Supabase Auth e protecao de dashboard por sessao no browser.
 - Preparada migration para adicionar novo usuario autenticado como `owner` de `client-ibob`.
 - Aplicada e validada a migration do novo owner de `client-ibob`.
+- Removido manualmente no Supabase o owner antigo apos validacao do novo login.
+- Gerado pacote Hostinger v9 com Supabase Auth e validado build empacotado.

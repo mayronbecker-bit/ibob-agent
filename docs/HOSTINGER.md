@@ -118,6 +118,17 @@ Sem `BASIC_AUTH_USERNAME` e `BASIC_AUTH_PASSWORD`, a versao protegida bloqueia o
 
 Detalhes: `docs/ACCESS_CONTROL.md`.
 
+## Supabase Auth
+
+A partir da v9, o app tambem exige sessao Supabase no dashboard. Antes de reimplantar a v9 na Hostinger, configurar estas variaveis de ambiente:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL=<project-url>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+```
+
+Essas variaveis precisam existir antes do build da Hostinger, pois sao usadas pelo cliente web.
+
 ## Pendencias antes do primeiro deploy
 
 - Confirmar plano Hostinger: Business, Cloud ou VPS.
@@ -145,6 +156,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-16: publicada versao com HTTP Basic Auth; acesso anonimo retorna HTTP 401.
 - 2026-05-16: corrigida protecao para rodar em `server.js`, evitando 503 causado por variaveis nao disponiveis no proxy do Next.js na Hostinger.
 - 2026-05-16: reimplantada e validada a v8 com `server.js`; acesso anonimo em `/` e `/settings` retorna HTTP 401 com Basic Auth.
+- 2026-05-17: gerado pacote v9 com login/logout via Supabase Auth, mantendo Basic Auth externo.
 
 Validacao publica:
 

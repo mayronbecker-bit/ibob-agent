@@ -67,6 +67,7 @@ Esta e uma protecao temporaria. Em 2026-05-17, o app recebeu uma primeira camada
 - `/login` usa email/senha do Supabase.
 - Rotas do dashboard exigem sessao Supabase no browser.
 - O Basic Auth continua ativo como barreira externa enquanto o login real e RLS sao validados.
+- A v9 mantem as duas camadas: Basic Auth externo na Hostinger e Supabase Auth dentro do app.
 
 Na fase de fundacao real de dados, substituir por:
 
