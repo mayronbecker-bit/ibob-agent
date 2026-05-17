@@ -282,3 +282,8 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-17:
+
+- Usuario confirmou que a v11 funcionou em producao.
+- `/data-trust` passou a operar com fontes reais do Supabase para `client-ibob`.

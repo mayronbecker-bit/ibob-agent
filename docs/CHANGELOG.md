@@ -52,3 +52,4 @@
 - Aplicada migration de `data_sources` para `client-ibob`, sem credenciais externas.
 - Migrada `/data-trust` para leitura real de fontes no Supabase com fallback controlado para mock.
 - Gerado pacote Hostinger v11 com Data Trust conectado ao Supabase e validado build empacotado.
+- Publicada e validada a v11 em `/data-trust`.
