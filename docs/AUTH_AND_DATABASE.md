@@ -237,3 +237,8 @@ Pacote gerado:
 ```text
 deploy/hostinger/ibob-agent-web-hostinger-v10-settings-supabase.zip
 ```
+
+Publicacao validada em 2026-05-17:
+
+- Usuario confirmou `/settings` funcionando com dados reais.
+- Acesso anonimo externo em `/settings` retorna HTTP 401 por Basic Auth.

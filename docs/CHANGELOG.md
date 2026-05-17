@@ -48,3 +48,4 @@
 - Publicada e validada a v9 em `https://adsia.ia.br` com Basic Auth externo e Supabase Auth interno.
 - Migrada `/settings` para leitura real de usuario, membership, cliente e versao ativa do agente no Supabase.
 - Gerado pacote Hostinger v10 com a primeira tela parcialmente migrada para dados reais.
+- Publicada e validada a v10 em `/settings`.
