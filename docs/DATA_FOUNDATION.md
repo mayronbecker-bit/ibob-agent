@@ -136,13 +136,15 @@ O campo `clientId` em todos os tipos de domínio existe especificamente para hab
 
 Atualizacao em 2026-05-16: a fundacao Supabase foi preparada com dependencias, helpers SSR e schema SQL versionado em `infra/supabase/migrations/20260516170000_initial_platform_auth.sql`. A migration ainda nao foi aplicada em ambiente real.
 
+Atualizacao em 2026-05-17: `/settings` passou a ler dados reais do Supabase para usuario, membership, cliente e versao ativa do agente. Data sources, propostas e demais telas ainda usam mocks controlados.
+
 | Camada | Estado atual | Quando migrar |
 |---|---|---|
 | Tipos | ✅ Contratos completos | — |
 | Config do cliente | ✅ Separada e extensível | — |
-| Mock data | ✅ Conforme contratos | Etapa 2 (Supabase) |
-| Supabase Auth | ❌ Não implementado | Etapa 2 |
-| Tabelas reais | ❌ Não implementado | Etapa 2 |
+| Mock data | Parcial: settings ja le dados reais; demais telas usam mocks | Etapa 2 (Supabase) |
+| Supabase Auth | Ativo para login e sessao | Etapa 2 (expandir RLS por tela) |
+| Tabelas reais | Parcial: cliente, membership e agent_versions em uso | Etapa 2 |
 | Integrações (Google Ads, Meta) | ❌ Simuladas | Etapa 3 |
 | Execution Engine | ❌ Não implementado | Etapa 8 |
 

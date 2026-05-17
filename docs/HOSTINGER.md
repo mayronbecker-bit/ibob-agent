@@ -158,6 +158,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-16: reimplantada e validada a v8 com `server.js`; acesso anonimo em `/` e `/settings` retorna HTTP 401 com Basic Auth.
 - 2026-05-17: gerado pacote v9 com login/logout via Supabase Auth, mantendo Basic Auth externo.
 - 2026-05-17: v9 reimplantada em `https://adsia.ia.br` e validada pelo usuario com login Supabase. Acesso anonimo externo em `/` e `/login` continua retornando HTTP 401 por Basic Auth.
+- 2026-05-17: gerado pacote v10 com `/settings` lendo usuario, membership, cliente e versao ativa do agente pelo Supabase.
 
 Validacao publica:
 

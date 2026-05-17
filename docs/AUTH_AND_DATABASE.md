@@ -222,3 +222,18 @@ Publicacao validada em 2026-05-17:
 - `https://adsia.ia.br` carregou apos Basic Auth e login Supabase.
 - Usuario `owner` novo conseguiu acessar o dashboard.
 - Acesso sem Basic Auth em `/` e `/login` retorna HTTP 401, mantendo a camada externa ativa.
+
+## Primeira tela com dados reais
+
+Implementado em 2026-05-17:
+
+- `/settings` le do Supabase o usuario autenticado, membership, cliente ativo e versao ativa do agente.
+- A leitura usa o cliente Supabase do browser, aproveitando a sessao validada pelo login.
+- RLS limita a leitura ao usuario autenticado e ao `client_id` vinculado em `client_memberships`.
+- Data sources ainda aparecem como mock, com contagem separada de registros reais no Supabase.
+
+Pacote gerado:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v10-settings-supabase.zip
+```

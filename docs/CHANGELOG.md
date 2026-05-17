@@ -46,3 +46,5 @@
 - Removido manualmente no Supabase o owner antigo apos validacao do novo login.
 - Gerado pacote Hostinger v9 com Supabase Auth e validado build empacotado.
 - Publicada e validada a v9 em `https://adsia.ia.br` com Basic Auth externo e Supabase Auth interno.
+- Migrada `/settings` para leitura real de usuario, membership, cliente e versao ativa do agente no Supabase.
+- Gerado pacote Hostinger v10 com a primeira tela parcialmente migrada para dados reais.
