@@ -57,3 +57,6 @@
 - Migrada `/proposals` para leitura real de propostas no Supabase com fallback controlado para mock.
 - Gerado pacote Hostinger v12 com Propostas conectadas ao Supabase e validado build empacotado.
 - Publicada e validada a v12 em `/proposals`.
+- Aplicada migration de `approvals` para `client-ibob`, incluindo RPC segura para registrar decisoes supervisionadas.
+- Migrada `/approvals` para leitura real de propostas/aprovacoes no Supabase e persistencia de decisoes.
+- Gerado pacote Hostinger v13 com Aprovacoes conectadas ao Supabase e validado build empacotado.

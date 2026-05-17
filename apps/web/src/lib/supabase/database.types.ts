@@ -374,6 +374,14 @@ export type Database = {
         };
         Returns: boolean;
       };
+      record_proposal_decision: {
+        Args: {
+          target_proposal_id: string;
+          decision: Database['public']['Enums']['approval_decision'];
+          justification: string;
+        };
+        Returns: Database['public']['Tables']['approvals']['Row'];
+      };
     };
     Enums: {
       app_role: 'owner' | 'admin' | 'approver' | 'viewer';

@@ -332,3 +332,56 @@ Publicacao validada em 2026-05-17:
 
 - Usuario confirmou que a v12 funcionou em producao.
 - `/proposals` passou a operar com propostas reais do Supabase para `client-ibob`.
+
+## Aprovacoes com dados reais
+
+Migration aplicada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517150000_seed_ibob_approvals.sql
+```
+
+Ela cria ou atualiza o historico inicial de aprovacoes do cliente `client-ibob` em `public.approvals` e adiciona a funcao segura:
+
+```text
+public.record_proposal_decision(target_proposal_id, decision, justification)
+```
+
+Essa funcao:
+
+- exige usuario autenticado;
+- exige role `owner`, `admin` ou `approver` no cliente da proposta;
+- aceita apenas propostas ainda `pending`;
+- grava a decisao em `public.approvals`;
+- atualiza o status da proposta para `approved`, `rejected` ou `deferred`;
+- nao executa nenhuma acao externa em Google Ads ou Meta.
+
+Validado no Supabase remoto:
+
+- migration `20260517150000` aplicada;
+- funcao `record_proposal_decision` criada como `SECURITY DEFINER`;
+- 3 aprovacoes historicas registradas;
+- fila de propostas manteve 2 pendentes para decisao supervisionada.
+
+Implementado no app:
+
+- `/approvals` le `proposals`, `approvals` e `user_profiles` pelo Supabase usando a sessao autenticada.
+- A tela mostra o badge `Supabase` quando a leitura real funciona e volta para `Mock` apenas em fallback.
+- Botoes `Aprovar`, `Rejeitar` e `Adiar` persistem a decisao via RPC Supabase.
+- Nenhum executor externo foi criado nesta etapa.
+
+Pacote gerado em 2026-05-17:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v13-approvals-supabase.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
