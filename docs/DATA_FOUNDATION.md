@@ -136,15 +136,15 @@ O campo `clientId` em todos os tipos de domínio existe especificamente para hab
 
 Atualizacao em 2026-05-16: a fundacao Supabase foi preparada com dependencias, helpers SSR e schema SQL versionado em `infra/supabase/migrations/20260516170000_initial_platform_auth.sql`. A migration ainda nao foi aplicada em ambiente real.
 
-Atualizacao em 2026-05-17: `/settings` passou a ler dados reais do Supabase para usuario, membership, cliente e versao ativa do agente. `/data-trust` passou a ler fontes reais de `data_sources` para o cliente autenticado. Propostas, aprovacoes, memoria e roadmap ainda usam mocks controlados.
+Atualizacao em 2026-05-17: `/settings` passou a ler dados reais do Supabase para usuario, membership, cliente e versao ativa do agente. `/data-trust` passou a ler fontes reais de `data_sources` para o cliente autenticado. `/proposals` passou a ler propostas reais de `proposals` para o cliente autenticado. Aprovacoes, memoria e roadmap ainda usam mocks controlados.
 
 | Camada | Estado atual | Quando migrar |
 |---|---|---|
 | Tipos | ✅ Contratos completos | — |
 | Config do cliente | ✅ Separada e extensível | — |
-| Mock data | Parcial: settings e data-trust ja leem dados reais; demais telas usam mocks | Etapa 2 (Supabase) |
+| Mock data | Parcial: settings, data-trust e proposals ja leem dados reais; demais telas usam mocks | Etapa 2 (Supabase) |
 | Supabase Auth | Ativo para login e sessao | Etapa 2 (expandir RLS por tela) |
-| Tabelas reais | Parcial: cliente, membership, agent_versions e data_sources em uso | Etapa 2 |
+| Tabelas reais | Parcial: cliente, membership, agent_versions, data_sources e proposals em uso | Etapa 2 |
 | Integrações (Google Ads, Meta) | ❌ Simuladas | Etapa 3 |
 | Execution Engine | ❌ Não implementado | Etapa 8 |
 

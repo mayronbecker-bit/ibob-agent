@@ -287,3 +287,43 @@ Publicacao validada em 2026-05-17:
 
 - Usuario confirmou que a v11 funcionou em producao.
 - `/data-trust` passou a operar com fontes reais do Supabase para `client-ibob`.
+
+## Propostas com dados reais
+
+Migration aplicada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517133000_seed_ibob_proposals.sql
+```
+
+Ela cria ou atualiza as propostas iniciais do cliente `client-ibob` em `public.proposals`, em modo supervisionado/dry-run. Nenhuma acao e enviada para contas externas.
+
+Propostas validadas no Supabase remoto:
+
+- 2 pendentes
+- 1 aprovada
+- 1 rejeitada
+- 1 executada
+
+Implementado no app:
+
+- `/proposals` le `client_memberships` e `proposals` pelo Supabase usando a sessao autenticada.
+- RLS limita a leitura ao `client_id` do usuario logado.
+- A tela mostra o badge `Supabase` quando a leitura real funciona e volta para `Mock` apenas em fallback.
+- Aprovacoes continuam fora desta etapa; a fila e somente leitura em producao.
+
+Pacote gerado em 2026-05-17:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v12-proposals-supabase.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.

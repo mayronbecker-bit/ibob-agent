@@ -1,10 +1,12 @@
 'use client';
 
-import { useState } from 'react';
-import { proposals } from '@/lib/mock-data';
+import { useEffect, useMemo, useState } from 'react';
+import { proposals as mockProposals } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
 import { StatusDot } from '@/components/ui/StatusDot';
-import type { Channel, ProposalStatus, RiskLevel, ProposalType } from '@/types';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { getSupabaseProposals } from '@/lib/proposals/supabase-proposals';
+import type { Channel, Proposal, ProposalStatus, RiskLevel, ProposalType } from '@/types';
 
 function channelLabel(c: Channel) {
   return c === 'google_ads' ? 'Google Ads' : 'Meta Ads';
@@ -74,9 +76,46 @@ const TABS: { key: TabFilter; label: string }[] = [
 
 export default function ProposalsPage() {
   const [activeTab, setActiveTab] = useState<TabFilter>('all');
+  const [realProposals, setRealProposals] = useState<Proposal[] | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
+
+  const supabase = useMemo(() => {
+    try {
+      return createSupabaseBrowserClient();
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) {
+      return;
+    }
+
+    let isMounted = true;
+
+    getSupabaseProposals(supabase)
+      .then((data) => {
+        if (!isMounted) return;
+        setRealProposals(data);
+        setDataError(null);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDataError('Nao foi possivel carregar propostas reais do Supabase.');
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase]);
+
+  const sourceProposals = realProposals ?? mockProposals;
 
   const filtered =
-    activeTab === 'all' ? proposals : proposals.filter((p) => p.status === activeTab);
+    activeTab === 'all'
+      ? sourceProposals
+      : sourceProposals.filter((p) => p.status === activeTab);
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-8">
@@ -90,13 +129,19 @@ export default function ProposalsPage() {
         </p>
       </header>
 
+      {dataError && (
+        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          <span className="font-medium">Fallback:</span> {dataError}
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="mb-6 flex flex-wrap gap-1 border-b border-[#d7ddd2]">
         {TABS.map((tab) => {
           const count =
             tab.key === 'all'
-              ? proposals.length
-              : proposals.filter((p) => p.status === tab.key).length;
+              ? sourceProposals.length
+              : sourceProposals.filter((p) => p.status === tab.key).length;
           return (
             <button
               key={tab.key}
@@ -121,6 +166,9 @@ export default function ProposalsPage() {
             </button>
           );
         })}
+        <span className="ml-auto mb-2 rounded-full border border-[#d7ddd2] bg-white px-3 py-1 text-xs font-medium text-[#5c6b61]">
+          {realProposals ? 'Supabase' : 'Mock'}
+        </span>
       </div>
 
       {/* Proposal cards */}
