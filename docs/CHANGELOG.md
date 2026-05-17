@@ -41,3 +41,5 @@
 - Preparada migration para vincular o primeiro usuario autenticado como `owner` do cliente `client-ibob`.
 - Aplicada e validada a migration do owner inicial para `client-ibob`.
 - Implementado login/logout via Supabase Auth e protecao de dashboard por sessao no browser.
+- Preparada migration para adicionar novo usuario autenticado como `owner` de `client-ibob`.
+- Aplicada e validada a migration do novo owner de `client-ibob`.

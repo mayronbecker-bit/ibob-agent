@@ -180,3 +180,19 @@ client_id: client-ibob
 role: owner
 status: active
 ```
+
+Migration de substituicao preparada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517103000_link_replacement_ibob_owner.sql
+```
+
+Ela adiciona um novo usuario autenticado como `owner` ativo, mantendo owners existentes ate validacao do novo login.
+
+Aplicada em 2026-05-17 e validada com:
+
+```text
+client_id: client-ibob
+role: owner
+status: active
+```

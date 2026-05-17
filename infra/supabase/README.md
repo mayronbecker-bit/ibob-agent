@@ -50,6 +50,13 @@ Local          | Remote
 20260517100000 | 20260517100000
 ```
 
+Validado em 2026-05-17:
+
+```text
+Local          | Remote
+20260517103000 | 20260517103000
+```
+
 ## Primeiro cliente
 
 A migration cria o cliente piloto:
@@ -62,4 +69,4 @@ plan: pilot
 
 O primeiro usuario/admin deve ser criado no Supabase Auth e vinculado via SQL controlado usando a tabela `client_memberships`.
 
-Status: usuario inicial vinculado como `owner` ativo do cliente `client-ibob` em 2026-05-17.
+Status: usuario inicial e usuario de substituicao vinculados como `owner` ativo do cliente `client-ibob` em 2026-05-17. O owner antigo deve ser desativado somente depois de validar login com o novo usuario.
