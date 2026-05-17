@@ -127,8 +127,11 @@ Esses comandos nao devem ser executados contra ambiente real sem confirmacao exp
 - Helpers criados.
 - Schema SQL versionado e aplicado no projeto Supabase `euedumaappfxqabgdizi`.
 - `/settings` mostra se o Supabase esta configurado.
+- `/login` criado com Supabase Auth por email/senha.
+- Dashboard protegido no browser por sessao Supabase.
+- Botao `Sair` criado na Sidebar.
 - Nenhum deploy realizado nesta etapa.
-- Nenhuma chave real configurada.
+- Variaveis publicas configuradas apenas em `apps/web/.env.local`, ignorado pelo Git.
 
 ## Validacao da migration
 
@@ -147,7 +150,18 @@ Resultado:
 
 ## Proxima etapa tecnica
 
-Criar a tela de login real e a protecao de rotas por Supabase Auth em paralelo ao Basic Auth temporario. O Basic Auth so deve ser removido depois de validar login, sessao e RLS.
+Validar login real localmente. Depois, configurar as variaveis publicas do Supabase na Hostinger, gerar o ZIP v9 e reimplantar com Basic Auth ainda ativo. O Basic Auth so deve ser removido depois de validar login, sessao e RLS em producao.
+
+## Variaveis para deploy
+
+Configurar na Hostinger antes do proximo deploy:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL=<project-url>
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
+```
+
+Essas chaves sao publicas para o browser. Ainda assim, nao devem ser escritas em arquivos versionados.
 
 ## Owner inicial
 

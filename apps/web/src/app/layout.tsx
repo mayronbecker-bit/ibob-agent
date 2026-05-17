@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { AuthShell } from "@/components/auth/AuthShell";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +29,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-screen flex-col bg-[#f6f7f4] text-[#172018] md:h-screen md:flex-row md:overflow-hidden">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">{children}</main>
+      <body className="min-h-screen bg-[#f6f7f4] text-[#172018]">
+        <Suspense fallback={null}>
+          <AuthShell>{children}</AuthShell>
+        </Suspense>
       </body>
     </html>
   );

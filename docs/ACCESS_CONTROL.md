@@ -62,7 +62,11 @@ Arquivos estaticos do Next.js e imagens publicas sao ignorados pelo servidor de 
 
 ## Evolucao planejada
 
-Esta e uma protecao temporaria.
+Esta e uma protecao temporaria. Em 2026-05-17, o app recebeu uma primeira camada de Supabase Auth em paralelo:
+
+- `/login` usa email/senha do Supabase.
+- Rotas do dashboard exigem sessao Supabase no browser.
+- O Basic Auth continua ativo como barreira externa enquanto o login real e RLS sao validados.
 
 Na fase de fundacao real de dados, substituir por:
 

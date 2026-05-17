@@ -40,3 +40,4 @@
 - Aplicada a migration inicial no projeto Supabase `euedumaappfxqabgdizi` e validado historico remoto.
 - Preparada migration para vincular o primeiro usuario autenticado como `owner` do cliente `client-ibob`.
 - Aplicada e validada a migration do owner inicial para `client-ibob`.
+- Implementado login/logout via Supabase Auth e protecao de dashboard por sessao no browser.

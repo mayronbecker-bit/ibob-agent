@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { LogoutButton } from '@/components/auth/LogoutButton';
 
 type NavItem = {
   href: string;
@@ -95,6 +96,10 @@ function NavIcon({ href }: { href: string }) {
 export function Sidebar() {
   const pathname = usePathname();
 
+  if (pathname === '/login') {
+    return null;
+  }
+
   return (
     <aside className="flex flex-shrink-0 flex-col bg-[#142116] md:h-full md:w-56">
       <div className="border-b border-[#2a3d2e] px-5 py-4 md:py-5">
@@ -127,6 +132,7 @@ export function Sidebar() {
 
       <div className="hidden border-t border-[#2a3d2e] px-5 py-4 md:block">
         <p className="text-xs text-[#5c7a64]">MVP local · Dados mockados</p>
+        <LogoutButton />
       </div>
     </aside>
   );
