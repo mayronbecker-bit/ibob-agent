@@ -49,3 +49,6 @@
 - Migrada `/settings` para leitura real de usuario, membership, cliente e versao ativa do agente no Supabase.
 - Gerado pacote Hostinger v10 com a primeira tela parcialmente migrada para dados reais.
 - Publicada e validada a v10 em `/settings`.
+- Aplicada migration de `data_sources` para `client-ibob`, sem credenciais externas.
+- Migrada `/data-trust` para leitura real de fontes no Supabase com fallback controlado para mock.
+- Gerado pacote Hostinger v11 com Data Trust conectado ao Supabase e validado build empacotado.

@@ -1,6 +1,11 @@
-import { dataTrustState } from '@/lib/mock-data';
+'use client';
+
+import { useEffect, useMemo, useState } from 'react';
+import { dataTrustState as mockDataTrustState } from '@/lib/mock-data';
 import { StatusDot } from '@/components/ui/StatusDot';
-import type { AgentStatus } from '@/types';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import { getSupabaseDataTrustState } from '@/lib/data-trust/supabase-data-trust';
+import type { AgentStatus, DataTrustState } from '@/lib/domain/types';
 
 const statusTitle: Record<AgentStatus, string> = {
   green: 'Operacional',
@@ -9,9 +14,9 @@ const statusTitle: Record<AgentStatus, string> = {
 };
 
 const statusDescription: Record<AgentStatus, string> = {
-  green: 'Todas as fontes de dados estão sincronizadas e válidas. O agente pode gerar e propor ações.',
-  yellow: 'Uma ou mais fontes apresentam atraso ou inconsistência. Propostas que dependem dessas fontes serão sinalizadas.',
-  red: 'Dados insuficientes ou inválidos. O agente está bloqueado e não pode gerar novas propostas.',
+  green: 'Todas as fontes de dados estao sincronizadas e validas. O agente pode gerar e propor acoes.',
+  yellow: 'Uma ou mais fontes apresentam atraso ou inconsistencia. Propostas que dependem dessas fontes serao sinalizadas.',
+  red: 'Dados insuficientes ou invalidos. O agente esta bloqueado e nao pode gerar novas propostas.',
 };
 
 function formatTime(iso: string) {
@@ -23,7 +28,42 @@ function formatTime(iso: string) {
 }
 
 export default function DataTrustPage() {
-  const { overallStatus, checkedAt, sources, blockingReason } = dataTrustState;
+  const [realDataTrustState, setRealDataTrustState] = useState<DataTrustState | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
+
+  const supabase = useMemo(() => {
+    try {
+      return createSupabaseBrowserClient();
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) {
+      return;
+    }
+
+    let isMounted = true;
+
+    getSupabaseDataTrustState(supabase)
+      .then((state) => {
+        if (!isMounted) return;
+        setRealDataTrustState(state);
+        setDataError(null);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDataError('Nao foi possivel carregar as fontes reais do Supabase.');
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase]);
+
+  const state = realDataTrustState ?? mockDataTrustState;
+  const { overallStatus, checkedAt, sources, blockingReason } = state;
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-8">
@@ -35,11 +75,10 @@ export default function DataTrustPage() {
           Data Trust Layer
         </h1>
         <p className="mt-1 text-sm text-[#5c6b61]">
-          Validação das fontes de dados antes de qualquer proposta
+          Validacao das fontes de dados antes de qualquer proposta
         </p>
       </header>
 
-      {/* Overall status card */}
       <section className="mb-8">
         <div
           className={`rounded-xl border p-6 shadow-sm ${
@@ -86,9 +125,15 @@ export default function DataTrustPage() {
                   : 'text-red-600'
             }`}
           >
-            Última verificação: {formatTime(checkedAt)}
+            Ultima verificacao: {formatTime(checkedAt)}
           </p>
         </div>
+
+        {dataError && (
+          <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+            <span className="font-medium">Fallback:</span> {dataError}
+          </div>
+        )}
 
         {blockingReason && overallStatus !== 'green' && (
           <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
@@ -97,11 +142,15 @@ export default function DataTrustPage() {
         )}
       </section>
 
-      {/* Sources table */}
       <section>
-        <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-          Fontes de dados
-        </h2>
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+            Fontes de dados
+          </h2>
+          <span className="rounded-full border border-[#d7ddd2] bg-white px-3 py-1 text-xs font-medium text-[#5c6b61]">
+            {realDataTrustState ? 'Supabase' : 'Mock'}
+          </span>
+        </div>
         <div className="overflow-x-auto rounded-xl border border-[#d7ddd2] bg-white shadow-sm">
           <table className="min-w-[760px] w-full text-sm">
             <thead>
@@ -113,10 +162,10 @@ export default function DataTrustPage() {
                   Status
                 </th>
                 <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Última sincronização
+                  Ultima sincronizacao
                 </th>
                 <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Observação
+                  Observacao
                 </th>
               </tr>
             </thead>
@@ -138,7 +187,7 @@ export default function DataTrustPage() {
                     {formatTime(src.lastSync)}
                   </td>
                   <td className="px-5 py-4 text-[#5c6b61]">
-                    {src.issue ?? '—'}
+                    {src.issue ?? '-'}
                   </td>
                 </tr>
               ))}
@@ -147,7 +196,6 @@ export default function DataTrustPage() {
         </div>
       </section>
 
-      {/* How it works */}
       <section className="mt-8">
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
           Como funciona
@@ -157,12 +205,12 @@ export default function DataTrustPage() {
             {
               step: '1',
               title: 'Coleta',
-              desc: 'O agente lê métricas de todas as fontes configuradas antes de iniciar qualquer análise.',
+              desc: 'O agente le metricas de todas as fontes configuradas antes de iniciar qualquer analise.',
             },
             {
               step: '2',
-              title: 'Validação',
-              desc: 'Cada fonte é verificada: data da última sincronização, consistência dos dados e disponibilidade da API.',
+              title: 'Validacao',
+              desc: 'Cada fonte e verificada: data da ultima sincronizacao, consistencia dos dados e disponibilidade da API.',
             },
             {
               step: '3',

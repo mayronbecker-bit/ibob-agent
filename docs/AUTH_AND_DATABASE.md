@@ -242,3 +242,43 @@ Publicacao validada em 2026-05-17:
 
 - Usuario confirmou `/settings` funcionando com dados reais.
 - Acesso anonimo externo em `/settings` retorna HTTP 401 por Basic Auth.
+
+## Data Trust com fontes reais
+
+Migration aplicada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517120000_seed_ibob_data_sources.sql
+```
+
+Ela cria ou atualiza as fontes iniciais do cliente `client-ibob` em `public.data_sources`, sem armazenar credenciais de APIs externas.
+
+Fontes validadas no Supabase remoto:
+
+- Google Ads API
+- Meta Marketing API
+- GA4 / Analytics
+- Orbita (margem)
+- CRM / Leads
+
+Implementado no app:
+
+- `/data-trust` le `client_memberships` e `data_sources` pelo Supabase usando a sessao autenticada.
+- RLS limita a leitura ao `client_id` do usuario logado.
+- A tela mostra o badge `Supabase` quando a leitura real funciona e volta para `Mock` apenas em fallback.
+
+Pacote gerado em 2026-05-17:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v11-data-sources.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
