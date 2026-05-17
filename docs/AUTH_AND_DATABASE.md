@@ -148,3 +148,21 @@ Resultado:
 ## Proxima etapa tecnica
 
 Criar a tela de login real e a protecao de rotas por Supabase Auth em paralelo ao Basic Auth temporario. O Basic Auth so deve ser removido depois de validar login, sessao e RLS.
+
+## Owner inicial
+
+Migration preparada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517100000_link_ibob_initial_owner.sql
+```
+
+Ela vincula o primeiro usuario criado no Supabase Auth como `owner` do cliente `client-ibob`, sem armazenar senha ou secrets.
+
+Aplicada em 2026-05-17 e validada com:
+
+```text
+client_id: client-ibob
+role: owner
+status: active
+```

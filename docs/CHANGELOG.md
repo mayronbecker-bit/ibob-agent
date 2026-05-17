@@ -38,3 +38,5 @@
 - Validada a reimplantacao v8 na Hostinger com HTTP 401 sem credenciais em `/` e `/settings`.
 - Preparada fundacao Supabase com dependencias, helpers SSR, migration inicial, RLS por cliente e documentacao operacional.
 - Aplicada a migration inicial no projeto Supabase `euedumaappfxqabgdizi` e validado historico remoto.
+- Preparada migration para vincular o primeiro usuario autenticado como `owner` do cliente `client-ibob`.
+- Aplicada e validada a migration do owner inicial para `client-ibob`.
