@@ -385,3 +385,48 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-17:
+
+- Usuario confirmou que a v13 funcionou em producao.
+- `/approvals` passou a operar com aprovacoes reais do Supabase para `client-ibob`.
+- O fluxo de decisao grava no banco, mas nao executa nenhuma acao externa.
+
+## Memoria de decisao com dados reais
+
+Migration aplicada em 2026-05-17:
+
+```text
+infra/supabase/migrations/20260517163000_seed_ibob_decision_memory.sql
+```
+
+Ela cria ou atualiza as entradas iniciais de memoria do cliente `client-ibob` em `public.decision_memory`.
+
+Validado no Supabase remoto:
+
+- migration `20260517163000` aplicada;
+- 4 entradas de memoria registradas;
+- 2 aprendizados aprovados com impacto medido;
+- 2 aprendizados rejeitados sem impacto medido.
+
+Implementado no app:
+
+- `/memory` le `client_memberships` e `decision_memory` pelo Supabase usando a sessao autenticada.
+- RLS limita a leitura ao `client_id` do usuario logado.
+- A tela mostra o badge `Supabase` quando a leitura real funciona e volta para `Mock` apenas em fallback.
+
+Pacote gerado em 2026-05-17:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v14-memory-supabase.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.

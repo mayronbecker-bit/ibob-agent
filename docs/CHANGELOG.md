@@ -60,3 +60,7 @@
 - Aplicada migration de `approvals` para `client-ibob`, incluindo RPC segura para registrar decisoes supervisionadas.
 - Migrada `/approvals` para leitura real de propostas/aprovacoes no Supabase e persistencia de decisoes.
 - Gerado pacote Hostinger v13 com Aprovacoes conectadas ao Supabase e validado build empacotado.
+- Publicada e validada a v13 em `/approvals`.
+- Aplicada migration de `decision_memory` para `client-ibob`.
+- Migrada `/memory` para leitura real de aprendizados no Supabase com fallback controlado para mock.
+- Gerado pacote Hostinger v14 com Memoria de Decisao conectada ao Supabase.
