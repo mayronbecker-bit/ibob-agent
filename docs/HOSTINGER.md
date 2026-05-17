@@ -163,6 +163,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-17: aplicada migration `data_sources` no Supabase e gerado pacote v11 com `/data-trust` lendo fontes reais por sessao autenticada.
 - 2026-05-17: v11 reimplantada e validada pelo usuario em `/data-trust`.
 - 2026-05-17: aplicada migration `proposals` no Supabase e gerado pacote v12 com `/proposals` lendo propostas reais por sessao autenticada.
+- 2026-05-17: v12 reimplantada e validada pelo usuario em `/proposals`.
 
 Validacao publica:
 

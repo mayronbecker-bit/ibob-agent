@@ -327,3 +327,8 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-17:
+
+- Usuario confirmou que a v12 funcionou em producao.
+- `/proposals` passou a operar com propostas reais do Supabase para `client-ibob`.
