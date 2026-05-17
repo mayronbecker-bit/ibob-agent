@@ -216,3 +216,9 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-17:
+
+- `https://adsia.ia.br` carregou apos Basic Auth e login Supabase.
+- Usuario `owner` novo conseguiu acessar o dashboard.
+- Acesso sem Basic Auth em `/` e `/login` retorna HTTP 401, mantendo a camada externa ativa.

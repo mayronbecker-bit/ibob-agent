@@ -157,6 +157,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-16: corrigida protecao para rodar em `server.js`, evitando 503 causado por variaveis nao disponiveis no proxy do Next.js na Hostinger.
 - 2026-05-16: reimplantada e validada a v8 com `server.js`; acesso anonimo em `/` e `/settings` retorna HTTP 401 com Basic Auth.
 - 2026-05-17: gerado pacote v9 com login/logout via Supabase Auth, mantendo Basic Auth externo.
+- 2026-05-17: v9 reimplantada em `https://adsia.ia.br` e validada pelo usuario com login Supabase. Acesso anonimo externo em `/` e `/login` continua retornando HTTP 401 por Basic Auth.
 
 Validacao publica:
 

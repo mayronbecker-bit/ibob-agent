@@ -45,3 +45,4 @@
 - Aplicada e validada a migration do novo owner de `client-ibob`.
 - Removido manualmente no Supabase o owner antigo apos validacao do novo login.
 - Gerado pacote Hostinger v9 com Supabase Auth e validado build empacotado.
+- Publicada e validada a v9 em `https://adsia.ia.br` com Basic Auth externo e Supabase Auth interno.
