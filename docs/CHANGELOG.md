@@ -78,3 +78,5 @@
 - Iniciado hardening de seguranca: redirect pos-login agora aceita apenas rotas internas do app.
 - Publicada e validada a v18 com hardening de redirect pos-login.
 - Padronizados estados de erro, fallback e vazio em dashboard, Data Trust, propostas, aprovacoes, memoria e settings.
+- Publicada e validada a v19 com estados de tela padronizados.
+- Adicionados headers defensivos no servidor Node: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` e HSTS quando servido em HTTPS.

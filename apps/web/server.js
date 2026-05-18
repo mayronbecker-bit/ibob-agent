@@ -63,6 +63,26 @@ function isPublicAsset(pathname) {
   );
 }
 
+function setSecurityHeaders(req, res) {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
+  );
+
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const isHttps =
+    req.socket.encrypted ||
+    forwardedProto === 'https' ||
+    (Array.isArray(forwardedProto) && forwardedProto.includes('https'));
+
+  if (!dev && isHttps) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+}
+
 function writeUnauthorized(res) {
   res.writeHead(401, {
     'WWW-Authenticate': 'Basic realm="iBob Agent", charset="UTF-8"',
@@ -110,6 +130,7 @@ function isAuthorized(req, res) {
 app.prepare().then(() => {
   createServer((req, res) => {
     const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+    setSecurityHeaders(req, res);
 
     if (!isPublicAsset(requestUrl.pathname) && !isAuthorized(req, res)) {
       return;

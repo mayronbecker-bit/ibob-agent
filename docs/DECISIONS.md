@@ -20,6 +20,30 @@ Status:
 
 Aceita.
 
+## 2026-05-18 - Headers defensivos no servidor Node
+
+Contexto:
+
+O app roda na Hostinger por `server.js`, que tambem aplica o Basic Auth temporario antes de entregar as rotas do Next.js.
+
+Decisao:
+
+Adicionar headers defensivos diretamente no servidor Node: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` e `Strict-Transport-Security` quando a requisicao chegar por HTTPS.
+
+Motivo:
+
+Reduzir riscos comuns de navegador, como clickjacking, MIME sniffing, exposicao excessiva de origem por referrer e uso indevido de recursos sensiveis como camera, microfone, geolocalizacao e pagamento.
+
+Consequencias:
+
+- As respostas protegidas por Basic Auth e as rotas do app recebem o mesmo baseline de seguranca.
+- Nao foi adicionada Content Security Policy nesta etapa para evitar quebrar scripts gerados pelo Next.js sem uma auditoria especifica.
+- O Roadmap registra este item como parte do hardening do produto piloto.
+
+Status:
+
+Aceita.
+
 ## 2026-05-18 - Estados de tela padronizados
 
 Contexto:

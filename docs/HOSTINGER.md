@@ -176,6 +176,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-18: gerado pacote v18 com hardening de redirect pos-login restrito a rotas internas.
 - 2026-05-18: v18 reimplantada e validada pelo usuario.
 - 2026-05-18: gerado pacote v19 com estados padronizados de erro, fallback e vazio nas telas principais.
+- 2026-05-18: v19 reimplantada e validada pelo usuario.
+- 2026-05-18: gerado pacote v20 com headers defensivos no servidor Node.
 
 Validacao publica:
 
