@@ -331,59 +331,66 @@ export const roadmapStages: RoadmapStage[] = [
   },
   {
     number: 3,
-    title: 'Integrações em modo leitura',
-    status: 'in_progress',
-    description:
-      'Fontes e raw_metrics preparados no Supabase. Proxima etapa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa.',
-  },
-  {
-    number: 4,
     title: 'Data Trust Layer',
     status: 'done',
     description:
       'Leitura real de data_sources com estado verde/amarelo/vermelho no dashboard e em /data-trust, isolada por cliente via RLS.',
   },
   {
-    number: 5,
-    title: 'Decision Engine',
-    status: 'planned',
-    description:
-      'Integrar Claude API para gerar sugestões. Modelo nunca executa diretamente. Consulta à memória de decisão antes de cada sugestão. Registro de versão de prompt e threshold.',
-  },
-  {
-    number: 6,
-    title: 'Validação determinística (rule_validator)',
-    status: 'planned',
-    description:
-      'Limites de budget, estoque, margem, tracking e risco. Uma sugestão só vira proposta se passar por todas as regras determinísticas.',
-  },
-  {
-    number: 7,
+    number: 4,
     title: 'Fila de aprovação humana',
     status: 'done',
     description:
       'A tela /approvals le propostas e historico reais no Supabase. Aprovadores podem aprovar, rejeitar ou adiar propostas sem execucao externa.',
   },
   {
+    number: 5,
+    title: 'Hardening do produto piloto',
+    status: 'in_progress',
+    description:
+      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup, documentacao operacional e experiencia de uso para a iBob.',
+  },
+  {
+    number: 6,
+    title: 'Decision Engine supervisionado',
+    status: 'planned',
+    description:
+      'Gerar sugestoes com IA usando dados reais ja persistidos, mocks controlados ou importacoes manuais. Modelo nunca executa diretamente e consulta a memoria antes de sugerir.',
+  },
+  {
+    number: 7,
+    title: 'Validação determinística',
+    status: 'planned',
+    description:
+      'Limites de budget, estoque, margem, tracking e risco. Uma sugestão só vira proposta se passar por todas as regras determinísticas.',
+  },
+  {
     number: 8,
     title: 'Execution Engine (dry run)',
     status: 'planned',
     description:
-      'Executor separado do Decision Engine. Simulação completa antes de tocar contas reais. Logs e estado anterior para rollback.',
+      'Executor separado do Decision Engine. Simulacao completa antes de tocar contas reais. Logs, estado anterior e rollback desenhados antes de qualquer escrita externa.',
   },
   {
     number: 9,
-    title: 'Execução controlada',
-    status: 'planned',
-    description:
-      'Ações reais com escopo limitado. Aprovação humana mantida. Monitoramento de impacto financeiro e processo de rollback validado.',
-  },
-  {
-    number: 10,
     title: 'Produto escalável',
     status: 'planned',
     description:
-      'Generalizar configurações da iBob. Onboarding de novos clientes. Definir modelo de cobrança. Avaliar multi-tenant ou instâncias isoladas.',
+      'Generalizar configuracoes da iBob. Onboarding de novos clientes, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
+  },
+  {
+    number: 10,
+    title: 'Integrações em modo leitura',
+    status: 'planned',
+    description:
+      'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos o produto estar validado.',
+  },
+  {
+    number: 11,
+    title: 'Execução controlada',
+    status: 'planned',
+    description:
+      'Acoes reais com escopo limitado, aprovacao humana obrigatoria, monitoramento financeiro e rollback validado para contas conectadas.',
   },
 ];
 

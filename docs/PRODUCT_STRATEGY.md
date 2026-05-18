@@ -16,6 +16,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Manter variaveis de ambiente e configuracoes externas como fonte de customizacao.
 - Documentar decisoes que possam afetar escalabilidade, custos, seguranca e manutencao.
 - Preferir modulos reutilizaveis para autenticacao, agentes, integracoes, templates, billing e configuracoes.
+- Deixar integracoes externas para as fases finais, depois que produto, seguranca, auditoria, regras e experiencia estiverem validados com a iBob.
 
 ## Fases propostas
 
@@ -33,6 +34,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Estruturar onboarding de novos clientes.
 - Definir precificacao, limites de uso e suporte.
 - Melhorar observabilidade: logs, erros, metricas e auditoria.
+- Validar Decision Engine supervisionado, rule_validator e fluxo de aprovacao usando dados existentes, mocks controlados ou importacoes manuais antes de conectar APIs externas.
 
 ### Fase 3 - Escala
 
@@ -40,6 +42,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Implementar multi-tenant completo ou isolamento por instancia, conforme risco e custo.
 - Automatizar deploy, backups, monitoramento e recuperacao.
 - Formalizar seguranca, privacidade e politicas operacionais.
+- Conectar integracoes externas em modo leitura somente depois do produto estar robusto e validado.
 
 ## Decisoes a evitar no inicio
 

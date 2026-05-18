@@ -20,6 +20,31 @@ Status:
 
 Aceita.
 
+## 2026-05-18 - Integracoes externas como fase final
+
+Contexto:
+
+O piloto ja tem autenticacao, RLS, dados reais no Supabase, dashboard, Data Trust, propostas, aprovacoes, memoria e Roadmap publicados. Ainda assim, o produto precisa ficar mais robusto antes de conectar contas externas de midia, analytics, CRM ou ecommerce.
+
+Decisao:
+
+Adiar as integracoes externas para as fases finais e priorizar agora o hardening do produto piloto: seguranca, estados de erro, auditoria, testes, backup, documentacao operacional, experiencia de uso, Decision Engine supervisionado, rule_validator e preparacao comercial.
+
+Motivo:
+
+Reduzir risco operacional e financeiro. O produto pode evoluir usando dados reais ja persistidos, mocks controlados e importacoes manuais antes de tocar APIs externas. Isso deixa a iBob mais segura e tambem prepara uma base vendavel e escalavel.
+
+Consequencias:
+
+- A etapa "Integracoes em modo leitura" deixa de ser o proximo marco e passa a ser fase final antes da execucao controlada.
+- O Roadmap passa a destacar "Hardening do produto piloto" como etapa em andamento.
+- Decision Engine e rule_validator podem ser validados sem credenciais externas.
+- Nenhuma automacao deve executar acoes externas sem aprovacao humana, logs e rollback desenhados.
+
+Status:
+
+Aceita.
+
 ## Pendentes
 
 - Banco de dados.
