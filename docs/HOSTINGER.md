@@ -167,6 +167,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-17: aplicada migration `approvals` no Supabase e gerado pacote v13 com `/approvals` lendo e gravando decisoes supervisionadas.
 - 2026-05-17: v13 reimplantada e validada pelo usuario em `/approvals`.
 - 2026-05-17: aplicada migration `decision_memory` no Supabase e gerado pacote v14 com `/memory` lendo aprendizados reais por sessao autenticada.
+- 2026-05-18: v14 reimplantada e validada pelo usuario em `/memory`.
 
 Validacao publica:
 

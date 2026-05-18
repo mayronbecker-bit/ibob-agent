@@ -64,3 +64,4 @@
 - Aplicada migration de `decision_memory` para `client-ibob`.
 - Migrada `/memory` para leitura real de aprendizados no Supabase com fallback controlado para mock.
 - Gerado pacote Hostinger v14 com Memoria de Decisao conectada ao Supabase.
+- Publicada e validada a v14 em `/memory`.

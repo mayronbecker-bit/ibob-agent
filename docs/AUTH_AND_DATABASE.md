@@ -430,3 +430,8 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-18:
+
+- Usuario confirmou que a v14 funcionou em producao.
+- `/memory` passou a operar com memoria de decisao real do Supabase para `client-ibob`.
