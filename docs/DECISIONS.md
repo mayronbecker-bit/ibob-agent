@@ -20,6 +20,30 @@ Status:
 
 Aceita.
 
+## 2026-05-18 - Redirect pos-login restrito a rotas internas
+
+Contexto:
+
+O formulario de login aceita o parametro `next` para devolver o usuario a rota que ele tentou acessar antes de autenticar.
+
+Decisao:
+
+Validar o valor de `next` no cliente e aceitar apenas caminhos internos relativos do app. URLs externas, caminhos iniciados por `//`, valores com quebra de linha e a propria rota `/login` caem para `/`.
+
+Motivo:
+
+Evitar redirecionamento aberto apos login e reduzir risco de phishing ou navegacao para destinos nao controlados pelo produto.
+
+Consequencias:
+
+- O fluxo normal `/login?next=/alguma-rota` continua funcionando.
+- Links externos em `next` deixam de ser aceitos.
+- Este e o primeiro item concluido do hardening do produto piloto.
+
+Status:
+
+Aceita.
+
 ## 2026-05-18 - Integracoes externas como fase final
 
 Contexto:

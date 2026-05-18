@@ -173,6 +173,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-18: gerado pacote v16 com Roadmap atualizado para refletir o progresso real ate raw_metrics.
 - 2026-05-18: v16 reimplantada e validada pelo usuario em `/roadmap`.
 - 2026-05-18: gerado pacote v17 com Roadmap repriorizado para deixar integracoes externas nas fases finais.
+- 2026-05-18: gerado pacote v18 com hardening de redirect pos-login restrito a rotas internas.
 
 Validacao publica:
 

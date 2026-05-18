@@ -74,3 +74,5 @@
 - Publicada e validada a v16 em `/roadmap` com o Roadmap atualizado como registro vivo do projeto.
 - Repriorizado Roadmap para deixar integracoes externas nas fases finais e iniciar hardening do produto piloto.
 - Gerado pacote Hostinger v17 com a nova ordem estrategica do Roadmap.
+- Aprovada pelo usuario a decisao de deixar integracoes externas para as fases finais.
+- Iniciado hardening de seguranca: redirect pos-login agora aceita apenas rotas internas do app.

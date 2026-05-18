@@ -348,7 +348,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Hardening do produto piloto',
     status: 'in_progress',
     description:
-      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup, documentacao operacional e experiencia de uso para a iBob.',
+      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Primeiro ajuste aplicado: redirect pos-login restrito a rotas internas.',
   },
   {
     number: 6,

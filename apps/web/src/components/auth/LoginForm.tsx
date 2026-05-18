@@ -4,10 +4,30 @@ import { FormEvent, useMemo, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 
+const SAFE_REDIRECT_ORIGIN = 'https://ibob.local';
+
+function getSafeNextPath(next: string | null) {
+  if (!next || !next.startsWith('/') || next.startsWith('//') || /[\r\n]/.test(next)) {
+    return '/';
+  }
+
+  try {
+    const url = new URL(next, SAFE_REDIRECT_ORIGIN);
+
+    if (url.origin !== SAFE_REDIRECT_ORIGIN || url.pathname === '/login') {
+      return '/';
+    }
+
+    return `${url.pathname}${url.search}${url.hash}`;
+  } catch {
+    return '/';
+  }
+}
+
 export function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const nextPath = searchParams.get('next') || '/';
+  const nextPath = getSafeNextPath(searchParams.get('next'));
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
