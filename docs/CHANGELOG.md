@@ -65,3 +65,6 @@
 - Migrada `/memory` para leitura real de aprendizados no Supabase com fallback controlado para mock.
 - Gerado pacote Hostinger v14 com Memoria de Decisao conectada ao Supabase.
 - Publicada e validada a v14 em `/memory`.
+- Aplicada migration de `raw_metrics` para `client-ibob`.
+- Migrado dashboard `/` para derivar cards de metricas a partir de `raw_metrics`.
+- Gerado pacote Hostinger v15 com dashboard conectado ao Supabase.

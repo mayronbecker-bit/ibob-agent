@@ -1,12 +1,20 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
 import { StatusDot } from '@/components/ui/StatusDot';
 import { Badge } from '@/components/ui/Badge';
 import {
-  overviewMetrics,
-  proposals,
-  dataTrustState,
-  approvalHistory,
+  overviewMetrics as mockOverviewMetrics,
+  proposals as mockProposals,
+  dataTrustState as mockDataTrustState,
+  approvalHistory as mockApprovalHistory,
 } from '@/lib/mock-data';
+import { createSupabaseBrowserClient } from '@/lib/supabase/client';
+import {
+  getSupabaseDashboardData,
+  type SupabaseDashboardData,
+} from '@/lib/dashboard/supabase-dashboard';
 import type { Channel, ProposalStatus } from '@/types';
 
 function channelLabel(c: Channel) {
@@ -35,43 +43,108 @@ function statusLabel(s: ProposalStatus) {
   return map[s];
 }
 
+function formatPeriod(period: string) {
+  return new Date(`${period}T12:00:00-03:00`).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'America/Sao_Paulo',
+  });
+}
+
+function formatTime(iso: string) {
+  return new Date(iso).toLocaleTimeString('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'America/Sao_Paulo',
+  });
+}
+
 export default function HomePage() {
+  const [realDashboard, setRealDashboard] = useState<SupabaseDashboardData | null>(null);
+  const [dataError, setDataError] = useState<string | null>(null);
+
+  const supabase = useMemo(() => {
+    try {
+      return createSupabaseBrowserClient();
+    } catch {
+      return null;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!supabase) {
+      return;
+    }
+
+    let isMounted = true;
+
+    getSupabaseDashboardData(supabase)
+      .then((data) => {
+        if (!isMounted) return;
+        setRealDashboard(data);
+        setDataError(null);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setDataError('Nao foi possivel carregar o dashboard real do Supabase.');
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase]);
+
+  const overviewMetrics = realDashboard?.overviewMetrics ?? mockOverviewMetrics;
+  const proposals = realDashboard?.proposals ?? mockProposals;
+  const dataTrustState = realDashboard?.dataTrustState ?? mockDataTrustState;
+  const approvalHistory = realDashboard?.approvalHistory ?? mockApprovalHistory;
   const pendingCount = proposals.filter((p) => p.status === 'pending').length;
   const recentProposals = proposals.slice(0, 4);
   const recentApprovals = approvalHistory.slice(0, 3);
+  const periodLabel = realDashboard
+    ? `${formatPeriod(realDashboard.metricPeriod)} - Supabase`
+    : 'Dados mockados';
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
-      {/* Header */}
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-semibold uppercase tracking-widest text-[#476454]">
             iBob Agent
           </p>
           <h1 className="mt-1 text-2xl font-semibold text-[#142116]">
-            Visão Geral
+            Visao Geral
           </h1>
-          <p className="mt-1 text-sm text-[#5c6b61]">
-            12 de maio de 2026 · Dados mockados
-          </p>
+          <p className="mt-1 text-sm text-[#5c6b61]">{periodLabel}</p>
         </div>
-        <div className="flex items-center gap-2 rounded-lg border border-[#d7ddd2] bg-white px-4 py-2.5 text-sm shadow-sm">
-          <StatusDot status={dataTrustState.overallStatus} />
-          <span className="text-[#34473b] font-medium">
-            Agente{' '}
-            {dataTrustState.overallStatus === 'green'
-              ? 'operacional'
-              : dataTrustState.overallStatus === 'yellow'
-                ? 'com alertas'
-                : 'bloqueado'}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-full border border-[#d7ddd2] bg-white px-3 py-1 text-xs font-medium text-[#5c6b61]">
+            {realDashboard ? 'Supabase' : 'Mock'}
           </span>
+          <div className="flex items-center gap-2 rounded-lg border border-[#d7ddd2] bg-white px-4 py-2.5 text-sm shadow-sm">
+            <StatusDot status={dataTrustState.overallStatus} />
+            <span className="text-[#34473b] font-medium">
+              Agente{' '}
+              {dataTrustState.overallStatus === 'green'
+                ? 'operacional'
+                : dataTrustState.overallStatus === 'yellow'
+                  ? 'com alertas'
+                  : 'bloqueado'}
+            </span>
+          </div>
         </div>
       </header>
 
-      {/* Metrics grid */}
+      {dataError && (
+        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
+          <span className="font-medium">Fallback:</span> {dataError}
+        </div>
+      )}
+
       <section className="mb-8">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-          Métricas do período
+          Metricas do periodo
         </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {overviewMetrics.map((m) => (
@@ -85,7 +158,9 @@ export default function HomePage() {
               </p>
               {m.trend && (
                 <p
-                  className={`mt-1 text-xs ${m.trendUp === true ? 'text-green-600' : 'text-[#5c6b61]'}`}
+                  className={`mt-1 text-xs ${
+                    m.trendUp === true ? 'text-green-600' : 'text-[#5c6b61]'
+                  }`}
                 >
                   {m.trend}
                 </p>
@@ -96,7 +171,6 @@ export default function HomePage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
-        {/* Recent proposals */}
         <section>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
@@ -106,7 +180,7 @@ export default function HomePage() {
               href="/proposals"
               className="text-xs font-medium text-[#476454] hover:underline"
             >
-              Ver todas →
+              Ver todas
             </Link>
           </div>
           <div className="space-y-2">
@@ -129,7 +203,7 @@ export default function HomePage() {
                   </Badge>
                   {p.status === 'pending' && (
                     <span className="text-xs text-[#5c6b61]">
-                      Aguarda aprovação
+                      Aguarda aprovacao
                     </span>
                   )}
                 </div>
@@ -138,9 +212,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* Right column */}
         <div className="space-y-6">
-          {/* Data Trust status */}
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
@@ -150,14 +222,14 @@ export default function HomePage() {
                 href="/data-trust"
                 className="text-xs font-medium text-[#476454] hover:underline"
               >
-                Detalhes →
+                Detalhes
               </Link>
             </div>
             <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
               <div className="flex items-center gap-2 mb-3">
                 <StatusDot status={dataTrustState.overallStatus} showLabel />
                 <span className="text-xs text-[#5c6b61]">
-                  · verificado às 14:30
+                  verificado as {formatTime(dataTrustState.checkedAt)}
                 </span>
               </div>
               <div className="space-y-2">
@@ -174,17 +246,16 @@ export default function HomePage() {
             </div>
           </section>
 
-          {/* Pending approvals */}
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-                Aguardando aprovação
+                Aguardando aprovacao
               </h2>
               <Link
                 href="/approvals"
                 className="text-xs font-medium text-[#476454] hover:underline"
               >
-                Fila →
+                Fila
               </Link>
             </div>
             {pendingCount === 0 ? (
@@ -198,32 +269,31 @@ export default function HomePage() {
                   {pendingCount === 1
                     ? 'proposta aguarda'
                     : 'propostas aguardam'}{' '}
-                  aprovação humana
+                  aprovacao humana
                 </p>
                 <p className="mt-0.5 text-xs text-yellow-700">
-                  Nenhuma ação é executada automaticamente.
+                  Nenhuma acao e executada automaticamente.
                 </p>
               </div>
             )}
           </section>
 
-          {/* Recent decisions */}
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-                Decisões recentes
+                Decisoes recentes
               </h2>
               <Link
                 href="/memory"
                 className="text-xs font-medium text-[#476454] hover:underline"
               >
-                Memória →
+                Memoria
               </Link>
             </div>
             <div className="space-y-2">
               {recentApprovals.map((a) => (
                 <div
-                  key={a.proposalId}
+                  key={a.id}
                   className="rounded-lg border border-[#d7ddd2] bg-white px-4 py-3 text-sm shadow-sm"
                 >
                   <div className="flex items-center justify-between gap-2">

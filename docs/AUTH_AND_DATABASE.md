@@ -435,3 +435,43 @@ Publicacao validada em 2026-05-18:
 
 - Usuario confirmou que a v14 funcionou em producao.
 - `/memory` passou a operar com memoria de decisao real do Supabase para `client-ibob`.
+
+## Raw metrics e dashboard com dados reais
+
+Migration aplicada em 2026-05-18:
+
+```text
+infra/supabase/migrations/20260518100000_seed_ibob_raw_metrics.sql
+```
+
+Ela cria ou atualiza metricas brutas iniciais do cliente `client-ibob` em `public.raw_metrics`, referenciando as fontes Google Ads e Meta Ads ja cadastradas. Os dados ainda sao seed controlado; nao ha integracao externa ativa.
+
+Validado no Supabase remoto:
+
+- migration `20260518100000` aplicada;
+- 12 registros de metricas brutas criados;
+- periodo atual `2026-05-18`: gasto R$ 18.400, receita R$ 77.300, ROAS 4,20, 271 leads, CPA R$ 67,90;
+- periodo anterior `2026-05-11`: gasto R$ 17.200, receita R$ 67.080, ROAS 3,90, 239 leads, CPA R$ 71,97.
+
+Implementado no app:
+
+- `/` le `raw_metrics`, `data_sources`, `proposals`, `approvals` e `user_profiles` pelo Supabase usando a sessao autenticada.
+- Os cards de metricas sao derivados de `raw_metrics`.
+- O dashboard mostra o badge `Supabase` quando a leitura real funciona e volta para `Mock` apenas em fallback.
+- Nenhuma integracao Google Ads, Meta, GA4 ou CRM foi ativada nesta etapa.
+
+Pacote gerado em 2026-05-18:
+
+```text
+deploy/hostinger/ibob-agent-web-hostinger-v15-raw-metrics-dashboard.zip
+```
+
+Validacoes:
+
+```text
+npm.cmd run lint
+npm.cmd run build
+npm.cmd run hostinger:build
+```
+
+Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.

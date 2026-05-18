@@ -136,15 +136,15 @@ O campo `clientId` em todos os tipos de domínio existe especificamente para hab
 
 Atualizacao em 2026-05-16: a fundacao Supabase foi preparada com dependencias, helpers SSR e schema SQL versionado em `infra/supabase/migrations/20260516170000_initial_platform_auth.sql`. A migration ainda nao foi aplicada em ambiente real.
 
-Atualizacao em 2026-05-17: `/settings` passou a ler dados reais do Supabase para usuario, membership, cliente e versao ativa do agente. `/data-trust` passou a ler fontes reais de `data_sources` para o cliente autenticado. `/proposals` passou a ler propostas reais de `proposals` para o cliente autenticado. `/approvals` passou a ler e gravar decisoes reais em `approvals` para o cliente autenticado. `/memory` passou a ler aprendizados reais de `decision_memory`. Roadmap e dashboard ainda usam mocks controlados.
+Atualizacao em 2026-05-18: `/settings` passou a ler dados reais do Supabase para usuario, membership, cliente e versao ativa do agente. `/data-trust` passou a ler fontes reais de `data_sources` para o cliente autenticado. `/proposals` passou a ler propostas reais de `proposals` para o cliente autenticado. `/approvals` passou a ler e gravar decisoes reais em `approvals` para o cliente autenticado. `/memory` passou a ler aprendizados reais de `decision_memory`. `/` passou a derivar metricas de dashboard a partir de `raw_metrics`. Roadmap ainda usa mock controlado.
 
 | Camada | Estado atual | Quando migrar |
 |---|---|---|
 | Tipos | ✅ Contratos completos | — |
 | Config do cliente | ✅ Separada e extensível | — |
-| Mock data | Parcial: settings, data-trust, proposals, approvals e memory ja usam dados reais; demais telas usam mocks | Etapa 2 (Supabase) |
+| Mock data | Parcial: dashboard, settings, data-trust, proposals, approvals e memory ja usam dados reais; roadmap ainda usa mock | Etapa 2 (Supabase) |
 | Supabase Auth | Ativo para login e sessao | Etapa 2 (expandir RLS por tela) |
-| Tabelas reais | Parcial: cliente, membership, agent_versions, data_sources, proposals, approvals e decision_memory em uso | Etapa 2 |
+| Tabelas reais | Parcial: cliente, membership, agent_versions, data_sources, raw_metrics, proposals, approvals e decision_memory em uso | Etapa 2 |
 | Integrações (Google Ads, Meta) | ❌ Simuladas | Etapa 3 |
 | Execution Engine | ❌ Não implementado | Etapa 8 |
 

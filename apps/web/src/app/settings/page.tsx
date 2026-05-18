@@ -254,7 +254,7 @@ export default function SettingsPage() {
       <SectionTitle>Proximos passos</SectionTitle>
       <div className="rounded-xl border border-[#d7ddd2] bg-white px-5 py-4 text-sm text-[#5c6b61] shadow-sm">
         <ul className="list-disc space-y-1 pl-4">
-          <li>Migrar metricas brutas para a tabela `raw_metrics`.</li>
+          <li>Automatizar ingestao real de metricas em `raw_metrics`.</li>
           <li>Conectar approvals ao Execution Engine em modo dry-run.</li>
           <li>Integrar Google Ads e Meta APIs em modo leitura.</li>
           <li>Promover modo para SUPERVISED apos validacao do piloto.</li>
