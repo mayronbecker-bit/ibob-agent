@@ -71,3 +71,4 @@
 - Publicada e validada a v15 em `/`.
 - Atualizado Roadmap para refletir fundacao de dados concluida, Data Trust concluido e integracoes em modo leitura como etapa em andamento.
 - Registrada decisao operacional de atualizar o Roadmap a cada passo.
+- Publicada e validada a v16 em `/roadmap` com o Roadmap atualizado como registro vivo do projeto.
