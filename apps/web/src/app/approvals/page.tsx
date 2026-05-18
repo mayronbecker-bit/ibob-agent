@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { proposals as mockProposals, approvalHistory as mockApprovalHistory } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
 import { StatusDot } from '@/components/ui/StatusDot';
+import { DataStateNotice, EmptyState } from '@/components/ui/DataStateNotice';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import {
   getSupabaseApprovalsData,
@@ -170,15 +171,15 @@ export default function ApprovalsPage() {
       </div>
 
       {dataError && (
-        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-          <span className="font-medium">Fallback:</span> {dataError}
-        </div>
+        <DataStateNotice title="Modo fallback ativo" variant="warning" className="mb-4">
+          {dataError} A fila abaixo esta usando propostas mockadas e decisoes locais.
+        </DataStateNotice>
       )}
 
       {actionError && (
-        <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <DataStateNotice title="Decisao nao registrada" variant="error" className="mb-4">
           {actionError}
-        </div>
+        </DataStateNotice>
       )}
 
       <section className="mb-10">
@@ -187,11 +188,10 @@ export default function ApprovalsPage() {
         </h2>
 
         {stillPending.length === 0 ? (
-          <div className="rounded-lg border border-green-200 bg-green-50 px-6 py-8 text-center shadow-sm">
-            <p className="text-sm font-medium text-green-800">
-              Fila vazia. Todas as propostas foram decididas.
-            </p>
-          </div>
+          <EmptyState
+            title="Fila vazia"
+            description="Todas as propostas pendentes ja foram decididas ou ainda nao ha novas sugestoes."
+          />
         ) : (
           <div className="space-y-5">
             {stillPending.map((p) => {
@@ -335,39 +335,46 @@ export default function ApprovalsPage() {
         <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
           Historico de aprovacoes ({sourceApprovalHistory.length})
         </h2>
-        <div className="overflow-x-auto rounded-xl border border-[#d7ddd2] bg-white shadow-sm">
-          <table className="min-w-[780px] w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#d7ddd2] bg-[#f6f7f4] text-left">
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">Proposta</th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">Aprovador</th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">Decisao</th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">Justificativa</th>
-              </tr>
-            </thead>
-            <tbody>
-              {sourceApprovalHistory.map((a: Approval, i) => (
-                <tr
-                  key={a.id}
-                  className={`border-b border-[#d7ddd2] last:border-0 ${i % 2 === 1 ? 'bg-[#fafbf9]' : 'bg-white'}`}
-                >
-                  <td className="px-5 py-4 font-medium text-[#172018] max-w-[200px]">
-                    {a.proposalTitle}
-                  </td>
-                  <td className="px-5 py-4 text-[#34473b]">{a.approver}</td>
-                  <td className="px-5 py-4">
-                    <Badge variant={decisionVariant(a.decision)}>
-                      {decisionLabel(a.decision)}
-                    </Badge>
-                  </td>
-                  <td className="px-5 py-4 text-[#5c6b61] text-xs max-w-[250px]">
-                    {a.justification}
-                  </td>
+        {sourceApprovalHistory.length === 0 ? (
+          <EmptyState
+            title="Sem historico de aprovacoes"
+            description="As decisoes registradas no Supabase aparecem aqui depois que propostas forem avaliadas."
+          />
+        ) : (
+          <div className="overflow-x-auto rounded-xl border border-[#d7ddd2] bg-white shadow-sm">
+            <table className="min-w-[780px] w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#d7ddd2] bg-[#f6f7f4] text-left">
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">Proposta</th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">Aprovador</th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">Decisao</th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">Justificativa</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {sourceApprovalHistory.map((a: Approval, i) => (
+                  <tr
+                    key={a.id}
+                    className={`border-b border-[#d7ddd2] last:border-0 ${i % 2 === 1 ? 'bg-[#fafbf9]' : 'bg-white'}`}
+                  >
+                    <td className="px-5 py-4 font-medium text-[#172018] max-w-[200px]">
+                      {a.proposalTitle}
+                    </td>
+                    <td className="px-5 py-4 text-[#34473b]">{a.approver}</td>
+                    <td className="px-5 py-4">
+                      <Badge variant={decisionVariant(a.decision)}>
+                        {decisionLabel(a.decision)}
+                      </Badge>
+                    </td>
+                    <td className="px-5 py-4 text-[#5c6b61] text-xs max-w-[250px]">
+                      {a.justification}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </div>
   );

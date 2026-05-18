@@ -20,6 +20,30 @@ Status:
 
 Aceita.
 
+## 2026-05-18 - Estados de tela padronizados
+
+Contexto:
+
+As telas conectadas ao Supabase ja tinham fallback controlado para mock, mas cada uma comunicava falha, ausencia de dados ou fallback de forma diferente.
+
+Decisao:
+
+Criar componentes reutilizaveis para aviso de estado de dados e estado vazio. Aplicar o padrao nas telas principais: dashboard, Data Trust, propostas, aprovacoes, memoria e settings.
+
+Motivo:
+
+Melhorar confianca operacional. O usuario precisa saber quando esta vendo dado real, dado mockado, lista vazia ou falha temporaria de leitura, especialmente antes de transformar o piloto em produto vendavel.
+
+Consequencias:
+
+- Fallbacks ficam explicitos.
+- Listas vazias deixam de parecer tela quebrada.
+- O Roadmap registra este item como parte do hardening do produto piloto.
+
+Status:
+
+Aceita.
+
 ## 2026-05-18 - Redirect pos-login restrito a rotas internas
 
 Contexto:

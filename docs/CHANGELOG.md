@@ -76,3 +76,5 @@
 - Gerado pacote Hostinger v17 com a nova ordem estrategica do Roadmap.
 - Aprovada pelo usuario a decisao de deixar integracoes externas para as fases finais.
 - Iniciado hardening de seguranca: redirect pos-login agora aceita apenas rotas internas do app.
+- Publicada e validada a v18 com hardening de redirect pos-login.
+- Padronizados estados de erro, fallback e vazio em dashboard, Data Trust, propostas, aprovacoes, memoria e settings.

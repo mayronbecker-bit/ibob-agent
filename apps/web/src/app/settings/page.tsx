@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { activeClient } from '@/config';
 import { mockAgentVersion, mockUsers, dataTrustState } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
+import { DataStateNotice } from '@/components/ui/DataStateNotice';
 import { getSupabasePublicEnv } from '@/lib/supabase/env';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import {
@@ -109,6 +110,12 @@ export default function SettingsPage() {
           </p>
         </div>
       </div>
+
+      {settingsError && (
+        <DataStateNotice title="Leitura real indisponivel" variant="warning" className="mb-8">
+          {settingsError} A tela esta exibindo configuracoes locais e valores mockados como fallback.
+        </DataStateNotice>
+      )}
 
       <SectionTitle>Cliente piloto</SectionTitle>
       <div className="rounded-xl border border-[#d7ddd2] bg-white px-6 shadow-sm">
@@ -241,7 +248,6 @@ export default function SettingsPage() {
               {settingsData ? 'Ativa' : settingsError ? 'Falhou' : 'Carregando'}
             </Badge>
           </Field>
-          {settingsError && <Field label="Aviso">{settingsError}</Field>}
           <Field label="Schema">
             <code className="rounded bg-[#f0f5f1] px-1.5 py-0.5 text-xs font-mono">
               infra/supabase/migrations/20260516170000_initial_platform_auth.sql
@@ -254,10 +260,10 @@ export default function SettingsPage() {
       <SectionTitle>Proximos passos</SectionTitle>
       <div className="rounded-xl border border-[#d7ddd2] bg-white px-5 py-4 text-sm text-[#5c6b61] shadow-sm">
         <ul className="list-disc space-y-1 pl-4">
-          <li>Automatizar ingestao real de metricas em `raw_metrics`.</li>
+          <li>Concluir hardening de seguranca, estados de tela, auditoria e testes.</li>
+          <li>Validar Decision Engine supervisionado com dados existentes e importacoes manuais.</li>
           <li>Conectar approvals ao Execution Engine em modo dry-run.</li>
-          <li>Integrar Google Ads e Meta APIs em modo leitura.</li>
-          <li>Promover modo para SUPERVISED apos validacao do piloto.</li>
+          <li>Deixar integracoes externas em modo leitura para as fases finais.</li>
         </ul>
       </div>
     </div>

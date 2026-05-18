@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import { StatusDot } from '@/components/ui/StatusDot';
 import { Badge } from '@/components/ui/Badge';
+import { DataStateNotice, EmptyState } from '@/components/ui/DataStateNotice';
 import {
   overviewMetrics as mockOverviewMetrics,
   proposals as mockProposals,
@@ -137,37 +138,44 @@ export default function HomePage() {
       </header>
 
       {dataError && (
-        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-          <span className="font-medium">Fallback:</span> {dataError}
-        </div>
+        <DataStateNotice title="Modo fallback ativo" variant="warning" className="mb-4">
+          {dataError} A tela esta exibindo dados mockados para manter a operacao visivel.
+        </DataStateNotice>
       )}
 
       <section className="mb-8">
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
           Metricas do periodo
         </h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {overviewMetrics.map((m) => (
-            <div
-              key={m.label}
-              className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm"
-            >
-              <p className="text-xs text-[#5c6b61]">{m.label}</p>
-              <p className="mt-1 text-2xl font-semibold text-[#142116]">
-                {m.value}
-              </p>
-              {m.trend && (
-                <p
-                  className={`mt-1 text-xs ${
-                    m.trendUp === true ? 'text-green-600' : 'text-[#5c6b61]'
-                  }`}
-                >
-                  {m.trend}
+        {overviewMetrics.length === 0 ? (
+          <EmptyState
+            title="Nenhuma metrica disponivel"
+            description="Quando raw_metrics tiver dados validos, os cards do periodo aparecem aqui."
+          />
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {overviewMetrics.map((m) => (
+              <div
+                key={m.label}
+                className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm"
+              >
+                <p className="text-xs text-[#5c6b61]">{m.label}</p>
+                <p className="mt-1 text-2xl font-semibold text-[#142116]">
+                  {m.value}
                 </p>
-              )}
-            </div>
-          ))}
-        </div>
+                {m.trend && (
+                  <p
+                    className={`mt-1 text-xs ${
+                      m.trendUp === true ? 'text-green-600' : 'text-[#5c6b61]'
+                    }`}
+                  >
+                    {m.trend}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_1fr]">
@@ -183,8 +191,14 @@ export default function HomePage() {
               Ver todas
             </Link>
           </div>
-          <div className="space-y-2">
-            {recentProposals.map((p) => (
+          {recentProposals.length === 0 ? (
+            <EmptyState
+              title="Sem propostas recentes"
+              description="Novas sugestoes aprovaveis aparecem aqui depois de passarem pelo rule_validator."
+            />
+          ) : (
+            <div className="space-y-2">
+              {recentProposals.map((p) => (
               <div
                 key={p.id}
                 className="rounded-lg border border-[#d7ddd2] bg-white px-4 py-3 shadow-sm"
@@ -208,8 +222,9 @@ export default function HomePage() {
                   )}
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </section>
 
         <div className="space-y-6">
@@ -232,17 +247,25 @@ export default function HomePage() {
                   verificado as {formatTime(dataTrustState.checkedAt)}
                 </span>
               </div>
-              <div className="space-y-2">
-                {dataTrustState.sources.map((src) => (
-                  <div
-                    key={src.id}
-                    className="flex items-center justify-between text-sm"
-                  >
-                    <span className="text-[#34473b]">{src.name}</span>
-                    <StatusDot status={src.status} />
-                  </div>
-                ))}
-              </div>
+              {dataTrustState.sources.length === 0 ? (
+                <EmptyState
+                  title="Nenhuma fonte configurada"
+                  description="As fontes de dados aparecem aqui quando estiverem cadastradas para o cliente."
+                  className="py-5"
+                />
+              ) : (
+                <div className="space-y-2">
+                  {dataTrustState.sources.map((src) => (
+                    <div
+                      key={src.id}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span className="text-[#34473b]">{src.name}</span>
+                      <StatusDot status={src.status} />
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
 
@@ -259,9 +282,11 @@ export default function HomePage() {
               </Link>
             </div>
             {pendingCount === 0 ? (
-              <div className="rounded-lg border border-[#d7ddd2] bg-white px-4 py-6 text-center text-sm text-[#5c6b61] shadow-sm">
-                Nenhuma proposta pendente.
-              </div>
+              <EmptyState
+                title="Nenhuma proposta pendente"
+                description="A fila de aprovacao esta limpa neste momento."
+                className="py-6"
+              />
             ) : (
               <div className="rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 shadow-sm">
                 <p className="text-sm font-medium text-yellow-800">
@@ -290,8 +315,14 @@ export default function HomePage() {
                 Memoria
               </Link>
             </div>
-            <div className="space-y-2">
-              {recentApprovals.map((a) => (
+            {recentApprovals.length === 0 ? (
+              <EmptyState
+                title="Sem decisoes recentes"
+                description="A memoria de decisoes sera alimentada conforme propostas forem avaliadas."
+              />
+            ) : (
+              <div className="space-y-2">
+                {recentApprovals.map((a) => (
                 <div
                   key={a.id}
                   className="rounded-lg border border-[#d7ddd2] bg-white px-4 py-3 text-sm shadow-sm"
@@ -320,8 +351,9 @@ export default function HomePage() {
                     por {a.approver}
                   </p>
                 </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>

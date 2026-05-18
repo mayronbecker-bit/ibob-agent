@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { dataTrustState as mockDataTrustState } from '@/lib/mock-data';
 import { StatusDot } from '@/components/ui/StatusDot';
+import { DataStateNotice, EmptyState } from '@/components/ui/DataStateNotice';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { getSupabaseDataTrustState } from '@/lib/data-trust/supabase-data-trust';
 import type { AgentStatus, DataTrustState } from '@/lib/domain/types';
@@ -130,15 +131,15 @@ export default function DataTrustPage() {
         </div>
 
         {dataError && (
-          <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-            <span className="font-medium">Fallback:</span> {dataError}
-          </div>
+          <DataStateNotice title="Modo fallback ativo" variant="warning" className="mt-3">
+            {dataError} A tela esta exibindo fontes mockadas ate a leitura real voltar.
+          </DataStateNotice>
         )}
 
         {blockingReason && overallStatus !== 'green' && (
-          <div className="mt-3 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-            <span className="font-medium">Aviso:</span> {blockingReason}
-          </div>
+          <DataStateNotice title="Aviso operacional" variant="warning" className="mt-3">
+            {blockingReason}
+          </DataStateNotice>
         )}
       </section>
 
@@ -151,49 +152,56 @@ export default function DataTrustPage() {
             {realDataTrustState ? 'Supabase' : 'Mock'}
           </span>
         </div>
-        <div className="overflow-x-auto rounded-xl border border-[#d7ddd2] bg-white shadow-sm">
-          <table className="min-w-[760px] w-full text-sm">
-            <thead>
-              <tr className="border-b border-[#d7ddd2] bg-[#f6f7f4] text-left">
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Fonte
-                </th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Status
-                </th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Ultima sincronizacao
-                </th>
-                <th className="px-5 py-3 font-semibold text-[#5c6b61]">
-                  Observacao
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {sources.map((src, i) => (
-                <tr
-                  key={src.id}
-                  className={`border-b border-[#d7ddd2] last:border-0 ${
-                    i % 2 === 1 ? 'bg-[#fafbf9]' : 'bg-white'
-                  }`}
-                >
-                  <td className="px-5 py-4 font-medium text-[#172018]">
-                    {src.name}
-                  </td>
-                  <td className="px-5 py-4">
-                    <StatusDot status={src.status} showLabel />
-                  </td>
-                  <td className="px-5 py-4 text-[#5c6b61]">
-                    {formatTime(src.lastSync)}
-                  </td>
-                  <td className="px-5 py-4 text-[#5c6b61]">
-                    {src.issue ?? '-'}
-                  </td>
+        {sources.length === 0 ? (
+          <EmptyState
+            title="Nenhuma fonte cadastrada"
+            description="Cadastre data_sources para que o Data Trust Layer consiga avaliar disponibilidade, atraso e bloqueios."
+          />
+        ) : (
+          <div className="overflow-x-auto rounded-xl border border-[#d7ddd2] bg-white shadow-sm">
+            <table className="min-w-[760px] w-full text-sm">
+              <thead>
+                <tr className="border-b border-[#d7ddd2] bg-[#f6f7f4] text-left">
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">
+                    Fonte
+                  </th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">
+                    Status
+                  </th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">
+                    Ultima sincronizacao
+                  </th>
+                  <th className="px-5 py-3 font-semibold text-[#5c6b61]">
+                    Observacao
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {sources.map((src, i) => (
+                  <tr
+                    key={src.id}
+                    className={`border-b border-[#d7ddd2] last:border-0 ${
+                      i % 2 === 1 ? 'bg-[#fafbf9]' : 'bg-white'
+                    }`}
+                  >
+                    <td className="px-5 py-4 font-medium text-[#172018]">
+                      {src.name}
+                    </td>
+                    <td className="px-5 py-4">
+                      <StatusDot status={src.status} showLabel />
+                    </td>
+                    <td className="px-5 py-4 text-[#5c6b61]">
+                      {formatTime(src.lastSync)}
+                    </td>
+                    <td className="px-5 py-4 text-[#5c6b61]">
+                      {src.issue ?? '-'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
 
       <section className="mt-8">

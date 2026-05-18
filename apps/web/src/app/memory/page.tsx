@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { decisionMemory as mockDecisionMemory } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
+import { DataStateNotice, EmptyState } from '@/components/ui/DataStateNotice';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { getSupabaseDecisionMemory } from '@/lib/memory/supabase-decision-memory';
 import type { Channel, DecisionMemory } from '@/types';
@@ -89,17 +90,24 @@ export default function MemoryPage() {
       </div>
 
       {dataError && (
-        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-          <span className="font-medium">Fallback:</span> {dataError}
-        </div>
+        <DataStateNotice title="Modo fallback ativo" variant="warning" className="mb-4">
+          {dataError} A memoria abaixo esta usando aprendizados mockados.
+        </DataStateNotice>
       )}
 
-      <div className="space-y-4">
-        {decisionMemory.map((entry) => (
-          <div
-            key={entry.id}
-            className="rounded-xl border border-[#d7ddd2] bg-white p-5 shadow-sm"
-          >
+      {decisionMemory.length === 0 ? (
+        <EmptyState
+          title="Memoria ainda vazia"
+          description="Quando propostas forem aprovadas ou rejeitadas, os aprendizados registrados aparecem aqui."
+          className="mb-8"
+        />
+      ) : (
+        <div className="space-y-4">
+          {decisionMemory.map((entry) => (
+            <div
+              key={entry.id}
+              className="rounded-xl border border-[#d7ddd2] bg-white p-5 shadow-sm"
+            >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex-1">
                 <p className="font-semibold text-[#172018]">
@@ -149,9 +157,10 @@ export default function MemoryPage() {
                 </p>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="mt-8 rounded-lg border border-[#d7ddd2] bg-white px-5 py-4 text-sm shadow-sm">
         <p className="font-semibold text-[#172018] mb-2">Estrutura da memoria</p>

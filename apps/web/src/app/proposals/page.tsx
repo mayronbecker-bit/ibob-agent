@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { proposals as mockProposals } from '@/lib/mock-data';
 import { Badge } from '@/components/ui/Badge';
 import { StatusDot } from '@/components/ui/StatusDot';
+import { DataStateNotice, EmptyState } from '@/components/ui/DataStateNotice';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import { getSupabaseProposals } from '@/lib/proposals/supabase-proposals';
 import type { Channel, Proposal, ProposalStatus, RiskLevel, ProposalType } from '@/types';
@@ -130,9 +131,9 @@ export default function ProposalsPage() {
       </header>
 
       {dataError && (
-        <div className="mb-4 rounded-lg border border-yellow-200 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-          <span className="font-medium">Fallback:</span> {dataError}
-        </div>
+        <DataStateNotice title="Modo fallback ativo" variant="warning" className="mb-4">
+          {dataError} A lista abaixo esta usando propostas mockadas para manter o fluxo visivel.
+        </DataStateNotice>
       )}
 
       {/* Tabs */}
@@ -173,9 +174,15 @@ export default function ProposalsPage() {
 
       {/* Proposal cards */}
       {filtered.length === 0 ? (
-        <div className="rounded-lg border border-[#d7ddd2] bg-white px-6 py-12 text-center text-sm text-[#5c6b61] shadow-sm">
-          Nenhuma proposta nesta categoria.
-        </div>
+        <EmptyState
+          title="Nenhuma proposta nesta categoria"
+          description={
+            activeTab === 'all'
+              ? 'Quando o Decision Engine gerar propostas aprovaveis, elas aparecem aqui.'
+              : 'Troque o filtro para revisar propostas com outros status.'
+          }
+          className="py-12"
+        />
       ) : (
         <div className="space-y-4">
           {filtered.map((p) => (
