@@ -318,30 +318,30 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 1,
     title: 'Produto piloto iBob (MVP)',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'Dashboard funcional com seções de visão geral, Data Trust Layer, propostas, aprovações, memória de decisão e roadmap. Arquitetura preparada para multi-cliente.',
+      'Dashboard funcional publicado na Hostinger com autenticação, visão geral, Data Trust Layer, propostas, aprovações, memória de decisão e roadmap.',
   },
   {
     number: 2,
     title: 'Fundação de dados',
-    status: 'planned',
+    status: 'done',
     description:
-      'Definir banco (Supabase). Schema para clientes, usuários, fontes de dados, métricas brutas, propostas, aprovações, memória de decisão e versões do agente.',
+      'Supabase Auth e RLS ativos. Tabelas reais em uso: clients, memberships, agent_versions, data_sources, raw_metrics, proposals, approvals e decision_memory.',
   },
   {
     number: 3,
     title: 'Integrações em modo leitura',
-    status: 'planned',
+    status: 'in_progress',
     description:
-      'Google Ads API, Meta Marketing API, GA4/Pixel, Orbita (margem) e CRM/Leads. Todas iniciando em DRY_RUN=true.',
+      'Fontes e raw_metrics preparados no Supabase. Proxima etapa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa.',
   },
   {
     number: 4,
     title: 'Data Trust Layer',
-    status: 'planned',
+    status: 'done',
     description:
-      'Validações antes de qualquer análise. Bloqueio de propostas com dados inconsistentes. Estado verde/amarelo/vermelho exposto no dashboard.',
+      'Leitura real de data_sources com estado verde/amarelo/vermelho no dashboard e em /data-trust, isolada por cliente via RLS.',
   },
   {
     number: 5,
@@ -360,9 +360,9 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 7,
     title: 'Fila de aprovação humana',
-    status: 'planned',
+    status: 'done',
     description:
-      'Interface para Mayron e Cassiano aprovarem, rejeitarem ou adiarem propostas. Registro de quem decidiu, quando e com qual justificativa.',
+      'A tela /approvals le propostas e historico reais no Supabase. Aprovadores podem aprovar, rejeitar ou adiar propostas sem execucao externa.',
   },
   {
     number: 8,

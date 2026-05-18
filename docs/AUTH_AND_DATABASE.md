@@ -475,3 +475,8 @@ npm.cmd run hostinger:build
 ```
 
 Tambem foi validado build dentro da pasta empacotada com as variaveis publicas do Supabase injetadas por ambiente.
+
+Publicacao validada em 2026-05-18:
+
+- Usuario confirmou que a v15 funcionou em producao.
+- `/` passou a operar com dashboard derivado de `raw_metrics` reais do Supabase para `client-ibob`.

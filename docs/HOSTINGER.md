@@ -169,6 +169,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-17: aplicada migration `decision_memory` no Supabase e gerado pacote v14 com `/memory` lendo aprendizados reais por sessao autenticada.
 - 2026-05-18: v14 reimplantada e validada pelo usuario em `/memory`.
 - 2026-05-18: aplicada migration `raw_metrics` no Supabase e gerado pacote v15 com `/` derivando o dashboard de metricas reais.
+- 2026-05-18: v15 reimplantada e validada pelo usuario em `/`.
+- 2026-05-18: gerado pacote v16 com Roadmap atualizado para refletir o progresso real ate raw_metrics.
 
 Validacao publica:
 

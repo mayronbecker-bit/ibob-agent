@@ -68,3 +68,6 @@
 - Aplicada migration de `raw_metrics` para `client-ibob`.
 - Migrado dashboard `/` para derivar cards de metricas a partir de `raw_metrics`.
 - Gerado pacote Hostinger v15 com dashboard conectado ao Supabase.
+- Publicada e validada a v15 em `/`.
+- Atualizado Roadmap para refletir fundacao de dados concluida, Data Trust concluido e integracoes em modo leitura como etapa em andamento.
+- Registrada decisao operacional de atualizar o Roadmap a cada passo.

@@ -28,6 +28,30 @@ Aceita.
 - Modelo de multi-cliente: single-tenant inicial, multi-tenant futuro ou instancias isoladas.
 - Provedor final dos workers do agente, caso sejam separados da Hostinger.
 
+## 2026-05-18 - Roadmap como registro vivo
+
+Contexto:
+
+O usuario reforcou que o Roadmap deve ser atualizado a cada passo do projeto.
+
+Decisao:
+
+Toda etapa tecnica concluida deve atualizar tambem o Roadmap operacional do produto, incluindo status, descricao e proximo marco quando aplicavel.
+
+Motivo:
+
+Manter a execucao tecnica alinhada ao plano vendavel e escalavel do produto, evitando que o app evolua sem que o usuario enxergue claramente o progresso e as proximas dependencias.
+
+Consequencias:
+
+- Alteracoes futuras devem revisar `/roadmap` junto com documentacao e changelog.
+- O Roadmap deve refletir o estado real validado em producao, nao apenas o plano inicial.
+- Commits de feature devem incluir ajuste de Roadmap quando mudarem o estado do produto.
+
+Status:
+
+Aceita.
+
 ## 2026-05-11 - Git local
 
 Contexto:
