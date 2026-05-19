@@ -36,6 +36,21 @@ export type {
   ContextVersion,
   ContextGap,
 
+  // Context Research
+  ContextResearchRunStatus,
+  ContextResearchSourceType,
+  ContextResearchFindingType,
+  ContextResearchReviewStatus,
+  CompetitorProfileStatus,
+  ContextMemoryType,
+  ContextMemoryStatus,
+  ContextResearchRun,
+  ContextResearchSource,
+  ContextResearchFinding,
+  CompetitorProfile,
+  CompetitorInsight,
+  ContextMemoryItem,
+
   // Raw Metric
   RawMetric,
 

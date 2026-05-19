@@ -331,6 +331,306 @@ export type Database = {
           updated_at: string;
         }>
       >;
+      context_research_runs: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          context_id: string;
+          client_id: string;
+          requested_by: string | null;
+          status: Database['public']['Enums']['context_research_run_status'];
+          company_url: string | null;
+          search_query: string | null;
+          scope: Json;
+          summary: string | null;
+          error_message: string | null;
+          started_at: string | null;
+          completed_at: string | null;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          requested_by?: string | null;
+          status?: Database['public']['Enums']['context_research_run_status'];
+          company_url?: string | null;
+          search_query?: string | null;
+          scope?: Json;
+          summary?: string | null;
+          error_message?: string | null;
+          started_at?: string | null;
+          completed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          requested_by: string | null;
+          status: Database['public']['Enums']['context_research_run_status'];
+          company_url: string | null;
+          search_query: string | null;
+          scope: Json;
+          summary: string | null;
+          error_message: string | null;
+          started_at: string | null;
+          completed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_research_sources: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          research_run_id: string;
+          context_id: string;
+          client_id: string;
+          source_type: Database['public']['Enums']['context_research_source_type'];
+          title: string | null;
+          url: string | null;
+          publisher: string | null;
+          accessed_at: string;
+          snippet: string | null;
+          metadata: Json;
+        },
+        {
+          id?: string;
+          research_run_id: string;
+          context_id: string;
+          client_id: string;
+          source_type: Database['public']['Enums']['context_research_source_type'];
+          title?: string | null;
+          url?: string | null;
+          publisher?: string | null;
+          accessed_at?: string;
+          snippet?: string | null;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          research_run_id: string;
+          context_id: string;
+          client_id: string;
+          source_type: Database['public']['Enums']['context_research_source_type'];
+          title: string | null;
+          url: string | null;
+          publisher: string | null;
+          accessed_at: string;
+          snippet: string | null;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_research_findings: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          research_run_id: string;
+          source_id: string | null;
+          context_id: string;
+          client_id: string;
+          finding_type: Database['public']['Enums']['context_research_finding_type'];
+          title: string;
+          finding: string;
+          evidence: string | null;
+          confidence: number;
+          review_status: Database['public']['Enums']['context_research_review_status'];
+          suggested_question_id: string | null;
+          suggested_answer_text: string | null;
+          metadata: Json;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          research_run_id: string;
+          source_id?: string | null;
+          context_id: string;
+          client_id: string;
+          finding_type: Database['public']['Enums']['context_research_finding_type'];
+          title: string;
+          finding: string;
+          evidence?: string | null;
+          confidence?: number;
+          review_status?: Database['public']['Enums']['context_research_review_status'];
+          suggested_question_id?: string | null;
+          suggested_answer_text?: string | null;
+          metadata?: Json;
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          research_run_id: string;
+          source_id: string | null;
+          context_id: string;
+          client_id: string;
+          finding_type: Database['public']['Enums']['context_research_finding_type'];
+          title: string;
+          finding: string;
+          evidence: string | null;
+          confidence: number;
+          review_status: Database['public']['Enums']['context_research_review_status'];
+          suggested_question_id: string | null;
+          suggested_answer_text: string | null;
+          metadata: Json;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      competitor_profiles: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          context_id: string;
+          client_id: string;
+          name: string;
+          website_url: string | null;
+          status: Database['public']['Enums']['competitor_profile_status'];
+          positioning: string | null;
+          offer_summary: string | null;
+          strengths: string | null;
+          weaknesses: string | null;
+          metadata: Json;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          name: string;
+          website_url?: string | null;
+          status?: Database['public']['Enums']['competitor_profile_status'];
+          positioning?: string | null;
+          offer_summary?: string | null;
+          strengths?: string | null;
+          weaknesses?: string | null;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          name: string;
+          website_url: string | null;
+          status: Database['public']['Enums']['competitor_profile_status'];
+          positioning: string | null;
+          offer_summary: string | null;
+          strengths: string | null;
+          weaknesses: string | null;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      competitor_insights: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          competitor_id: string;
+          research_run_id: string | null;
+          context_id: string;
+          client_id: string;
+          insight_type: Database['public']['Enums']['context_research_finding_type'];
+          insight: string;
+          evidence: string | null;
+          source_url: string | null;
+          confidence: number;
+          review_status: Database['public']['Enums']['context_research_review_status'];
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          competitor_id: string;
+          research_run_id?: string | null;
+          context_id: string;
+          client_id: string;
+          insight_type: Database['public']['Enums']['context_research_finding_type'];
+          insight: string;
+          evidence?: string | null;
+          source_url?: string | null;
+          confidence?: number;
+          review_status?: Database['public']['Enums']['context_research_review_status'];
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          competitor_id: string;
+          research_run_id: string | null;
+          context_id: string;
+          client_id: string;
+          insight_type: Database['public']['Enums']['context_research_finding_type'];
+          insight: string;
+          evidence: string | null;
+          source_url: string | null;
+          confidence: number;
+          review_status: Database['public']['Enums']['context_research_review_status'];
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_memory_items: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          context_id: string;
+          client_id: string;
+          source_finding_id: string | null;
+          source_competitor_insight_id: string | null;
+          memory_type: Database['public']['Enums']['context_memory_type'];
+          status: Database['public']['Enums']['context_memory_status'];
+          title: string;
+          content: string;
+          confidence: number;
+          created_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          source_finding_id?: string | null;
+          source_competitor_insight_id?: string | null;
+          memory_type: Database['public']['Enums']['context_memory_type'];
+          status?: Database['public']['Enums']['context_memory_status'];
+          title: string;
+          content: string;
+          confidence?: number;
+          created_by?: string | null;
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          source_finding_id: string | null;
+          source_competitor_insight_id: string | null;
+          memory_type: Database['public']['Enums']['context_memory_type'];
+          status: Database['public']['Enums']['context_memory_status'];
+          title: string;
+          content: string;
+          confidence: number;
+          created_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
       data_sources: TableDefinition<
         TimestampColumns & {
           id: string;
@@ -681,6 +981,52 @@ export type Database = {
       context_answer_source: 'user' | 'imported' | 'agent_inferred' | 'manual_review';
       context_gap_status: 'open' | 'resolved' | 'ignored';
       context_gap_severity: 'info' | 'warning' | 'critical';
+      context_research_run_status:
+        | 'queued'
+        | 'running'
+        | 'completed'
+        | 'failed'
+        | 'cancelled'
+        | 'needs_review';
+      context_research_source_type:
+        | 'company_site'
+        | 'competitor_site'
+        | 'search_result'
+        | 'social_profile'
+        | 'directory'
+        | 'user_supplied'
+        | 'other';
+      context_research_finding_type:
+        | 'positioning'
+        | 'offer'
+        | 'pricing'
+        | 'audience'
+        | 'differentiator'
+        | 'proof'
+        | 'channel'
+        | 'competitor'
+        | 'gap'
+        | 'risk'
+        | 'sales_process'
+        | 'location'
+        | 'product'
+        | 'review_signal'
+        | 'opportunity';
+      context_research_review_status:
+        | 'needs_review'
+        | 'accepted'
+        | 'rejected'
+        | 'converted_to_context'
+        | 'converted_to_memory';
+      competitor_profile_status: 'candidate' | 'active' | 'dismissed';
+      context_memory_type:
+        | 'company_context'
+        | 'competitor_context'
+        | 'market_context'
+        | 'risk'
+        | 'opportunity'
+        | 'constraint';
+      context_memory_status: 'draft' | 'active' | 'archived';
     };
     CompositeTypes: Record<string, never>;
   };

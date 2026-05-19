@@ -167,6 +167,165 @@ export interface ContextGap {
   updatedAt: string;
 }
 
+// ===== Context Research =====
+
+export type ContextResearchRunStatus =
+  | 'queued'
+  | 'running'
+  | 'completed'
+  | 'failed'
+  | 'cancelled'
+  | 'needs_review';
+
+export type ContextResearchSourceType =
+  | 'company_site'
+  | 'competitor_site'
+  | 'search_result'
+  | 'social_profile'
+  | 'directory'
+  | 'user_supplied'
+  | 'other';
+
+export type ContextResearchFindingType =
+  | 'positioning'
+  | 'offer'
+  | 'pricing'
+  | 'audience'
+  | 'differentiator'
+  | 'proof'
+  | 'channel'
+  | 'competitor'
+  | 'gap'
+  | 'risk'
+  | 'sales_process'
+  | 'location'
+  | 'product'
+  | 'review_signal'
+  | 'opportunity';
+
+export type ContextResearchReviewStatus =
+  | 'needs_review'
+  | 'accepted'
+  | 'rejected'
+  | 'converted_to_context'
+  | 'converted_to_memory';
+
+export type CompetitorProfileStatus = 'candidate' | 'active' | 'dismissed';
+export type ContextMemoryType =
+  | 'company_context'
+  | 'competitor_context'
+  | 'market_context'
+  | 'risk'
+  | 'opportunity'
+  | 'constraint';
+export type ContextMemoryStatus = 'draft' | 'active' | 'archived';
+
+export interface ContextResearchRun {
+  id: string;
+  contextId: string;
+  clientId: string;
+  requestedBy?: string;
+  status: ContextResearchRunStatus;
+  companyUrl?: string;
+  searchQuery?: string;
+  scope: Record<string, unknown>;
+  summary?: string;
+  errorMessage?: string;
+  startedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextResearchSource {
+  id: string;
+  researchRunId: string;
+  contextId: string;
+  clientId: string;
+  sourceType: ContextResearchSourceType;
+  title?: string;
+  url?: string;
+  publisher?: string;
+  accessedAt: string;
+  snippet?: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextResearchFinding {
+  id: string;
+  researchRunId: string;
+  sourceId?: string;
+  contextId: string;
+  clientId: string;
+  findingType: ContextResearchFindingType;
+  title: string;
+  finding: string;
+  evidence?: string;
+  confidence: number;
+  reviewStatus: ContextResearchReviewStatus;
+  suggestedQuestionId?: string;
+  suggestedAnswerText?: string;
+  metadata: Record<string, unknown>;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CompetitorProfile {
+  id: string;
+  contextId: string;
+  clientId: string;
+  name: string;
+  websiteUrl?: string;
+  status: CompetitorProfileStatus;
+  positioning?: string;
+  offerSummary?: string;
+  strengths?: string;
+  weaknesses?: string;
+  metadata: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CompetitorInsight {
+  id: string;
+  competitorId: string;
+  researchRunId?: string;
+  contextId: string;
+  clientId: string;
+  insightType: ContextResearchFindingType;
+  insight: string;
+  evidence?: string;
+  sourceUrl?: string;
+  confidence: number;
+  reviewStatus: ContextResearchReviewStatus;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextMemoryItem {
+  id: string;
+  contextId: string;
+  clientId: string;
+  sourceFindingId?: string;
+  sourceCompetitorInsightId?: string;
+  memoryType: ContextMemoryType;
+  status: ContextMemoryStatus;
+  title: string;
+  content: string;
+  confidence: number;
+  createdBy?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ===== Raw Metric =====
 
 export interface RawMetric {

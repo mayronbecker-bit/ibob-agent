@@ -32,6 +32,8 @@ Context Intelligence deve entrar antes de:
 - Execution Engine;
 - integracoes externas de Ads.
 
+Context Research Layer entra dentro desta fase, depois do diagnostico manual inicial e antes do Decision Engine. Ele pesquisa site da empresa e concorrentes, mas mantem os achados como evidencias revisaveis antes de virarem memoria ou resposta ativa.
+
 ## Diagnostico inteligente
 
 A entrada de contexto deve ser feita por perguntas e respostas intencionais, nao por um campo livre solto.
@@ -153,4 +155,7 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 - Primeira tela de diagnostico criada em `/context`.
 - `/context` le `business_contexts`, `context_questions`, `context_answers` e `context_gaps` pelo Supabase.
 - `/context` permite salvar respostas em `context_answers` e recalcular completude do contexto.
+- Context Research Layer desenhado em `docs/CONTEXT_RESEARCH.md`.
+- Migration local de pesquisa contextual preparada para site da empresa, concorrentes, achados, evidencias e memoria contextual.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.
+- Ainda falta informar o site oficial da iBob e aplicar a migration de pesquisa no Supabase remoto.

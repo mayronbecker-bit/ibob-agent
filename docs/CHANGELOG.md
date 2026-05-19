@@ -100,3 +100,6 @@
 - Publicada e aprovada a v27 em `/roadmap`.
 - Implementada primeira tela `/context` para diagnostico inteligente com leitura e escrita em `context_answers`.
 - Adicionado item `Diagnostico` ao menu lateral.
+- Preparada migration local `context_research_layer` para pesquisar site da empresa, concorrentes, fontes, achados, insights e memoria contextual revisada.
+- Criada documentacao `docs/CONTEXT_RESEARCH.md`.
+- Roadmap atualizado com etapa `Context Research Layer` antes do Decision Engine.

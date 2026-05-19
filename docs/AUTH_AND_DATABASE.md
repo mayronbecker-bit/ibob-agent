@@ -566,3 +566,37 @@ Implementado em 2026-05-19:
 - exibicao de lacunas abertas antes de liberar Decision Engine.
 
 Nenhuma integracao externa de Ads foi conectada nesta etapa.
+
+## Context Research Layer
+
+Migration preparada localmente em 2026-05-19:
+
+```text
+infra/supabase/migrations/20260519160000_create_context_research_layer.sql
+```
+
+Ela prepara a camada para o agente pesquisar o site da empresa e concorrentes antes do Decision Engine.
+
+Inclui:
+
+- `context_research_runs`;
+- `context_research_sources`;
+- `context_research_findings`;
+- `competitor_profiles`;
+- `competitor_insights`;
+- `context_memory_items`;
+- RLS por `client_id`;
+- leitura por membros do cliente;
+- escrita por `owner` e `admin`;
+- lacuna inicial `ibob.company_site_required` para pedir o site oficial da iBob.
+
+Estado atual:
+
+- migration criada apenas localmente;
+- ainda nao aplicada no Supabase remoto;
+- tipos TypeScript atualizados no app;
+- Roadmap atualizado com a etapa `Context Research Layer`.
+
+Proxima acao:
+
+Aplicar a migration no Supabase remoto apenas depois da autorizacao explicita do usuario e informar o site oficial da iBob para iniciar o primeiro run de pesquisa supervisionado.

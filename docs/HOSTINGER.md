@@ -192,6 +192,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: aplicada migration `context_intelligence` no Supabase remoto e preparado Roadmap para pacote v27.
 - 2026-05-19: v27 reimplantada e aprovada pelo usuario.
 - 2026-05-19: preparado pacote v28 com tela `/context` para diagnostico inteligente.
+- 2026-05-19: preparado pacote v29 com Roadmap atualizado para Context Research Layer e schema local de pesquisa contextual.
 
 Validacao publica:
 

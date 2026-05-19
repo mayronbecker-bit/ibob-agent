@@ -96,6 +96,32 @@ Status:
 
 Aceita.
 
+## 2026-05-19 - Context Research Layer antes do Decision Engine
+
+Contexto:
+
+O usuario reforcou que o diagnostico precisa ser inteligente: alem das respostas manuais, o agente deve pesquisar a empresa pelo site oficial, pesquisar concorrentes e acrescentar aprendizados a memoria.
+
+Decisao:
+
+Preparar a camada `Context Research Layer` com execucoes de pesquisa, fontes, achados, perfis de concorrentes, insights concorrenciais e itens de memoria contextual. Achados pesquisados entram com evidencia, confianca e status de revisao antes de serem convertidos para contexto ativo.
+
+Motivo:
+
+O produto deve entender o negocio e o mercado antes de recomendar acoes de Ads. Pesquisar sem trilha de evidencia geraria risco de erro; por isso os achados precisam ser revisaveis e auditaveis.
+
+Consequencias:
+
+- O Roadmap ganha etapa propria para pesquisa contextual.
+- `context_memory_items` vira a memoria contextual da empresa e do mercado.
+- Achados de site/concorrentes nao viram verdade ate revisao humana.
+- Decision Engine deve usar apenas contexto, memoria e insights aceitos.
+- A migration fica local ate autorizacao explicita para aplicar no Supabase remoto.
+
+Status:
+
+Aceita e preparada localmente. Ainda nao aplicada no Supabase remoto.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

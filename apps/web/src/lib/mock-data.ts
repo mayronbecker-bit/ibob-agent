@@ -520,41 +520,48 @@ export const roadmapStages: RoadmapStage[] = [
   },
   {
     number: 7,
+    title: 'Context Research Layer',
+    status: 'in_progress',
+    description:
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema local preparado para execucoes de pesquisa, fontes, achados com evidencia, perfis concorrentes e memoria contextual revisada.',
+  },
+  {
+    number: 8,
     title: 'Decision Engine supervisionado',
     status: 'planned',
     description:
       'Gerar sugestoes com IA usando dados reais, contexto comercial estruturado, mocks controlados ou importacoes manuais. Modelo nunca executa diretamente e consulta contexto e memoria antes de sugerir.',
   },
   {
-    number: 8,
+    number: 9,
     title: 'Validação determinística',
     status: 'planned',
     description:
       'Limites de budget, estoque, margem, tracking, capacidade comercial e risco. Uma sugestao so vira proposta se passar por todas as regras deterministicas e pelo contexto da empresa.',
   },
   {
-    number: 9,
+    number: 10,
     title: 'Execution Engine (dry run)',
     status: 'planned',
     description:
       'Executor separado do Decision Engine. Simulacao completa antes de tocar contas reais. Logs, estado anterior e rollback desenhados antes de qualquer escrita externa.',
   },
   {
-    number: 10,
+    number: 11,
     title: 'Produto escalável',
     status: 'planned',
     description:
       'Generalizar configuracoes da iBob. Onboarding de novos clientes, diagnostico de contexto por cliente, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
   },
   {
-    number: 11,
+    number: 12,
     title: 'Integrações em modo leitura',
     status: 'planned',
     description:
       'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos contexto, produto e governanca estarem validados.',
   },
   {
-    number: 12,
+    number: 13,
     title: 'Execução controlada',
     status: 'planned',
     description:
