@@ -84,3 +84,4 @@
 - Preparada migration local `audit_events` para fundacao de auditoria por cliente.
 - Gerado pacote Hostinger v21 com Roadmap atualizado para a etapa de auditoria.
 - Aplicada e validada a migration `audit_events` no Supabase remoto.
+- Publicada e validada a v22 em `/roadmap` com auditoria aplicada no Supabase.
