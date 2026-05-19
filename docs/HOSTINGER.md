@@ -188,6 +188,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: v24 reimplantada e validada pelo usuario em `/roadmap`.
 - 2026-05-19: gerado pacote v25 com Roadmap atualizado para Context Intelligence antes do Decision Engine.
 - 2026-05-19: v25 reimplantada e validada pelo usuario em `/roadmap`.
+- 2026-05-19: gerado pacote v26 com Roadmap atualizado e schema local de Context Intelligence preparado.
 
 Validacao publica:
 

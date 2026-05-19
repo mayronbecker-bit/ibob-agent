@@ -513,3 +513,41 @@ Implementado no app:
 - RLS limita a leitura ao `client_id` do usuario logado.
 - A tela mostra contadores por severidade, lista eventos recentes e volta para mock apenas em fallback.
 - O menu lateral passa a incluir a entrada `Auditoria`.
+
+## Context Intelligence
+
+Migration preparada em 2026-05-19:
+
+```text
+infra/supabase/migrations/20260519133000_create_context_intelligence.sql
+```
+
+Ela prepara a base para o diagnostico inteligente da empresa antes de Decision Engine, rule_validator ou integracoes externas de Ads.
+
+Inclui:
+
+- enums de status, categoria de pergunta, tipo de resposta, fonte de resposta, status de lacuna e severidade;
+- `business_contexts`;
+- `context_questions`;
+- `context_answers`;
+- `context_versions`;
+- `context_gaps`;
+- indices por cliente/status/categoria;
+- triggers de `updated_at`;
+- RLS por `client_id`;
+- leitura por membros do cliente;
+- escrita por `owner` e `admin`;
+- seed de 19 perguntas intencionais;
+- contexto draft inicial para `client-ibob`;
+- lacuna aberta para migrar o contexto comercial ja levantado da iBob.
+
+Estado atual:
+
+- migration criada apenas localmente;
+- ainda nao aplicada no Supabase remoto;
+- tipos TypeScript atualizados no app;
+- Roadmap atualizado para marcar Context Intelligence em andamento.
+
+Proxima acao:
+
+Aplicar a migration no Supabase remoto apenas depois da autorizacao explicita do usuario.

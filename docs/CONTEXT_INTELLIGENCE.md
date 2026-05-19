@@ -58,9 +58,15 @@ Categorias iniciais:
 - Indicadores de lead ruim.
 - Nivel de previsibilidade esperado.
 
-## Estrutura futura sugerida
+## Schema local preparado
 
-Tabelas candidatas:
+Migration local criada em 2026-05-19:
+
+```text
+infra/supabase/migrations/20260519133000_create_context_intelligence.sql
+```
+
+Tabelas:
 
 - `business_contexts`
 - `context_questions`
@@ -68,7 +74,16 @@ Tabelas candidatas:
 - `context_versions`
 - `context_gaps`
 
-Campos conceituais:
+Enums:
+
+- `context_status`: `draft`, `active`, `archived`
+- `context_question_category`: oferta, economia, publico, geografia, sazonalidade, processo comercial, capacidade, metas, restricoes, diferenciacao, qualidade de lead, previsibilidade e operacao.
+- `context_answer_type`: texto, numero, booleano, escolha unica, multipla escolha, moeda, percentual e json.
+- `context_answer_source`: usuario, importacao, inferencia do agente e revisao manual.
+- `context_gap_status`: aberto, resolvido ou ignorado.
+- `context_gap_severity`: info, warning ou critical.
+
+Campos principais:
 
 - `client_id`
 - `version`
@@ -81,6 +96,22 @@ Campos conceituais:
 - `reviewed_by`
 - `reviewed_at`
 - `is_active`
+
+Garantias:
+
+- isolamento por `client_id`;
+- RLS habilitado em todas as tabelas;
+- leitura por membros do cliente;
+- escrita por `owner` e `admin`;
+- banco global de perguntas ativo para usuarios autenticados;
+- `context_answers`, `context_versions` e `context_gaps` vinculados ao mesmo `context_id` e `client_id`.
+
+Seed inicial:
+
+- 19 perguntas intencionais de diagnostico.
+- contexto draft `Contexto comercial iBob` para `client-ibob`.
+- versao draft 1.
+- lacuna aberta para migrar o contexto comercial ja levantado da iBob.
 
 ## Como o contexto deve ser usado
 
@@ -114,5 +145,10 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 
 - Etapa adicionada ao Roadmap.
 - Conceito documentado.
-- Ainda falta criar schema, perguntas iniciais e tela de diagnostico.
+- Schema local criado e pronto para aplicacao supervisionada no Supabase.
+- Perguntas iniciais versionadas na migration local.
+- Tipos TypeScript atualizados no app.
+- Roadmap atualizado para marcar Context Intelligence em andamento.
+- Ainda falta aplicar a migration no Supabase remoto com autorizacao explicita.
+- Ainda falta criar tela de diagnostico.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.

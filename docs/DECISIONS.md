@@ -45,6 +45,32 @@ Status:
 
 Aceita.
 
+## 2026-05-19 - Schema de Context Intelligence
+
+Contexto:
+
+A etapa de Context Intelligence precisava sair do conceito e virar base de dados versionada para perguntas, respostas, revisao, lacunas e evolucao do contexto por cliente.
+
+Decisao:
+
+Criar a migration `20260519133000_create_context_intelligence.sql` com `business_contexts`, `context_questions`, `context_answers`, `context_versions` e `context_gaps`, usando RLS por `client_id` e seeds iniciais de perguntas comerciais intencionais.
+
+Motivo:
+
+O produto precisa saber o que sabe, o que ainda nao sabe e quais lacunas impedem uma recomendacao segura. Isso prepara o agente para vender mais com menor custo e mais previsibilidade sem depender primeiro de integracoes de Ads.
+
+Consequencias:
+
+- Contexto passa a ser versionavel e revisavel.
+- Perguntas iniciais ficam no banco e nao soltas em texto livre.
+- Owners/admins podem gerenciar contexto; membros podem ler.
+- Decision Engine e rule_validator passam a ter dependencia clara de contexto minimo.
+- A migration fica local ate autorizacao explicita para aplicar no Supabase remoto.
+
+Status:
+
+Aceita e preparada localmente. Ainda nao aplicada no Supabase remoto.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

@@ -92,3 +92,6 @@
 - Adicionada etapa `Context Intelligence` ao Roadmap antes do Decision Engine.
 - Documentada a arquitetura inicial em `docs/CONTEXT_INTELLIGENCE.md`.
 - Publicada e validada a v25 em `/roadmap`.
+- Preparada migration local de Context Intelligence com schema, RLS, perguntas iniciais, versionamento e lacunas de contexto.
+- Atualizados tipos TypeScript, documentacao operacional e Roadmap para a v26.
+- Gerado pacote Hostinger v26 com o Roadmap marcando Context Intelligence em andamento.

@@ -59,6 +59,114 @@ export interface DataTrustState {
   blockingReason?: string;
 }
 
+// ===== Context Intelligence =====
+
+export type ContextStatus = 'draft' | 'active' | 'archived';
+
+export type ContextQuestionCategory =
+  | 'offer'
+  | 'economics'
+  | 'audience'
+  | 'geography'
+  | 'seasonality'
+  | 'sales_process'
+  | 'capacity'
+  | 'goals'
+  | 'constraints'
+  | 'differentiation'
+  | 'lead_quality'
+  | 'predictability'
+  | 'operations';
+
+export type ContextAnswerType =
+  | 'text'
+  | 'number'
+  | 'boolean'
+  | 'single_choice'
+  | 'multi_choice'
+  | 'currency'
+  | 'percentage'
+  | 'json';
+
+export type ContextAnswerSource = 'user' | 'imported' | 'agent_inferred' | 'manual_review';
+export type ContextGapStatus = 'open' | 'resolved' | 'ignored';
+export type ContextGapSeverity = 'info' | 'warning' | 'critical';
+
+export interface BusinessContext {
+  id: string;
+  clientId: string;
+  name: string;
+  status: ContextStatus;
+  summary?: string;
+  completenessScore: number;
+  createdBy?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextQuestion {
+  id: string;
+  questionKey: string;
+  category: ContextQuestionCategory;
+  question: string;
+  intent: string;
+  answerType: ContextAnswerType;
+  required: boolean;
+  sortOrder: number;
+  options: unknown[];
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextAnswer {
+  id: string;
+  contextId: string;
+  clientId: string;
+  questionId: string;
+  answerText?: string;
+  answerValue: Record<string, unknown>;
+  confidence: number;
+  source: ContextAnswerSource;
+  answeredBy?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ContextVersion {
+  id: string;
+  contextId: string;
+  clientId: string;
+  version: number;
+  status: ContextStatus;
+  summary?: string;
+  completenessScore: number;
+  snapshot: Record<string, unknown>;
+  createdBy?: string;
+  createdAt: string;
+  activatedAt?: string;
+}
+
+export interface ContextGap {
+  id: string;
+  contextId: string;
+  clientId: string;
+  questionId?: string;
+  gapKey: string;
+  severity: ContextGapSeverity;
+  status: ContextGapStatus;
+  description: string;
+  recommendation?: string;
+  resolvedBy?: string;
+  resolvedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // ===== Raw Metric =====
 
 export interface RawMetric {

@@ -23,6 +23,19 @@ export type {
   DataSource,
   DataTrustState,
 
+  // Context Intelligence
+  ContextStatus,
+  ContextQuestionCategory,
+  ContextAnswerType,
+  ContextAnswerSource,
+  ContextGapStatus,
+  ContextGapSeverity,
+  BusinessContext,
+  ContextQuestion,
+  ContextAnswer,
+  ContextVersion,
+  ContextGap,
+
   // Raw Metric
   RawMetric,
 

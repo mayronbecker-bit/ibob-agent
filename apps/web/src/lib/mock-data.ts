@@ -390,9 +390,9 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 6,
     title: 'Context Intelligence',
-    status: 'planned',
+    status: 'in_progress',
     description:
-      'Diagnostico inteligente da empresa antes de analisar Ads: perguntas e respostas sobre oferta, margem, publico, capacidade, metas, restricoes, sazonalidade e previsibilidade comercial.',
+      'Diagnostico inteligente da empresa antes de analisar Ads. Schema local, perguntas iniciais, versionamento de contexto e lacunas foram preparados para aplicacao no Supabase.',
   },
   {
     number: 7,

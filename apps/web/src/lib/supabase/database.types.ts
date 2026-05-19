@@ -119,6 +119,218 @@ export type Database = {
           is_active: boolean;
         }>
       >;
+      business_contexts: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          client_id: string;
+          name: string;
+          status: Database['public']['Enums']['context_status'];
+          summary: string | null;
+          completeness_score: number;
+          created_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          client_id: string;
+          name: string;
+          status?: Database['public']['Enums']['context_status'];
+          summary?: string | null;
+          completeness_score?: number;
+          created_by?: string | null;
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          name: string;
+          status: Database['public']['Enums']['context_status'];
+          summary: string | null;
+          completeness_score: number;
+          created_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_questions: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          question_key: string;
+          category: Database['public']['Enums']['context_question_category'];
+          question: string;
+          intent: string;
+          answer_type: Database['public']['Enums']['context_answer_type'];
+          required: boolean;
+          sort_order: number;
+          options: Json;
+          is_active: boolean;
+        },
+        {
+          id?: string;
+          question_key: string;
+          category: Database['public']['Enums']['context_question_category'];
+          question: string;
+          intent: string;
+          answer_type?: Database['public']['Enums']['context_answer_type'];
+          required?: boolean;
+          sort_order?: number;
+          options?: Json;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          question_key: string;
+          category: Database['public']['Enums']['context_question_category'];
+          question: string;
+          intent: string;
+          answer_type: Database['public']['Enums']['context_answer_type'];
+          required: boolean;
+          sort_order: number;
+          options: Json;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_answers: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          context_id: string;
+          client_id: string;
+          question_id: string;
+          answer_text: string | null;
+          answer_value: Json;
+          confidence: number;
+          source: Database['public']['Enums']['context_answer_source'];
+          answered_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          question_id: string;
+          answer_text?: string | null;
+          answer_value?: Json;
+          confidence?: number;
+          source?: Database['public']['Enums']['context_answer_source'];
+          answered_by?: string | null;
+          reviewed_by?: string | null;
+          reviewed_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          question_id: string;
+          answer_text: string | null;
+          answer_value: Json;
+          confidence: number;
+          source: Database['public']['Enums']['context_answer_source'];
+          answered_by: string | null;
+          reviewed_by: string | null;
+          reviewed_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      context_versions: TableDefinition<
+        {
+          id: string;
+          context_id: string;
+          client_id: string;
+          version: number;
+          status: Database['public']['Enums']['context_status'];
+          summary: string | null;
+          completeness_score: number;
+          snapshot: Json;
+          created_by: string | null;
+          created_at: string;
+          activated_at: string | null;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          version: number;
+          status?: Database['public']['Enums']['context_status'];
+          summary?: string | null;
+          completeness_score?: number;
+          snapshot?: Json;
+          created_by?: string | null;
+          created_at?: string;
+          activated_at?: string | null;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          version: number;
+          status: Database['public']['Enums']['context_status'];
+          summary: string | null;
+          completeness_score: number;
+          snapshot: Json;
+          created_by: string | null;
+          created_at: string;
+          activated_at: string | null;
+        }>
+      >;
+      context_gaps: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          context_id: string;
+          client_id: string;
+          question_id: string | null;
+          gap_key: string;
+          severity: Database['public']['Enums']['context_gap_severity'];
+          status: Database['public']['Enums']['context_gap_status'];
+          description: string;
+          recommendation: string | null;
+          resolved_by: string | null;
+          resolved_at: string | null;
+        },
+        {
+          id?: string;
+          context_id: string;
+          client_id: string;
+          question_id?: string | null;
+          gap_key: string;
+          severity?: Database['public']['Enums']['context_gap_severity'];
+          status?: Database['public']['Enums']['context_gap_status'];
+          description: string;
+          recommendation?: string | null;
+          resolved_by?: string | null;
+          resolved_at?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          context_id: string;
+          client_id: string;
+          question_id: string | null;
+          gap_key: string;
+          severity: Database['public']['Enums']['context_gap_severity'];
+          status: Database['public']['Enums']['context_gap_status'];
+          description: string;
+          recommendation: string | null;
+          resolved_by: string | null;
+          resolved_at: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
       data_sources: TableDefinition<
         TimestampColumns & {
           id: string;
@@ -442,6 +654,33 @@ export type Database = {
       approval_decision: 'approved' | 'rejected' | 'deferred';
       execution_result: 'success' | 'failure' | 'skipped' | 'simulated';
       audit_event_severity: 'info' | 'warning' | 'critical';
+      context_status: 'draft' | 'active' | 'archived';
+      context_question_category:
+        | 'offer'
+        | 'economics'
+        | 'audience'
+        | 'geography'
+        | 'seasonality'
+        | 'sales_process'
+        | 'capacity'
+        | 'goals'
+        | 'constraints'
+        | 'differentiation'
+        | 'lead_quality'
+        | 'predictability'
+        | 'operations';
+      context_answer_type:
+        | 'text'
+        | 'number'
+        | 'boolean'
+        | 'single_choice'
+        | 'multi_choice'
+        | 'currency'
+        | 'percentage'
+        | 'json';
+      context_answer_source: 'user' | 'imported' | 'agent_inferred' | 'manual_review';
+      context_gap_status: 'open' | 'resolved' | 'ignored';
+      context_gap_severity: 'info' | 'warning' | 'critical';
     };
     CompositeTypes: Record<string, never>;
   };
