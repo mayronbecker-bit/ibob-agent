@@ -493,11 +493,12 @@ Ela prepara a tabela `public.audit_events` para registrar eventos de produto, se
 
 Estado atual:
 
-- migration criada localmente e ainda nao aplicada no Supabase remoto;
-- RLS preparada por `client_id`;
-- membros podem ler eventos do proprio cliente;
-- owners/admins podem inserir eventos;
-- um evento inicial `platform.audit_foundation_created` sera registrado para `client-ibob` quando a migration for aplicada.
+- migration `20260519093000` aplicada no Supabase remoto em 2026-05-19;
+- tabela `public.audit_events` validada no remoto;
+- RLS ativo em `public.audit_events`;
+- policy `members can read audit events` criada para leitura por membros do cliente;
+- policy `admins can write audit events` criada para insercao por owners/admins;
+- evento inicial `platform.audit_foundation_created` registrado para `client-ibob`.
 
 Uso planejado:
 

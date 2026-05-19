@@ -57,6 +57,13 @@ Local          | Remote
 20260517103000 | 20260517103000
 ```
 
+Validado em 2026-05-19:
+
+```text
+Local          | Remote
+20260519093000 | 20260519093000
+```
+
 ## Primeiro cliente
 
 A migration cria o cliente piloto:

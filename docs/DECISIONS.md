@@ -42,7 +42,7 @@ Consequencias:
 
 Status:
 
-Proposta local pronta; pendente de aplicacao no Supabase remoto.
+Aceita e aplicada no Supabase remoto em 2026-05-19.
 
 ## 2026-05-18 - Headers defensivos no servidor Node
 
