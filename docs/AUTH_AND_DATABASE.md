@@ -543,11 +543,12 @@ Inclui:
 
 Estado atual:
 
-- migration criada apenas localmente;
-- ainda nao aplicada no Supabase remoto;
+- migration aplicada no Supabase remoto em 2026-05-19;
+- historico remoto validado com `npx.cmd supabase --workdir infra migration list`;
+- tipos remotos validaram `business_contexts`, `context_questions`, `context_answers`, `context_versions`, `context_gaps` e `context_status`;
 - tipos TypeScript atualizados no app;
 - Roadmap atualizado para marcar Context Intelligence em andamento.
 
 Proxima acao:
 
-Aplicar a migration no Supabase remoto apenas depois da autorizacao explicita do usuario.
+Criar a tela de diagnostico e migrar o contexto comercial ja levantado da iBob para `context_answers`.

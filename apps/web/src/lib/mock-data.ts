@@ -392,7 +392,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Intelligence',
     status: 'in_progress',
     description:
-      'Diagnostico inteligente da empresa antes de analisar Ads. Schema local, perguntas iniciais, versionamento de contexto e lacunas foram preparados para aplicacao no Supabase.',
+      'Diagnostico inteligente da empresa antes de analisar Ads. Schema, perguntas iniciais, versionamento e lacunas ja foram aplicados no Supabase; proximo passo e criar a tela de diagnostico e migrar o contexto da iBob.',
   },
   {
     number: 7,

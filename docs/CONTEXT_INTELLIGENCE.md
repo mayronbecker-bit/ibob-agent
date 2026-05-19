@@ -145,10 +145,10 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 
 - Etapa adicionada ao Roadmap.
 - Conceito documentado.
-- Schema local criado e pronto para aplicacao supervisionada no Supabase.
-- Perguntas iniciais versionadas na migration local.
+- Schema criado e aplicado no Supabase remoto em 2026-05-19.
+- Perguntas iniciais versionadas na migration.
 - Tipos TypeScript atualizados no app.
 - Roadmap atualizado para marcar Context Intelligence em andamento.
-- Ainda falta aplicar a migration no Supabase remoto com autorizacao explicita.
+- Migration remota validada pelo historico do Supabase CLI.
 - Ainda falta criar tela de diagnostico.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.

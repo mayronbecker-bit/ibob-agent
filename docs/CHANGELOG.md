@@ -95,3 +95,5 @@
 - Preparada migration local de Context Intelligence com schema, RLS, perguntas iniciais, versionamento e lacunas de contexto.
 - Atualizados tipos TypeScript, documentacao operacional e Roadmap para a v26.
 - Gerado pacote Hostinger v26 com o Roadmap marcando Context Intelligence em andamento.
+- Aplicada e validada a migration `context_intelligence` no Supabase remoto.
+- Atualizado Roadmap para registrar schema de Context Intelligence aplicado e proxima etapa de tela de diagnostico.

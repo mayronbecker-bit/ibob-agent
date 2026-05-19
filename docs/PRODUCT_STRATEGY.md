@@ -36,7 +36,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Melhorar observabilidade: logs, erros, metricas e auditoria.
 - Validar Decision Engine supervisionado, rule_validator e fluxo de aprovacao usando dados existentes, mocks controlados ou importacoes manuais antes de conectar APIs externas.
 - Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
-- Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel.
+- Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel. Schema inicial ja aplicado no Supabase em 2026-05-19.
 
 ### Fase 3 - Escala
 

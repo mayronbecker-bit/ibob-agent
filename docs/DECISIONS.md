@@ -69,7 +69,7 @@ Consequencias:
 
 Status:
 
-Aceita e preparada localmente. Ainda nao aplicada no Supabase remoto.
+Aceita e aplicada no Supabase remoto em 2026-05-19.
 
 ## 2026-05-19 - Checklist de backup e recuperacao
 
