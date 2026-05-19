@@ -20,6 +20,30 @@ Status:
 
 Aceita.
 
+## 2026-05-19 - Checklist de backup e recuperacao
+
+Contexto:
+
+O piloto ja tem deploys versionados, Supabase com migrations, auditoria e documentacao de publicacao. Antes de evoluir para rule_validator e Decision Engine, falta um procedimento minimo para recuperar o produto em caso de erro de deploy, perda de configuracao ou incidente no banco.
+
+Decisao:
+
+Criar `docs/BACKUP_AND_RECOVERY.md` como checklist operacional sem segredos, cobrindo escopo protegido, recorrencia, passos antes/depois de deploy, smoke test e roteiro de recuperacao.
+
+Motivo:
+
+Um produto vendavel precisa ter caminho de recuperacao claro antes de conectar integracoes externas ou automatizacoes sensiveis.
+
+Consequencias:
+
+- Backup/recuperacao passa a fazer parte do hardening do Roadmap.
+- O checklist nao armazena dumps, tokens ou senhas.
+- Ainda falta executar o primeiro exercicio real de restauracao.
+
+Status:
+
+Aceita.
+
 ## 2026-05-19 - Fundacao de auditoria por cliente
 
 Contexto:

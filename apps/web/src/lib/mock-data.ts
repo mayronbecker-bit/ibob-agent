@@ -385,7 +385,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Hardening do produto piloto',
     status: 'in_progress',
     description:
-      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Ja aplicados: redirect pos-login seguro, estados padronizados, headers defensivos, audit_events com RLS e UI de auditoria em /audit.',
+      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Ja aplicados: redirect pos-login seguro, estados padronizados, headers defensivos, audit_events com RLS, UI de auditoria e checklist de backup/recuperacao.',
   },
   {
     number: 6,

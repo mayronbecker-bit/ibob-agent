@@ -87,3 +87,4 @@
 - Publicada e validada a v22 em `/roadmap` com auditoria aplicada no Supabase.
 - Implementada tela `/audit` lendo eventos reais de `audit_events` no Supabase, com fallback controlado para mock.
 - Publicada e validada a v23 com Audit UI.
+- Criado checklist operacional de backup e recuperacao em `docs/BACKUP_AND_RECOVERY.md`.

@@ -184,6 +184,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: v22 reimplantada e validada pelo usuario em `/roadmap`.
 - 2026-05-19: gerado pacote v23 com tela `/audit` lendo `audit_events` pelo Supabase.
 - 2026-05-19: v23 reimplantada e validada pelo usuario em `/audit` e `/roadmap`.
+- 2026-05-19: gerado pacote v24 com Roadmap atualizado para checklist de backup e recuperacao.
 
 Validacao publica:
 
