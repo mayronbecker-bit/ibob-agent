@@ -91,3 +91,4 @@
 - Publicada e validada a v24 em `/roadmap`.
 - Adicionada etapa `Context Intelligence` ao Roadmap antes do Decision Engine.
 - Documentada a arquitetura inicial em `docs/CONTEXT_INTELLIGENCE.md`.
+- Publicada e validada a v25 em `/roadmap`.
