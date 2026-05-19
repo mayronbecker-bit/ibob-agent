@@ -592,11 +592,12 @@ Inclui:
 
 Estado atual:
 
-- migration criada apenas localmente;
-- ainda nao aplicada no Supabase remoto;
+- migration `20260519160000_create_context_research_layer.sql` aplicada no Supabase remoto em 2026-05-19;
+- migration `20260519163000_seed_ibob_context_research_run.sql` aplicada no Supabase remoto em 2026-05-19;
+- site oficial `https://www.ibob.com.br` registrado em `context_research_runs` como run `queued`;
 - tipos TypeScript atualizados no app;
 - Roadmap atualizado com a etapa `Context Research Layer`.
 
 Proxima acao:
 
-Aplicar a migration no Supabase remoto apenas depois da autorizacao explicita do usuario e informar o site oficial da iBob para iniciar o primeiro run de pesquisa supervisionado.
+Criar o executor/agente de pesquisa supervisionado para coletar fontes do site oficial e concorrentes, registrar achados e exigir revisao humana antes de promover para memoria contextual.

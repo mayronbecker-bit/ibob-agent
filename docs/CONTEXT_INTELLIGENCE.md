@@ -156,6 +156,7 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 - `/context` le `business_contexts`, `context_questions`, `context_answers` e `context_gaps` pelo Supabase.
 - `/context` permite salvar respostas em `context_answers` e recalcular completude do contexto.
 - Context Research Layer desenhado em `docs/CONTEXT_RESEARCH.md`.
-- Migration local de pesquisa contextual preparada para site da empresa, concorrentes, achados, evidencias e memoria contextual.
+- Migration de pesquisa contextual aplicada no Supabase para site da empresa, concorrentes, achados, evidencias e memoria contextual.
+- Site oficial `https://www.ibob.com.br` registrado para o primeiro run supervisionado.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.
-- Ainda falta informar o site oficial da iBob e aplicar a migration de pesquisa no Supabase remoto.
+- Ainda falta executar a pesquisa supervisionada e revisar achados antes de promover para memoria.

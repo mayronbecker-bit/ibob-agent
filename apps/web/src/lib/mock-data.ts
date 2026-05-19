@@ -523,7 +523,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema local preparado para execucoes de pesquisa, fontes, achados com evidencia, perfis concorrentes e memoria contextual revisada.',
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase e run inicial enfileirado para https://www.ibob.com.br; proximo passo e executar pesquisa supervisionada e revisar achados.',
   },
   {
     number: 8,

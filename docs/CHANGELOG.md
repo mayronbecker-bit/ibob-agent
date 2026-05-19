@@ -104,3 +104,6 @@
 - Criada documentacao `docs/CONTEXT_RESEARCH.md`.
 - Roadmap atualizado com etapa `Context Research Layer` antes do Decision Engine.
 - V29 aprovada pelo usuario como direcao da camada de pesquisa contextual.
+- Aplicada e validada a migration `context_research_layer` no Supabase remoto.
+- Registrado `https://www.ibob.com.br` como primeiro run de pesquisa contextual supervisionada em estado `queued`.
+- Roadmap atualizado para refletir Context Research aplicado e pronto para executor/agente de pesquisa.

@@ -78,10 +78,12 @@ Achados `needs_review` podem ser citados como pendencia, mas nao devem sustentar
 
 ## Estado atual
 
-- Schema local preparado.
+- Schema aplicado no Supabase remoto em 2026-05-19.
 - Tipos TypeScript atualizados.
 - Roadmap atualizado.
-- Ainda nao aplicado no Supabase remoto.
-- Ainda falta informar o site oficial da iBob.
+- Site oficial da iBob registrado: `https://www.ibob.com.br`.
+- Run inicial de pesquisa contextual criado como `queued`.
+- Lacuna `ibob.company_site_required` resolvida.
+- Lacuna `ibob.context_research_execution_pending` aberta para executar a pesquisa supervisionada.
 - Ainda falta criar executor/agente de pesquisa.
 - Ainda falta tela para revisar achados e promover para memoria.
