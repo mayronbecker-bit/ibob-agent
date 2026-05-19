@@ -4,6 +4,10 @@ import type {
   AgentVersion,
   AgentState,
   DataTrustState,
+  BusinessContext,
+  ContextQuestion,
+  ContextAnswer,
+  ContextGap,
   Proposal,
   Approval,
   DecisionMemory,
@@ -118,6 +122,126 @@ export const mockAgentState: AgentState = {
   blockingReason: dataTrustState.blockingReason,
   agentVersion: mockAgentVersion.version,
 };
+
+// ── Context Intelligence ─────────────────────────────────────────────────────
+
+export const mockBusinessContext: BusinessContext = {
+  id: 'ctx-ibob',
+  clientId: CLIENT_ID,
+  name: 'Contexto comercial iBob',
+  status: 'draft',
+  summary:
+    'Contexto comercial inicial da iBob. Aguardando migracao das respostas ja levantadas para estrutura versionada.',
+  completenessScore: 21.05,
+  createdAt: '2026-05-19T13:30:00-03:00',
+  updatedAt: '2026-05-19T13:30:00-03:00',
+};
+
+export const contextQuestions: ContextQuestion[] = [
+  {
+    id: 'q-offer-primary',
+    questionKey: 'offer.primary',
+    category: 'offer',
+    question: 'Qual e a oferta principal que mais precisa vender agora?',
+    intent: 'Identificar o foco comercial antes de otimizar campanhas.',
+    answerType: 'text',
+    required: true,
+    sortOrder: 10,
+    options: [],
+    isActive: true,
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+  {
+    id: 'q-economics-average-ticket',
+    questionKey: 'economics.average_ticket',
+    category: 'economics',
+    question: 'Qual e o ticket medio por venda?',
+    intent: 'Definir limites economicos para CPA, CAC e ROAS.',
+    answerType: 'currency',
+    required: true,
+    sortOrder: 30,
+    options: [],
+    isActive: true,
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+  {
+    id: 'q-audience-ideal-customer',
+    questionKey: 'audience.ideal_customer',
+    category: 'audience',
+    question: 'Quem e o cliente ideal?',
+    intent: 'Direcionar recomendacoes para qualidade, nao apenas volume.',
+    answerType: 'text',
+    required: true,
+    sortOrder: 50,
+    options: [],
+    isActive: true,
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+  {
+    id: 'q-capacity-delivery',
+    questionKey: 'capacity.delivery_capacity',
+    category: 'capacity',
+    question: 'Qual capacidade de atendimento ou entrega existe hoje?',
+    intent: 'Impedir escala de Ads acima da capacidade operacional.',
+    answerType: 'text',
+    required: true,
+    sortOrder: 110,
+    options: [],
+    isActive: true,
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+  {
+    id: 'q-goals-primary-metric',
+    questionKey: 'goals.primary_metric',
+    category: 'goals',
+    question:
+      'Qual metrica guia crescimento: CAC, CPA, ROAS, margem, receita ou leads qualificados?',
+    intent: 'Definir a funcao objetivo do agente.',
+    answerType: 'single_choice',
+    required: true,
+    sortOrder: 120,
+    options: ['CAC', 'CPA', 'ROAS', 'Margem', 'Receita', 'Leads qualificados', 'Outro'],
+    isActive: true,
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+];
+
+export const contextAnswers: ContextAnswer[] = [
+  {
+    id: 'ans-offer-primary',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    questionId: 'q-offer-primary',
+    answerText: 'Oferta principal em estruturacao para validacao comercial da iBob.',
+    answerValue: { value: 'Oferta principal em estruturacao para validacao comercial da iBob.' },
+    confidence: 80,
+    source: 'manual_review',
+    createdAt: '2026-05-19T13:35:00-03:00',
+    updatedAt: '2026-05-19T13:35:00-03:00',
+  },
+];
+
+export const contextGaps: ContextGap[] = [
+  {
+    id: 'gap-context-answers-pending',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    gapKey: 'ibob.context_answers_pending',
+    severity: 'warning',
+    status: 'open',
+    description:
+      'O contexto comercial ja levantado da iBob ainda precisa ser migrado para respostas versionadas.',
+    recommendation:
+      'Migrar as respostas existentes para context_answers antes de liberar Decision Engine supervisionado.',
+    createdAt: '2026-05-19T13:30:00-03:00',
+    updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+];
 
 // ── Proposals ─────────────────────────────────────────────────────────────────
 
@@ -392,7 +516,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Intelligence',
     status: 'in_progress',
     description:
-      'Diagnostico inteligente da empresa antes de analisar Ads. Schema, perguntas iniciais, versionamento e lacunas ja foram aplicados no Supabase; proximo passo e criar a tela de diagnostico e migrar o contexto da iBob.',
+      'Diagnostico inteligente da empresa antes de analisar Ads. Schema aplicado no Supabase e primeira tela /context criada para ler perguntas, salvar respostas e acompanhar lacunas; proximo passo e migrar o contexto comercial da iBob.',
   },
   {
     number: 7,

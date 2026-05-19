@@ -97,3 +97,6 @@
 - Gerado pacote Hostinger v26 com o Roadmap marcando Context Intelligence em andamento.
 - Aplicada e validada a migration `context_intelligence` no Supabase remoto.
 - Atualizado Roadmap para registrar schema de Context Intelligence aplicado e proxima etapa de tela de diagnostico.
+- Publicada e aprovada a v27 em `/roadmap`.
+- Implementada primeira tela `/context` para diagnostico inteligente com leitura e escrita em `context_answers`.
+- Adicionado item `Diagnostico` ao menu lateral.

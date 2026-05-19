@@ -551,4 +551,18 @@ Estado atual:
 
 Proxima acao:
 
-Criar a tela de diagnostico e migrar o contexto comercial ja levantado da iBob para `context_answers`.
+Migrar o contexto comercial ja levantado da iBob para `context_answers`.
+
+## Tela de diagnostico inteligente
+
+Implementado em 2026-05-19:
+
+- rota `/context`;
+- item `Diagnostico` no menu lateral;
+- leitura real de `business_contexts`, `context_questions`, `context_answers` e `context_gaps` via Supabase;
+- fallback controlado para mocks quando a leitura real falhar;
+- salvamento de respostas em `context_answers`;
+- recalculo de `business_contexts.completeness_score` apos salvar resposta;
+- exibicao de lacunas abertas antes de liberar Decision Engine.
+
+Nenhuma integracao externa de Ads foi conectada nesta etapa.

@@ -150,5 +150,7 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 - Tipos TypeScript atualizados no app.
 - Roadmap atualizado para marcar Context Intelligence em andamento.
 - Migration remota validada pelo historico do Supabase CLI.
-- Ainda falta criar tela de diagnostico.
+- Primeira tela de diagnostico criada em `/context`.
+- `/context` le `business_contexts`, `context_questions`, `context_answers` e `context_gaps` pelo Supabase.
+- `/context` permite salvar respostas em `context_answers` e recalcular completude do contexto.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.

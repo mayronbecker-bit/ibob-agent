@@ -71,6 +71,31 @@ Status:
 
 Aceita e aplicada no Supabase remoto em 2026-05-19.
 
+## 2026-05-19 - Primeira UI de Context Intelligence
+
+Contexto:
+
+O schema de Context Intelligence ja estava aplicado no Supabase, mas ainda faltava uma superficie no produto para responder perguntas, enxergar lacunas e validar a completude do diagnostico.
+
+Decisao:
+
+Criar a rota `/context` com leitura real de contexto, perguntas, respostas e lacunas. A tela permite salvar respostas em `context_answers` e recalcula a completude do `business_contexts` depois de cada resposta.
+
+Motivo:
+
+Context Intelligence precisa ser usado pelo usuario antes de virar dependencia do Decision Engine. A primeira UI permite transformar conhecimento comercial em dados versionados, sem conectar Ads e sem executar acoes externas.
+
+Consequencias:
+
+- `Diagnostico` entra no menu lateral.
+- O usuario pode responder perguntas intencionais diretamente no app.
+- Lacunas de contexto ficam visiveis antes do Decision Engine.
+- A proxima etapa passa a ser migrar o contexto comercial ja levantado da iBob para `context_answers`.
+
+Status:
+
+Aceita.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

@@ -190,6 +190,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: v25 reimplantada e validada pelo usuario em `/roadmap`.
 - 2026-05-19: gerado pacote v26 com Roadmap atualizado e schema local de Context Intelligence preparado.
 - 2026-05-19: aplicada migration `context_intelligence` no Supabase remoto e preparado Roadmap para pacote v27.
+- 2026-05-19: v27 reimplantada e aprovada pelo usuario.
+- 2026-05-19: preparado pacote v28 com tela `/context` para diagnostico inteligente.
 
 Validacao publica:
 
@@ -198,6 +200,7 @@ Validacao publica:
 - `/proposals`
 - `/approvals`
 - `/audit`
+- `/context`
 - `/memory`
 - `/roadmap`
 - `/settings`
