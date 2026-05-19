@@ -480,3 +480,28 @@ Publicacao validada em 2026-05-18:
 
 - Usuario confirmou que a v15 funcionou em producao.
 - `/` passou a operar com dashboard derivado de `raw_metrics` reais do Supabase para `client-ibob`.
+
+## Audit events
+
+Migration preparada em 2026-05-19:
+
+```text
+infra/supabase/migrations/20260519093000_create_audit_events.sql
+```
+
+Ela prepara a tabela `public.audit_events` para registrar eventos de produto, seguranca e operacao por cliente.
+
+Estado atual:
+
+- migration criada localmente e ainda nao aplicada no Supabase remoto;
+- RLS preparada por `client_id`;
+- membros podem ler eventos do proprio cliente;
+- owners/admins podem inserir eventos;
+- um evento inicial `platform.audit_foundation_created` sera registrado para `client-ibob` quando a migration for aplicada.
+
+Uso planejado:
+
+- registrar aprovacoes, rejeicoes e adiamentos relevantes;
+- registrar hardenings e mudancas operacionais;
+- registrar eventos futuros do Decision Engine, rule_validator e Execution Engine dry-run;
+- manter trilha de auditoria antes de conectar integracoes externas.

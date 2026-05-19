@@ -80,3 +80,6 @@
 - Padronizados estados de erro, fallback e vazio em dashboard, Data Trust, propostas, aprovacoes, memoria e settings.
 - Publicada e validada a v19 com estados de tela padronizados.
 - Adicionados headers defensivos no servidor Node: `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`, `Permissions-Policy` e HSTS quando servido em HTTPS.
+- Publicada e validada a v20 com headers defensivos.
+- Preparada migration local `audit_events` para fundacao de auditoria por cliente.
+- Gerado pacote Hostinger v21 com Roadmap atualizado para a etapa de auditoria.

@@ -178,6 +178,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-18: gerado pacote v19 com estados padronizados de erro, fallback e vazio nas telas principais.
 - 2026-05-18: v19 reimplantada e validada pelo usuario.
 - 2026-05-18: gerado pacote v20 com headers defensivos no servidor Node.
+- 2026-05-19: v20 reimplantada e validada pelo usuario.
+- 2026-05-19: gerado pacote v21 com Roadmap atualizado para fundacao de auditoria.
 
 Validacao publica:
 

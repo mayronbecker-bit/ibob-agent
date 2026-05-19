@@ -20,6 +20,30 @@ Status:
 
 Aceita.
 
+## 2026-05-19 - Fundacao de auditoria por cliente
+
+Contexto:
+
+O piloto ja registra approvals, decision_memory e execution_logs, mas ainda falta uma trilha generica de eventos para seguranca, produto e operacao.
+
+Decisao:
+
+Preparar a migration `audit_events` com `client_id`, usuario ator opcional, tipo de evento, severidade, entidade relacionada, descricao, metadata e timestamp. A leitura segue RLS por cliente, e a escrita inicial fica restrita a owners/admins.
+
+Motivo:
+
+Antes de conectar integracoes externas ou execucao controlada, o produto precisa explicar o que aconteceu, quem fez, quando ocorreu e qual entidade foi afetada.
+
+Consequencias:
+
+- A migration fica versionada localmente antes de ser aplicada no Supabase.
+- Auditoria vira parte explicita do hardening do produto piloto no Roadmap.
+- Eventos de Decision Engine, rule_validator e Execution Engine poderao usar essa base em etapas futuras.
+
+Status:
+
+Proposta local pronta; pendente de aplicacao no Supabase remoto.
+
 ## 2026-05-18 - Headers defensivos no servidor Node
 
 Contexto:
