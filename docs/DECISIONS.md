@@ -20,6 +20,31 @@ Status:
 
 Aceita.
 
+## 2026-05-19 - Context Intelligence antes do Decision Engine
+
+Contexto:
+
+O Roadmap previa Decision Engine supervisionado, mas o usuario reforcou que o cerebro do software precisa entender o contexto comercial da empresa antes de conectar Ads ou sugerir otimizacoes. Para a iBob, parte desse contexto ja foi alimentada, mas ainda precisa virar estrutura de produto.
+
+Decisao:
+
+Adicionar `Context Intelligence` como etapa propria antes do Decision Engine. Essa camada deve coletar perguntas e respostas inteligentes sobre oferta, margem, publico, capacidade, metas, restricoes, sazonalidade, processo comercial e previsibilidade.
+
+Motivo:
+
+O objetivo do produto nao e apenas interpretar Ads; e vender mais com menor custo e mais previsibilidade. Sem contexto comercial, o agente pode escalar leads baratos que nao compram, pausar campanhas lucrativas ou ignorar gargalos operacionais.
+
+Consequencias:
+
+- O Decision Engine passa a depender de contexto comercial estruturado.
+- O rule_validator deve usar margem, capacidade, perfil ideal e restricoes do contexto.
+- Integracoes externas continuam nas fases finais.
+- O Roadmap passa a explicitar essa etapa.
+
+Status:
+
+Aceita.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

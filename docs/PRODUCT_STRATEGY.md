@@ -35,6 +35,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Definir precificacao, limites de uso e suporte.
 - Melhorar observabilidade: logs, erros, metricas e auditoria.
 - Validar Decision Engine supervisionado, rule_validator e fluxo de aprovacao usando dados existentes, mocks controlados ou importacoes manuais antes de conectar APIs externas.
+- Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
 
 ### Fase 3 - Escala
 
@@ -43,6 +44,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Automatizar deploy, backups, monitoramento e recuperacao.
 - Formalizar seguranca, privacidade e politicas operacionais.
 - Conectar integracoes externas em modo leitura somente depois do produto estar robusto e validado.
+- Conectar Ads apenas depois que o contexto comercial minimo estiver estruturado por cliente.
 
 ## Decisoes a evitar no inicio
 

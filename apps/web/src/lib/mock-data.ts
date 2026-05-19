@@ -389,41 +389,48 @@ export const roadmapStages: RoadmapStage[] = [
   },
   {
     number: 6,
-    title: 'Decision Engine supervisionado',
+    title: 'Context Intelligence',
     status: 'planned',
     description:
-      'Gerar sugestoes com IA usando dados reais ja persistidos, mocks controlados ou importacoes manuais. Modelo nunca executa diretamente e consulta a memoria antes de sugerir.',
+      'Diagnostico inteligente da empresa antes de analisar Ads: perguntas e respostas sobre oferta, margem, publico, capacidade, metas, restricoes, sazonalidade e previsibilidade comercial.',
   },
   {
     number: 7,
-    title: 'Validação determinística',
+    title: 'Decision Engine supervisionado',
     status: 'planned',
     description:
-      'Limites de budget, estoque, margem, tracking e risco. Uma sugestão só vira proposta se passar por todas as regras determinísticas.',
+      'Gerar sugestoes com IA usando dados reais, contexto comercial estruturado, mocks controlados ou importacoes manuais. Modelo nunca executa diretamente e consulta contexto e memoria antes de sugerir.',
   },
   {
     number: 8,
+    title: 'Validação determinística',
+    status: 'planned',
+    description:
+      'Limites de budget, estoque, margem, tracking, capacidade comercial e risco. Uma sugestao so vira proposta se passar por todas as regras deterministicas e pelo contexto da empresa.',
+  },
+  {
+    number: 9,
     title: 'Execution Engine (dry run)',
     status: 'planned',
     description:
       'Executor separado do Decision Engine. Simulacao completa antes de tocar contas reais. Logs, estado anterior e rollback desenhados antes de qualquer escrita externa.',
   },
   {
-    number: 9,
+    number: 10,
     title: 'Produto escalável',
     status: 'planned',
     description:
-      'Generalizar configuracoes da iBob. Onboarding de novos clientes, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
-  },
-  {
-    number: 10,
-    title: 'Integrações em modo leitura',
-    status: 'planned',
-    description:
-      'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos o produto estar validado.',
+      'Generalizar configuracoes da iBob. Onboarding de novos clientes, diagnostico de contexto por cliente, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
   },
   {
     number: 11,
+    title: 'Integrações em modo leitura',
+    status: 'planned',
+    description:
+      'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos contexto, produto e governanca estarem validados.',
+  },
+  {
+    number: 12,
     title: 'Execução controlada',
     status: 'planned',
     description:

@@ -88,3 +88,6 @@
 - Implementada tela `/audit` lendo eventos reais de `audit_events` no Supabase, com fallback controlado para mock.
 - Publicada e validada a v23 com Audit UI.
 - Criado checklist operacional de backup e recuperacao em `docs/BACKUP_AND_RECOVERY.md`.
+- Publicada e validada a v24 em `/roadmap`.
+- Adicionada etapa `Context Intelligence` ao Roadmap antes do Decision Engine.
+- Documentada a arquitetura inicial em `docs/CONTEXT_INTELLIGENCE.md`.
