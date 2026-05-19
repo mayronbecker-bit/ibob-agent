@@ -193,6 +193,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: v27 reimplantada e aprovada pelo usuario.
 - 2026-05-19: preparado pacote v28 com tela `/context` para diagnostico inteligente.
 - 2026-05-19: preparado pacote v29 com Roadmap atualizado para Context Research Layer e schema local de pesquisa contextual.
+- 2026-05-19: v29 aprovada pelo usuario. Migration `context_research_layer` ainda pendente de autorizacao explicita para aplicacao no Supabase remoto.
 
 Validacao publica:
 

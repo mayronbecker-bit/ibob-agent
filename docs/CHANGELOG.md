@@ -103,3 +103,4 @@
 - Preparada migration local `context_research_layer` para pesquisar site da empresa, concorrentes, fontes, achados, insights e memoria contextual revisada.
 - Criada documentacao `docs/CONTEXT_RESEARCH.md`.
 - Roadmap atualizado com etapa `Context Research Layer` antes do Decision Engine.
+- V29 aprovada pelo usuario como direcao da camada de pesquisa contextual.
