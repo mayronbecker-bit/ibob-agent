@@ -50,6 +50,10 @@ export type {
   ExecutionResult,
   ExecutionLog,
 
+  // Audit
+  AuditEventSeverity,
+  AuditEvent,
+
   // Roadmap
   RoadmapStageStatus,
   RoadmapStage,

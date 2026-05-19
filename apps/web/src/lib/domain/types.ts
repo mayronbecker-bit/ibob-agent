@@ -183,6 +183,23 @@ export interface ExecutionLog {
   isDryRun: boolean;
 }
 
+// ===== Audit =====
+
+export type AuditEventSeverity = 'info' | 'warning' | 'critical';
+
+export interface AuditEvent {
+  id: string;
+  clientId: string;
+  actorUserId?: string;
+  eventType: string;
+  severity: AuditEventSeverity;
+  entityType?: string;
+  entityId?: string;
+  description: string;
+  metadata: Record<string, unknown>;
+  occurredAt: string;
+}
+
 // ===== Roadmap =====
 
 export type RoadmapStageStatus = 'done' | 'in_progress' | 'planned';

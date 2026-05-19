@@ -316,6 +316,44 @@ export type Database = {
           logged_at: string;
         }>
       >;
+      audit_events: TableDefinition<
+        {
+          id: string;
+          client_id: string;
+          actor_user_id: string | null;
+          event_type: string;
+          severity: Database['public']['Enums']['audit_event_severity'];
+          entity_type: string | null;
+          entity_id: string | null;
+          description: string;
+          metadata: Json;
+          occurred_at: string;
+        },
+        {
+          id?: string;
+          client_id: string;
+          actor_user_id?: string | null;
+          event_type: string;
+          severity?: Database['public']['Enums']['audit_event_severity'];
+          entity_type?: string | null;
+          entity_id?: string | null;
+          description: string;
+          metadata?: Json;
+          occurred_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          actor_user_id: string | null;
+          event_type: string;
+          severity: Database['public']['Enums']['audit_event_severity'];
+          entity_type: string | null;
+          entity_id: string | null;
+          description: string;
+          metadata: Json;
+          occurred_at: string;
+        }>
+      >;
       execution_logs: TableDefinition<
         {
           id: string;
@@ -403,6 +441,7 @@ export type Database = {
       risk_level: 'low' | 'medium' | 'high';
       approval_decision: 'approved' | 'rejected' | 'deferred';
       execution_result: 'success' | 'failure' | 'skipped' | 'simulated';
+      audit_event_severity: 'info' | 'warning' | 'critical';
     };
     CompositeTypes: Record<string, never>;
   };

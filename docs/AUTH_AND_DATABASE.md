@@ -506,3 +506,10 @@ Uso planejado:
 - registrar hardenings e mudancas operacionais;
 - registrar eventos futuros do Decision Engine, rule_validator e Execution Engine dry-run;
 - manter trilha de auditoria antes de conectar integracoes externas.
+
+Implementado no app:
+
+- `/audit` le `client_memberships` e `audit_events` pelo Supabase usando a sessao autenticada.
+- RLS limita a leitura ao `client_id` do usuario logado.
+- A tela mostra contadores por severidade, lista eventos recentes e volta para mock apenas em fallback.
+- O menu lateral passa a incluir a entrada `Auditoria`.

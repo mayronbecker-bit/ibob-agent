@@ -85,3 +85,4 @@
 - Gerado pacote Hostinger v21 com Roadmap atualizado para a etapa de auditoria.
 - Aplicada e validada a migration `audit_events` no Supabase remoto.
 - Publicada e validada a v22 em `/roadmap` com auditoria aplicada no Supabase.
+- Implementada tela `/audit` lendo eventos reais de `audit_events` no Supabase, com fallback controlado para mock.

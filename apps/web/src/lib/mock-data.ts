@@ -7,6 +7,7 @@ import type {
   Proposal,
   Approval,
   DecisionMemory,
+  AuditEvent,
   RoadmapStage,
   OverviewMetric,
 } from '@/lib/domain/types';
@@ -307,6 +308,42 @@ export const decisionMemory: DecisionMemory[] = [
 
 // ── Roadmap ───────────────────────────────────────────────────────────────────
 
+export const auditEvents: AuditEvent[] = [
+  {
+    id: 'audit-1',
+    clientId: CLIENT_ID,
+    eventType: 'platform.audit_foundation_created',
+    severity: 'info',
+    entityType: 'system',
+    entityId: 'audit_events',
+    description: 'Fundacao de auditoria preparada para o piloto iBob.',
+    metadata: { source: 'mock', phase: 'hardening' },
+    occurredAt: '2026-05-19T09:30:00-03:00',
+  },
+  {
+    id: 'audit-2',
+    clientId: CLIENT_ID,
+    eventType: 'security.login_redirect_hardened',
+    severity: 'info',
+    entityType: 'auth',
+    entityId: 'login',
+    description: 'Redirect pos-login restrito a rotas internas do app.',
+    metadata: { package: 'v18' },
+    occurredAt: '2026-05-18T13:49:00-03:00',
+  },
+  {
+    id: 'audit-3',
+    clientId: CLIENT_ID,
+    eventType: 'security.server_headers_hardened',
+    severity: 'info',
+    entityType: 'server',
+    entityId: 'server.js',
+    description: 'Headers defensivos adicionados ao servidor Node.',
+    metadata: { package: 'v20' },
+    occurredAt: '2026-05-18T16:07:00-03:00',
+  },
+];
+
 export const roadmapStages: RoadmapStage[] = [
   {
     number: 0,
@@ -348,7 +385,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Hardening do produto piloto',
     status: 'in_progress',
     description:
-      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Ja aplicados: redirect pos-login seguro, estados padronizados, headers defensivos e audit_events com RLS aplicado no Supabase.',
+      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Ja aplicados: redirect pos-login seguro, estados padronizados, headers defensivos, audit_events com RLS e UI de auditoria em /audit.',
   },
   {
     number: 6,

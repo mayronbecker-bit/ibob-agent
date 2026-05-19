@@ -15,6 +15,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/proposals', label: 'Propostas' },
   { href: '/approvals', label: 'Aprovação Humana' },
   { href: '/memory', label: 'Memória de Decisão' },
+  { href: '/audit', label: 'Auditoria' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/settings', label: 'Configurações' },
 ];
@@ -65,6 +66,17 @@ function NavIcon({ href }: { href: string }) {
     return (
       <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
         <path d="M3 12v3c0 1.657 3.134 3 7 3s7-1.343 7-3v-3c0 1.657-3.134 3-7 3s-7-1.343-7-3zm0-5v3c0 1.657 3.134 3 7 3s7-1.343 7-3V7c0 1.657-3.134 3-7 3S3 9.657 3 7zm7-5C6.134 2 3 3.343 3 5s3.134 3 7 3 7-1.343 7-3-3.134-3-7-3z" />
+      </svg>
+    );
+  }
+  if (href === '/audit') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V7.414A2 2 0 0016.414 6L14 3.586A2 2 0 0012.586 3H5zm1 5a1 1 0 000 2h8a1 1 0 100-2H6zm0 3a1 1 0 100 2h8a1 1 0 100-2H6zm0 3a1 1 0 100 2h4a1 1 0 100-2H6z"
+          clipRule="evenodd"
+        />
       </svg>
     );
   }

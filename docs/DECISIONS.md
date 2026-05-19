@@ -44,6 +44,30 @@ Status:
 
 Aceita e aplicada no Supabase remoto em 2026-05-19.
 
+## 2026-05-19 - Audit UI no produto
+
+Contexto:
+
+A tabela `audit_events` ja esta aplicada no Supabase remoto com RLS por cliente, mas ainda faltava uma superficie no produto para o usuario acompanhar os eventos.
+
+Decisao:
+
+Criar a rota `/audit`, adicionar item no menu lateral e ler eventos reais do Supabase usando a sessao autenticada. A tela deve mostrar severidade, ator, tipo de evento, entidade, metadata resumida e fallback controlado para mock.
+
+Motivo:
+
+Auditoria so vira valor operacional quando fica visivel para o usuario. Essa tela prepara o produto para demonstracao, suporte e futuras etapas de governanca antes das integracoes externas.
+
+Consequencias:
+
+- `/audit` passa a fazer parte das rotas protegidas do produto.
+- Eventos reais sao limitados por RLS ao cliente do usuario logado.
+- A etapa de hardening do Roadmap passa a incluir UI de auditoria.
+
+Status:
+
+Aceita.
+
 ## 2026-05-18 - Headers defensivos no servidor Node
 
 Contexto:
