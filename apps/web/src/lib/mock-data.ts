@@ -254,28 +254,306 @@ export const contextResearchRuns: ContextResearchRun[] = [
     id: 'research-run-ibob-site',
     contextId: mockBusinessContext.id,
     clientId: CLIENT_ID,
-    status: 'queued',
+    status: 'needs_review',
     companyUrl: 'https://www.ibob.com.br',
     searchQuery: 'iBob empresa site oficial concorrentes posicionamento ofertas diferenciais',
     scope: {
       company_site: true,
+      company_store: true,
       competitor_discovery: true,
       competitor_sites: true,
       ads_execution: false,
       requires_human_review: true,
     },
     summary:
-      'Run inicial de pesquisa contextual supervisionada para analisar o site oficial da iBob e mapear concorrentes antes do Decision Engine.',
+      'Pesquisa publica inicial preparada com fontes do site oficial, loja oficial e concorrentes candidatos. Achados permanecem pendentes de revisao humana.',
+    startedAt: '2026-05-20T10:00:00-03:00',
+    completedAt: '2026-05-20T10:10:00-03:00',
     createdAt: '2026-05-19T16:30:00-03:00',
-    updatedAt: '2026-05-19T16:30:00-03:00',
+    updatedAt: '2026-05-20T10:10:00-03:00',
   },
 ];
 
-export const contextResearchSources: ContextResearchSource[] = [];
-export const contextResearchFindings: ContextResearchFinding[] = [];
-export const competitorProfiles: CompetitorProfile[] = [];
-export const competitorInsights: CompetitorInsight[] = [];
-export const contextMemoryItems: ContextMemoryItem[] = [];
+export const contextResearchSources: ContextResearchSource[] = [
+  {
+    id: 'source-ibob-site',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceType: 'company_site',
+    title: 'iBob - Motores eletricos, motorredutores e automacao industrial',
+    url: 'https://ibob.com.br/',
+    publisher: 'iBob',
+    accessedAt: '2026-05-20T10:00:00-03:00',
+    snippet:
+      'Site oficial posiciona a iBob como loja online especializada em motores eletricos, motorredutores e automacao industrial para todo o Brasil.',
+    metadata: { role: 'official_company_site' },
+    createdAt: '2026-05-20T10:00:00-03:00',
+    updatedAt: '2026-05-20T10:00:00-03:00',
+  },
+  {
+    id: 'source-ibob-store',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceType: 'company_site',
+    title: 'Loja oficial iBob',
+    url: 'https://loja.ibob.com.br/',
+    publisher: 'iBob',
+    accessedAt: '2026-05-20T10:01:00-03:00',
+    snippet:
+      'Loja oficial apresenta catalogo de motores eletricos, redutores e automacao industrial com compra online e atendimento por WhatsApp.',
+    metadata: { role: 'official_store' },
+    createdAt: '2026-05-20T10:01:00-03:00',
+    updatedAt: '2026-05-20T10:01:00-03:00',
+  },
+  {
+    id: 'source-lotus',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceType: 'competitor_site',
+    title: 'Lotus Automacao',
+    url: 'https://lotusautomacao.com.br/',
+    publisher: 'Lotus Automacao',
+    accessedAt: '2026-05-20T10:02:00-03:00',
+    snippet:
+      'Distribuidora de produtos eletricos e automacao industrial, com catalogo de produtos WEG e pedido por orcamento.',
+    metadata: { role: 'competitor_candidate' },
+    createdAt: '2026-05-20T10:02:00-03:00',
+    updatedAt: '2026-05-20T10:02:00-03:00',
+  },
+  {
+    id: 'source-hercules',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceType: 'competitor_site',
+    title: 'Hercules Motores - Motorredutores',
+    url: 'https://loja.herculesmotores.com.br/motorredutores.html',
+    publisher: 'Hercules Motores',
+    accessedAt: '2026-05-20T10:03:00-03:00',
+    snippet:
+      'Loja direta de fabrica para motorredutores, com suporte tecnico, customizacao, condicoes comerciais e entrega nacional.',
+    metadata: { role: 'competitor_candidate' },
+    createdAt: '2026-05-20T10:03:00-03:00',
+    updatedAt: '2026-05-20T10:03:00-03:00',
+  },
+  {
+    id: 'source-varivelox',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceType: 'competitor_site',
+    title: 'Varivelox Industrial',
+    url: 'https://www.varivelox.com.br/',
+    publisher: 'Varivelox',
+    accessedAt: '2026-05-20T10:04:00-03:00',
+    snippet:
+      'Fabricante brasileira de motores, motovibradores e motorredutores eletricos de inducao monofasico e trifasico.',
+    metadata: { role: 'competitor_candidate' },
+    createdAt: '2026-05-20T10:04:00-03:00',
+    updatedAt: '2026-05-20T10:04:00-03:00',
+  },
+];
+
+export const contextResearchFindings: ContextResearchFinding[] = [
+  {
+    id: 'finding-positioning',
+    researchRunId: 'research-run-ibob-site',
+    sourceId: 'source-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    findingType: 'positioning',
+    title: 'Referencia nacional em motores e automacao',
+    finding:
+      'A iBob deve ser tratada como loja online especializada e operacao nacional para motores eletricos, motorredutores, inversores e automacao industrial.',
+    evidence:
+      'Fonte oficial informa foco em motores eletricos, motorredutores e automacao industrial para todo o Brasil.',
+    confidence: 86,
+    reviewStatus: 'needs_review',
+    suggestedAnswerText:
+      'Posicionar a iBob como operacao nacional especializada em motores eletricos, motorredutores, inversores e automacao industrial.',
+    metadata: { suggested_use: 'context_answer_or_positioning_memory' },
+    createdAt: '2026-05-20T10:05:00-03:00',
+    updatedAt: '2026-05-20T10:05:00-03:00',
+  },
+  {
+    id: 'finding-sales-process',
+    researchRunId: 'research-run-ibob-site',
+    sourceId: 'source-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    findingType: 'sales_process',
+    title: 'Operacao hibrida: compra online e venda consultiva',
+    finding:
+      'O funil da iBob precisa separar compra direta de itens padronizados e demanda consultiva para motores, inversores, motorredutores e projetos especiais.',
+    evidence: 'Fonte oficial oferece caminhos separados para comprar online e falar com especialista.',
+    confidence: 88,
+    reviewStatus: 'needs_review',
+    suggestedAnswerText:
+      'Separar campanhas de compra direta de campanhas consultivas para especificacao e suporte tecnico.',
+    metadata: { suggested_use: 'context_answer_or_rule_validator_constraint' },
+    createdAt: '2026-05-20T10:06:00-03:00',
+    updatedAt: '2026-05-20T10:06:00-03:00',
+  },
+  {
+    id: 'finding-channels',
+    researchRunId: 'research-run-ibob-site',
+    sourceId: 'source-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    findingType: 'channel',
+    title: 'Canais proprios e marketplaces',
+    finding:
+      'A iBob combina loja oficial, atendimento especialista e presenca em marketplaces como Shopee, Mercado Livre e Magazine Luiza.',
+    evidence: 'Fonte oficial cita loja oficial e marketplaces como caminhos de compra.',
+    confidence: 82,
+    reviewStatus: 'needs_review',
+    suggestedAnswerText:
+      'Mapear site/WhatsApp como canais proprios e marketplaces como canais de alcance, com metas e margem separadas.',
+    metadata: { suggested_use: 'channel_strategy' },
+    createdAt: '2026-05-20T10:07:00-03:00',
+    updatedAt: '2026-05-20T10:07:00-03:00',
+  },
+  {
+    id: 'finding-intent',
+    researchRunId: 'research-run-ibob-site',
+    sourceId: 'source-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    findingType: 'opportunity',
+    title: 'Segmentacao por intencao comercial',
+    finding:
+      'Antes de conectar Ads, o agente deve segmentar intencao de compra direta versus intencao de especificacao tecnica para reduzir desperdicio e melhorar previsibilidade.',
+    evidence:
+      'A experiencia oficial ja diferencia itens padronizados de apoio especialista para aplicacoes industriais.',
+    confidence: 80,
+    reviewStatus: 'needs_review',
+    suggestedAnswerText:
+      'Criar perguntas de contexto e futuras campanhas separadas por compra direta, reposicao, especificacao tecnica e projeto especial.',
+    metadata: { suggested_use: 'decision_engine_input' },
+    createdAt: '2026-05-20T10:08:00-03:00',
+    updatedAt: '2026-05-20T10:08:00-03:00',
+  },
+];
+
+export const competitorProfiles: CompetitorProfile[] = [
+  {
+    id: 'competitor-lotus',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    name: 'Lotus Automacao',
+    websiteUrl: 'https://lotusautomacao.com.br/',
+    status: 'candidate',
+    positioning: 'Distribuidora de produtos eletricos e automacao industrial.',
+    offerSummary:
+      'Catalogo de produtos WEG, inversores, soft-starters, materiais eletricos e atendimento por orcamento.',
+    strengths: 'Autoridade em automacao industrial, marcas reconhecidas e posicionamento B2B tecnico.',
+    weaknesses: 'Pode exigir orcamento em vez de compra direta em alguns fluxos.',
+    metadata: { source_id: 'source-lotus' },
+    createdAt: '2026-05-20T10:09:00-03:00',
+    updatedAt: '2026-05-20T10:09:00-03:00',
+  },
+  {
+    id: 'competitor-hercules',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    name: 'Hercules Motores',
+    websiteUrl: 'https://loja.herculesmotores.com.br/motorredutores.html',
+    status: 'candidate',
+    positioning: 'Fabricante/venda direta de motores e motorredutores.',
+    offerSummary:
+      'Motorredutores, motores eletricos, suporte tecnico, customizacao, condicoes de fabrica e entrega nacional.',
+    strengths: 'Venda direta de fabrica, garantia e suporte tecnico especializado.',
+    weaknesses: 'Foco de portfolio mais concentrado que uma loja multimarca.',
+    metadata: { source_id: 'source-hercules' },
+    createdAt: '2026-05-20T10:09:00-03:00',
+    updatedAt: '2026-05-20T10:09:00-03:00',
+  },
+  {
+    id: 'competitor-varivelox',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    name: 'Varivelox',
+    websiteUrl: 'https://www.varivelox.com.br/',
+    status: 'candidate',
+    positioning: 'Fabricante brasileira de motores, motovibradores e motorredutores.',
+    offerSummary: 'Motores eletricos, motovibradores, motorredutores e produtos industriais.',
+    strengths: 'Fabricacao propria e conteudo tecnico por aplicacao.',
+    weaknesses: 'Pode competir mais em linhas especificas do que no sortimento amplo.',
+    metadata: { source_id: 'source-varivelox' },
+    createdAt: '2026-05-20T10:09:00-03:00',
+    updatedAt: '2026-05-20T10:09:00-03:00',
+  },
+];
+
+export const competitorInsights: CompetitorInsight[] = [
+  {
+    id: 'insight-lotus',
+    competitorId: 'competitor-lotus',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    insightType: 'competitor',
+    insight:
+      'Lotus concorre como distribuidor B2B de automacao industrial e materiais eletricos, com catalogo WEG e processo orientado a orcamento.',
+    evidence: 'Fonte publica da Lotus destaca distribuicao de automacao industrial e materiais eletricos.',
+    sourceUrl: 'https://lotusautomacao.com.br/',
+    confidence: 76,
+    reviewStatus: 'needs_review',
+    createdAt: '2026-05-20T10:10:00-03:00',
+    updatedAt: '2026-05-20T10:10:00-03:00',
+  },
+  {
+    id: 'insight-hercules',
+    competitorId: 'competitor-hercules',
+    researchRunId: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    insightType: 'competitor',
+    insight:
+      'Hercules concorre em motores e motorredutores com venda direta de fabrica, suporte tecnico, customizacao e entrega nacional.',
+    evidence:
+      'Pagina de motorredutores destaca suporte tecnico, customizacao, direto de fabrica e entrega em todo Brasil.',
+    sourceUrl: 'https://loja.herculesmotores.com.br/motorredutores.html',
+    confidence: 84,
+    reviewStatus: 'needs_review',
+    createdAt: '2026-05-20T10:10:00-03:00',
+    updatedAt: '2026-05-20T10:10:00-03:00',
+  },
+];
+
+export const contextMemoryItems: ContextMemoryItem[] = [
+  {
+    id: 'context-memory-hybrid-operation',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceFindingId: 'finding-sales-process',
+    memoryType: 'company_context',
+    status: 'draft',
+    title: 'Operacao hibrida',
+    content:
+      'A iBob deve ser tratada como operacao hibrida: ecommerce para compra direta e venda tecnica consultiva para aplicacoes industriais.',
+    confidence: 84,
+    createdAt: '2026-05-20T10:11:00-03:00',
+    updatedAt: '2026-05-20T10:11:00-03:00',
+  },
+  {
+    id: 'context-memory-intent-segmentation',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    sourceFindingId: 'finding-intent',
+    memoryType: 'opportunity',
+    status: 'draft',
+    title: 'Separar intencao de compra e especificacao',
+    content:
+      'Campanhas e diagnosticos devem separar quem quer comprar produto especifico de quem precisa de ajuda para especificar solucao.',
+    confidence: 82,
+    createdAt: '2026-05-20T10:11:00-03:00',
+    updatedAt: '2026-05-20T10:11:00-03:00',
+  },
+];
 
 // ── Proposals ─────────────────────────────────────────────────────────────────
 
@@ -557,7 +835,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, run inicial enfileirado para https://www.ibob.com.br e console /research criada para acompanhar runs, fontes, achados, concorrentes e memoria contextual.',
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research criada e v32 prepara achados supervisionados com fontes publicas, concorrentes candidatos e memoria em rascunho pendente de revisao/aplicacao remota.',
   },
   {
     number: 8,

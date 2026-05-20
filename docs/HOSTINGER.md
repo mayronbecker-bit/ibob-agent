@@ -197,6 +197,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-19: aplicada migration `context_research_layer` no Supabase remoto e registrado `https://www.ibob.com.br` como run inicial de pesquisa contextual.
 - 2026-05-19: v30 reimplantada e validada pelo usuario.
 - 2026-05-19: preparado pacote v31 com console `/research` para pesquisa supervisionada.
+- 2026-05-20: v31 reimplantada e validada pelo usuario.
+- 2026-05-20: preparada v32 com Roadmap atualizado e carga local de achados supervisionados da pesquisa publica inicial da iBob. A migration de achados ainda depende de autorizacao explicita para aplicar no Supabase remoto.
 
 Validacao publica:
 

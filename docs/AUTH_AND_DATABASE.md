@@ -617,3 +617,34 @@ Implementado em 2026-05-19:
 Proxima acao:
 
 Criar o executor/agente que consulta o site oficial e concorrentes, registra fontes e achados, e deixa tudo pendente de revisao humana.
+
+## Achados supervisionados da pesquisa iBob
+
+Preparado localmente em 2026-05-20:
+
+```text
+infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.sql
+```
+
+Ela registra a primeira carga de pesquisa publica da iBob:
+
+- fontes oficiais da iBob e loja oficial;
+- fontes de concorrentes candidatos;
+- achados de posicionamento, canais, processo comercial, localizacao e oportunidades;
+- perfis de concorrentes candidatos;
+- insights concorrenciais pendentes de revisao;
+- itens de memoria contextual em `draft`;
+- lacuna `ibob.research_findings_review_pending`.
+
+Estado:
+
+- migration versionada localmente;
+- ainda nao aplicada no Supabase remoto;
+- nenhum achado vira contexto ativo sem revisao humana;
+- nenhum item de memoria vira `active` nesta etapa.
+
+Autorizacao necessaria para aplicar no remoto:
+
+```text
+autorizo aplicar achados ibob
+```

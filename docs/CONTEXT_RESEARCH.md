@@ -88,5 +88,43 @@ Achados `needs_review` podem ser citados como pendencia, mas nao devem sustentar
 - Primeira console criada em `/research`.
 - `/research` le runs, fontes, achados, concorrentes, insights e memoria contextual pelo Supabase.
 - `/research` permite criar novos runs supervisionados sem executar busca externa automaticamente.
-- Ainda falta criar executor/agente de pesquisa.
+- Pesquisa publica inicial da iBob preparada localmente em 2026-05-20.
+- Migration local criada para registrar fontes, achados, concorrentes candidatos, insights e memoria em rascunho:
+
+```text
+infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.sql
+```
+
+- Essa migration ainda nao foi aplicada no Supabase remoto.
+- Todos os achados ficam como `needs_review`.
+- Todos os concorrentes entram como `candidate`.
+- Todos os itens de memoria entram como `draft`.
+- Nada e promovido automaticamente para contexto ativo ou memoria ativa.
 - Ainda falta tela para revisar achados e promover para memoria.
+
+## Fontes publicas usadas na pesquisa inicial
+
+- Site oficial iBob: `https://ibob.com.br/`
+- Loja oficial iBob: `https://loja.ibob.com.br/`
+- Contato iBob: `https://loja.ibob.com.br/contato`
+- Lotus Automacao: `https://lotusautomacao.com.br/`
+- Hercules Motores: `https://loja.herculesmotores.com.br/motorredutores.html`
+- Varivelox: `https://www.varivelox.com.br/`
+- Vale Automacao: `https://www.lojavale.com.br/`
+- Dimensional / WEG: `https://materiais.dimensional.com.br/parceriaweg`
+
+## Achados preparados para revisao
+
+- A iBob parece combinar ecommerce de produtos industriais com venda tecnica consultiva.
+- A comunicacao e as futuras campanhas precisam separar compra direta de produto especifico e demanda de especificacao tecnica.
+- Canais proprios, loja oficial, WhatsApp e marketplaces devem ser analisados separadamente por margem, controle e previsibilidade.
+- Concorrentes candidatos incluem distribuidores/ecommerces, fabricantes e distribuidores autorizados WEG.
+- A pesquisa cria uma nova lacuna: `ibob.research_findings_review_pending`.
+
+## Proxima autorizacao necessaria
+
+Para aplicar essa carga no Supabase remoto, o usuario precisa autorizar explicitamente:
+
+```text
+autorizo aplicar achados ibob
+```

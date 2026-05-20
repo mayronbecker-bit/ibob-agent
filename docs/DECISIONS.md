@@ -147,6 +147,31 @@ Status:
 
 Aceita.
 
+## 2026-05-20 - Achados pesquisados precisam nascer supervisionados
+
+Contexto:
+
+A v31 validou a console `/research`. O proximo passo era transformar a pesquisa publica da iBob e de concorrentes em dados do produto, sem tratar automaticamente o que foi encontrado como verdade operacional.
+
+Decisao:
+
+Criar uma carga local de achados supervisionados com fontes, evidencias, concorrentes candidatos, insights e itens de memoria em `draft`. A aplicacao no Supabase remoto exige autorizacao explicita, e a promocao para memoria ativa exige revisao humana.
+
+Motivo:
+
+O objetivo do agente e vender mais com menor custo e maior previsibilidade. Para isso, ele precisa entender empresa e mercado antes de analisar Ads, mas tambem precisa evitar que pesquisa externa nao validada influencie budget, pausas, segmentacao ou criativos.
+
+Consequencias:
+
+- A pesquisa publica entra como evidencia revisavel.
+- `needs_review`, `candidate` e `draft` sao os estados padrao dessa etapa.
+- Decision Engine ainda nao pode usar esses achados como verdade ativa.
+- O Roadmap passa a registrar a pendencia de revisao dos achados.
+
+Status:
+
+Aceita localmente. Aguardando autorizacao para aplicacao remota.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

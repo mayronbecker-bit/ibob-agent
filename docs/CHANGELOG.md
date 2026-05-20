@@ -110,3 +110,7 @@
 - V30 validada pelo usuario em producao.
 - Implementada console `/research` para acompanhar runs, fontes, achados, concorrentes, insights e memoria contextual.
 - Adicionado item `Pesquisa` ao menu lateral.
+- V31 validada pelo usuario em producao.
+- Preparada migration local v32 com achados supervisionados da pesquisa publica inicial da iBob.
+- Registradas fontes publicas, concorrentes candidatos, insights e itens de memoria contextual em rascunho, todos pendentes de revisao humana.
+- Atualizado Roadmap para refletir que Context Research ja possui carga de achados preparada, mas ainda nao aplicada no Supabase remoto.
