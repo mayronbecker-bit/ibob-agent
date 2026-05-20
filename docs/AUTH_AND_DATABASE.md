@@ -620,7 +620,7 @@ Criar o executor/agente que consulta o site oficial e concorrentes, registra fon
 
 ## Achados supervisionados da pesquisa iBob
 
-Preparado localmente em 2026-05-20:
+Preparado e aplicado no Supabase remoto em 2026-05-20:
 
 ```text
 infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.sql
@@ -638,13 +638,11 @@ Ela registra a primeira carga de pesquisa publica da iBob:
 
 Estado:
 
-- migration versionada localmente;
-- ainda nao aplicada no Supabase remoto;
+- migration versionada localmente e aplicada no remoto;
+- historico remoto validado com `supabase migration list`;
 - nenhum achado vira contexto ativo sem revisao humana;
 - nenhum item de memoria vira `active` nesta etapa.
 
-Autorizacao necessaria para aplicar no remoto:
+Proxima acao:
 
-```text
-autorizo aplicar achados ibob
-```
+Revisar os achados em `/research` e promover apenas o que for validado para memoria contextual ativa.

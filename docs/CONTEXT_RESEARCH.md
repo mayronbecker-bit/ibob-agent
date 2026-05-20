@@ -88,14 +88,14 @@ Achados `needs_review` podem ser citados como pendencia, mas nao devem sustentar
 - Primeira console criada em `/research`.
 - `/research` le runs, fontes, achados, concorrentes, insights e memoria contextual pelo Supabase.
 - `/research` permite criar novos runs supervisionados sem executar busca externa automaticamente.
-- Pesquisa publica inicial da iBob preparada localmente em 2026-05-20.
-- Migration local criada para registrar fontes, achados, concorrentes candidatos, insights e memoria em rascunho:
+- Pesquisa publica inicial da iBob preparada e aplicada no Supabase remoto em 2026-05-20.
+- Migration criada para registrar fontes, achados, concorrentes candidatos, insights e memoria em rascunho:
 
 ```text
 infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.sql
 ```
 
-- Essa migration ainda nao foi aplicada no Supabase remoto.
+- Historico remoto validado com `supabase migration list`.
 - Todos os achados ficam como `needs_review`.
 - Todos os concorrentes entram como `candidate`.
 - Todos os itens de memoria entram como `draft`.
@@ -121,10 +121,6 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - Concorrentes candidatos incluem distribuidores/ecommerces, fabricantes e distribuidores autorizados WEG.
 - A pesquisa cria uma nova lacuna: `ibob.research_findings_review_pending`.
 
-## Proxima autorizacao necessaria
+## Proxima acao
 
-Para aplicar essa carga no Supabase remoto, o usuario precisa autorizar explicitamente:
-
-```text
-autorizo aplicar achados ibob
-```
+Revisar os achados em `/research`, aceitar ou rejeitar evidencias e promover apenas itens aprovados para memoria contextual ativa.

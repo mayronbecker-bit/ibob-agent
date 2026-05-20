@@ -170,7 +170,7 @@ Consequencias:
 
 Status:
 
-Aceita localmente. Aguardando autorizacao para aplicacao remota.
+Aceita e aplicada no Supabase remoto em 2026-05-20.
 
 ## 2026-05-19 - Checklist de backup e recuperacao
 
