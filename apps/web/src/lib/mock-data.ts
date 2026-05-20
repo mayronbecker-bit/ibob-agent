@@ -8,6 +8,12 @@ import type {
   ContextQuestion,
   ContextAnswer,
   ContextGap,
+  ContextResearchRun,
+  ContextResearchSource,
+  ContextResearchFinding,
+  CompetitorProfile,
+  CompetitorInsight,
+  ContextMemoryItem,
   Proposal,
   Approval,
   DecisionMemory,
@@ -242,6 +248,34 @@ export const contextGaps: ContextGap[] = [
     updatedAt: '2026-05-19T13:30:00-03:00',
   },
 ];
+
+export const contextResearchRuns: ContextResearchRun[] = [
+  {
+    id: 'research-run-ibob-site',
+    contextId: mockBusinessContext.id,
+    clientId: CLIENT_ID,
+    status: 'queued',
+    companyUrl: 'https://www.ibob.com.br',
+    searchQuery: 'iBob empresa site oficial concorrentes posicionamento ofertas diferenciais',
+    scope: {
+      company_site: true,
+      competitor_discovery: true,
+      competitor_sites: true,
+      ads_execution: false,
+      requires_human_review: true,
+    },
+    summary:
+      'Run inicial de pesquisa contextual supervisionada para analisar o site oficial da iBob e mapear concorrentes antes do Decision Engine.',
+    createdAt: '2026-05-19T16:30:00-03:00',
+    updatedAt: '2026-05-19T16:30:00-03:00',
+  },
+];
+
+export const contextResearchSources: ContextResearchSource[] = [];
+export const contextResearchFindings: ContextResearchFinding[] = [];
+export const competitorProfiles: CompetitorProfile[] = [];
+export const competitorInsights: CompetitorInsight[] = [];
+export const contextMemoryItems: ContextMemoryItem[] = [];
 
 // ── Proposals ─────────────────────────────────────────────────────────────────
 
@@ -523,7 +557,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase e run inicial enfileirado para https://www.ibob.com.br; proximo passo e executar pesquisa supervisionada e revisar achados.',
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, run inicial enfileirado para https://www.ibob.com.br e console /research criada para acompanhar runs, fontes, achados, concorrentes e memoria contextual.',
   },
   {
     number: 8,

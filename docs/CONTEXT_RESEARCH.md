@@ -85,5 +85,8 @@ Achados `needs_review` podem ser citados como pendencia, mas nao devem sustentar
 - Run inicial de pesquisa contextual criado como `queued`.
 - Lacuna `ibob.company_site_required` resolvida.
 - Lacuna `ibob.context_research_execution_pending` aberta para executar a pesquisa supervisionada.
+- Primeira console criada em `/research`.
+- `/research` le runs, fontes, achados, concorrentes, insights e memoria contextual pelo Supabase.
+- `/research` permite criar novos runs supervisionados sem executar busca externa automaticamente.
 - Ainda falta criar executor/agente de pesquisa.
 - Ainda falta tela para revisar achados e promover para memoria.

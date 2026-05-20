@@ -122,6 +122,31 @@ Status:
 
 Aceita e aplicada no Supabase remoto em 2026-05-19. Site oficial da iBob registrado como run inicial enfileirado.
 
+## 2026-05-19 - Console de pesquisa supervisionada
+
+Contexto:
+
+A camada de pesquisa contextual ja existia no banco e tinha o site oficial da iBob enfileirado, mas ainda faltava uma superficie operacional para acompanhar runs, fontes, achados, concorrentes e memoria contextual.
+
+Decisao:
+
+Criar a rota `/research`, adicionar item `Pesquisa` ao menu lateral e permitir criacao de novos runs supervisionados. A tela le as tabelas reais de Context Research e usa fallback controlado para mock quando necessario.
+
+Motivo:
+
+Antes de automatizar qualquer busca externa, o produto precisa mostrar claramente o que sera pesquisado, o que foi encontrado e o que ainda depende de revisao humana.
+
+Consequencias:
+
+- `/research` passa a ser a console de operacao do Context Research Layer.
+- Criar run nao executa busca externa automaticamente.
+- Achados, concorrentes e memoria continuam separados ate revisao/promocao.
+- A proxima etapa pode implementar o agente pesquisador em modo supervisionado.
+
+Status:
+
+Aceita.
+
 ## 2026-05-19 - Checklist de backup e recuperacao
 
 Contexto:

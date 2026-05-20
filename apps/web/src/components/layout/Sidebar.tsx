@@ -16,6 +16,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/approvals', label: 'Aprovação Humana' },
   { href: '/memory', label: 'Memória de Decisão' },
   { href: '/context', label: 'Diagnóstico' },
+  { href: '/research', label: 'Pesquisa' },
   { href: '/audit', label: 'Auditoria' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/settings', label: 'Configurações' },
@@ -76,6 +77,17 @@ function NavIcon({ href }: { href: string }) {
         <path
           fillRule="evenodd"
           d="M10 2a7 7 0 00-4.5 12.36V17a1 1 0 001 1h7a1 1 0 001-1v-2.64A7 7 0 0010 2zm-2 7a2 2 0 114 0c0 .73-.39 1.32-.91 1.73-.35.28-.59.48-.72.7a.75.75 0 01-1.29-.76c.28-.48.69-.82 1.08-1.13.3-.24.34-.35.34-.54a.5.5 0 10-1 0 .75.75 0 01-1.5 0zm2 5.25a.875.875 0 100-1.75.875.875 0 000 1.75z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/research') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M8.5 3a5.5 5.5 0 014.383 8.823l3.147 3.147a.75.75 0 11-1.06 1.06l-3.147-3.147A5.5 5.5 0 118.5 3zM4.5 8.5a4 4 0 108 0 4 4 0 00-8 0z"
           clipRule="evenodd"
         />
       </svg>

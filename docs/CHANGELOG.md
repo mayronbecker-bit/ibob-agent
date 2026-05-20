@@ -107,3 +107,6 @@
 - Aplicada e validada a migration `context_research_layer` no Supabase remoto.
 - Registrado `https://www.ibob.com.br` como primeiro run de pesquisa contextual supervisionada em estado `queued`.
 - Roadmap atualizado para refletir Context Research aplicado e pronto para executor/agente de pesquisa.
+- V30 validada pelo usuario em producao.
+- Implementada console `/research` para acompanhar runs, fontes, achados, concorrentes, insights e memoria contextual.
+- Adicionado item `Pesquisa` ao menu lateral.

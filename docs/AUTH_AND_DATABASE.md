@@ -601,3 +601,19 @@ Estado atual:
 Proxima acao:
 
 Criar o executor/agente de pesquisa supervisionado para coletar fontes do site oficial e concorrentes, registrar achados e exigir revisao humana antes de promover para memoria contextual.
+
+## Console de pesquisa supervisionada
+
+Implementado em 2026-05-19:
+
+- rota `/research`;
+- item `Pesquisa` no menu lateral;
+- leitura real de `context_research_runs`, `context_research_sources`, `context_research_findings`, `competitor_profiles`, `competitor_insights` e `context_memory_items`;
+- fallback controlado para mocks;
+- criacao de novos runs supervisionados em `context_research_runs`;
+- nenhum acesso automatico a sites externos;
+- nenhuma promocao automatica de achados para memoria.
+
+Proxima acao:
+
+Criar o executor/agente que consulta o site oficial e concorrentes, registra fontes e achados, e deixa tudo pendente de revisao humana.

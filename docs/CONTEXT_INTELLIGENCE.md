@@ -158,5 +158,6 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 - Context Research Layer desenhado em `docs/CONTEXT_RESEARCH.md`.
 - Migration de pesquisa contextual aplicada no Supabase para site da empresa, concorrentes, achados, evidencias e memoria contextual.
 - Site oficial `https://www.ibob.com.br` registrado para o primeiro run supervisionado.
+- Console `/research` criada para acompanhar pesquisa contextual e criar novos runs supervisionados.
 - Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.
 - Ainda falta executar a pesquisa supervisionada e revisar achados antes de promover para memoria.
