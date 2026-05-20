@@ -118,3 +118,7 @@
 - Atualizado Roadmap para refletir que os achados supervisionados ja foram aplicados no remoto e agora dependem de revisao humana.
 - V33 reimplantada e validada pelo usuario em `/research`.
 - Roadmap atualizado para marcar o proximo marco: revisao dos achados e promocao manual para memoria ativa.
+- V34 reimplantada e validada pelo usuario em `/roadmap`.
+- Implementada revisao operacional em `/research`: aceitar/rejeitar achados, aceitar/rejeitar insights concorrenciais, ativar/descartar concorrentes e ativar/arquivar memoria contextual.
+- Atualizados helpers Supabase para gravar revisoes respeitando sessao autenticada e `client_id`.
+- Roadmap atualizado para refletir v35 como etapa maior apos validacao.

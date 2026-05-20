@@ -101,7 +101,11 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - Todos os itens de memoria entram como `draft`.
 - Nada e promovido automaticamente para contexto ativo ou memoria ativa.
 - V33 validada pelo usuario em `/research` em 2026-05-20.
-- Ainda falta tela para revisar achados e promover para memoria.
+- V34 validada pelo usuario em `/roadmap` em 2026-05-20.
+- V35 prepara revisao operacional em `/research`.
+- `/research` passa a permitir aceitar/rejeitar achados e insights, ativar/descartar concorrentes e ativar/arquivar memoria contextual.
+- As acoes de revisao exigem dados reais do Supabase e respeitam RLS por `client_id`.
+- Ainda falta criar tela dedicada de historico/justificativa de revisao e conversao para `context_answers`.
 
 ## Fontes publicas usadas na pesquisa inicial
 
@@ -124,4 +128,4 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 
 ## Proxima acao
 
-Revisar os achados em `/research`, aceitar ou rejeitar evidencias e promover apenas itens aprovados para memoria contextual ativa.
+Validar a v35 em `/research`, usando um ou dois achados como teste controlado de revisao antes de promover o restante da memoria contextual.

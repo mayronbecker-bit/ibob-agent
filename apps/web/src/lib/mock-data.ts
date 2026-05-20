@@ -835,7 +835,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research validada e achados supervisionados da iBob aplicados no remoto com fontes publicas, concorrentes candidatos e memoria em rascunho. Proximo marco: revisar achados e promover apenas itens aprovados para memoria ativa.',
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research validada e achados supervisionados aplicados. A v35 adiciona revisao operacional para aceitar/rejeitar achados, ativar/descartar concorrentes e promover memoria contextual sem integrar Ads.',
   },
   {
     number: 8,

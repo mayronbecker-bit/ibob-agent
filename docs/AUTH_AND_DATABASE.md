@@ -646,3 +646,19 @@ Estado:
 Proxima acao:
 
 Revisar os achados em `/research` e promover apenas o que for validado para memoria contextual ativa.
+
+## Revisao operacional de achados
+
+Implementado em 2026-05-20:
+
+- `/research` permite aceitar ou rejeitar `context_research_findings`;
+- `/research` permite aceitar ou rejeitar `competitor_insights`;
+- `/research` permite ativar ou descartar `competitor_profiles`;
+- `/research` permite ativar ou arquivar `context_memory_items`;
+- ao ativar uma memoria vinculada a um achado ou insight, o item de origem e marcado como `converted_to_memory`;
+- todas as acoes usam a sessao Supabase do usuario logado e filtram por `client_id`;
+- nenhuma integracao externa de Ads foi conectada nesta etapa.
+
+Proxima acao:
+
+Validar a revisao com poucos itens primeiro, antes de promover toda a memoria contextual da iBob.

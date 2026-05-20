@@ -16,12 +16,18 @@ import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import {
   createSupabaseContextResearchRun,
   getSupabaseContextResearchData,
+  reviewSupabaseCompetitorInsight,
+  reviewSupabaseContextResearchFinding,
+  updateSupabaseCompetitorStatus,
+  updateSupabaseContextMemoryStatus,
   type SupabaseContextResearchData,
 } from '@/lib/context-research/supabase-context-research';
 import type {
   CompetitorInsight,
   CompetitorProfile,
+  CompetitorProfileStatus,
   ContextMemoryItem,
+  ContextMemoryStatus,
   ContextResearchFinding,
   ContextResearchReviewStatus,
   ContextResearchRun,
@@ -44,6 +50,18 @@ const reviewStatusLabels: Record<ContextResearchReviewStatus, string> = {
   rejected: 'Rejeitado',
   converted_to_context: 'Virou contexto',
   converted_to_memory: 'Virou memoria',
+};
+
+const competitorStatusLabels: Record<CompetitorProfileStatus, string> = {
+  candidate: 'Candidato',
+  active: 'Ativo',
+  dismissed: 'Descartado',
+};
+
+const memoryStatusLabels: Record<ContextMemoryStatus, string> = {
+  draft: 'Rascunho',
+  active: 'Ativa',
+  archived: 'Arquivada',
 };
 
 function runStatusVariant(status: ContextResearchRunStatus): 'green' | 'yellow' | 'red' | 'gray' {
@@ -85,6 +103,36 @@ function countByRun<T extends { researchRunId?: string }>(items: T[], runId: str
   return items.filter((item) => item.researchRunId === runId).length;
 }
 
+type ActionButtonVariant = 'primary' | 'secondary' | 'danger';
+
+const actionButtonClasses: Record<ActionButtonVariant, string> = {
+  primary: 'border-[#142116] bg-[#142116] text-white hover:bg-[#243a29]',
+  secondary: 'border-[#cdd6cf] bg-white text-[#34473b] hover:bg-[#f3f6f2]',
+  danger: 'border-red-200 bg-red-50 text-red-700 hover:bg-red-100',
+};
+
+function ActionButton({
+  label,
+  onClick,
+  disabled,
+  variant = 'secondary',
+}: {
+  label: string;
+  onClick: () => void;
+  disabled: boolean;
+  variant?: ActionButtonVariant;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={`rounded-md border px-3 py-1.5 text-xs font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${actionButtonClasses[variant]}`}
+    >
+      {label}
+    </button>
+  );
+}
+
 export default function ContextResearchPage() {
   const [realData, setRealData] = useState<SupabaseContextResearchData | null>(null);
   const [localRuns, setLocalRuns] = useState<ContextResearchRun[]>(mockContextResearchRuns);
@@ -96,6 +144,7 @@ export default function ContextResearchPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [isCreatingRun, setIsCreatingRun] = useState(false);
+  const [activeAction, setActiveAction] = useState<string | null>(null);
   const [reloadCount, setReloadCount] = useState(0);
 
   const supabase = useMemo(() => {
@@ -137,10 +186,33 @@ export default function ContextResearchPage() {
   const competitorInsights: CompetitorInsight[] =
     realData?.competitorInsights ?? mockCompetitorInsights;
   const memoryItems: ContextMemoryItem[] = realData?.memoryItems ?? mockContextMemoryItems;
+  const canReview = Boolean(realData && supabase);
   const latestRun = runs[0];
+  const sourcesById = useMemo(() => {
+    return new Map(sources.map((source) => [source.id, source]));
+  }, [sources]);
+  const insightsByCompetitorId = useMemo(() => {
+    return competitorInsights.reduce<Map<string, CompetitorInsight[]>>((acc, insight) => {
+      const current = acc.get(insight.competitorId) ?? [];
+      current.push(insight);
+      acc.set(insight.competitorId, current);
+      return acc;
+    }, new Map());
+  }, [competitorInsights]);
+  const memoryByFindingId = useMemo(() => {
+    return memoryItems.reduce<Map<string, ContextMemoryItem>>((acc, item) => {
+      if (item.sourceFindingId) {
+        acc.set(item.sourceFindingId, item);
+      }
+      return acc;
+    }, new Map());
+  }, [memoryItems]);
   const pendingReviews =
     findings.filter((finding) => finding.reviewStatus === 'needs_review').length +
-    competitorInsights.filter((insight) => insight.reviewStatus === 'needs_review').length;
+    competitorInsights.filter((insight) => insight.reviewStatus === 'needs_review').length +
+    competitors.filter((competitor) => competitor.status === 'candidate').length +
+    memoryItems.filter((item) => item.status === 'draft').length;
+  const activeMemoryCount = memoryItems.filter((item) => item.status === 'active').length;
 
   async function createRun() {
     if (!context) return;
@@ -201,6 +273,102 @@ export default function ContextResearchPage() {
     setActionSuccess('Run criado apenas nesta sessao mockada.');
   }
 
+  async function runReviewAction(
+    actionKey: string,
+    successMessage: string,
+    action: () => Promise<void>,
+  ) {
+    setActionError(null);
+    setActionSuccess(null);
+
+    if (!realData || !supabase) {
+      setActionError('Acoes de revisao exigem dados reais do Supabase.');
+      return;
+    }
+
+    setActiveAction(actionKey);
+
+    try {
+      await action();
+      setActionSuccess(successMessage);
+      setReloadCount((count) => count + 1);
+    } catch {
+      setActionError('Nao foi possivel aplicar a revisao no Supabase.');
+    } finally {
+      setActiveAction(null);
+    }
+  }
+
+  function reviewFinding(
+    finding: ContextResearchFinding,
+    status: Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>,
+  ) {
+    const actionKey = `finding-${status}-${finding.id}`;
+    const label = status === 'accepted' ? 'Achado aceito.' : 'Achado rejeitado.';
+
+    void runReviewAction(actionKey, label, () =>
+      reviewSupabaseContextResearchFinding(supabase!, {
+        id: finding.id,
+        contextId: finding.contextId,
+        clientId: finding.clientId,
+        status,
+      }),
+    );
+  }
+
+  function reviewInsight(
+    insight: CompetitorInsight,
+    status: Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>,
+  ) {
+    const actionKey = `insight-${status}-${insight.id}`;
+    const label = status === 'accepted' ? 'Insight aceito.' : 'Insight rejeitado.';
+
+    void runReviewAction(actionKey, label, () =>
+      reviewSupabaseCompetitorInsight(supabase!, {
+        id: insight.id,
+        contextId: insight.contextId,
+        clientId: insight.clientId,
+        status,
+      }),
+    );
+  }
+
+  function updateCompetitor(
+    competitor: CompetitorProfile,
+    status: Extract<CompetitorProfileStatus, 'active' | 'dismissed'>,
+  ) {
+    const actionKey = `competitor-${status}-${competitor.id}`;
+    const label = status === 'active' ? 'Concorrente ativado.' : 'Concorrente descartado.';
+
+    void runReviewAction(actionKey, label, () =>
+      updateSupabaseCompetitorStatus(supabase!, {
+        id: competitor.id,
+        contextId: competitor.contextId,
+        clientId: competitor.clientId,
+        status,
+      }),
+    );
+  }
+
+  function updateMemory(
+    item: ContextMemoryItem,
+    status: Extract<ContextMemoryStatus, 'active' | 'archived'>,
+  ) {
+    const actionKey = `memory-${status}-${item.id}`;
+    const label = status === 'active' ? 'Memoria ativada.' : 'Memoria arquivada.';
+
+    void runReviewAction(actionKey, label, () =>
+      updateSupabaseContextMemoryStatus(supabase!, {
+        id: item.id,
+        contextId: item.contextId,
+        clientId: item.clientId,
+        status,
+        sourceFindingId: item.sourceFindingId,
+        sourceCompetitorInsightId: item.sourceCompetitorInsightId,
+      }),
+    );
+  }
+
   return (
     <div className="mx-auto max-w-5xl px-6 py-8">
       <header className="mb-8">
@@ -255,8 +423,12 @@ export default function ContextResearchPage() {
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{competitors.length}</p>
         </div>
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
-          <p className="text-xs text-[#5c6b61]">Revisoes pendentes</p>
+          <p className="text-xs text-[#5c6b61]">Pendencias</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{pendingReviews}</p>
+        </div>
+        <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm md:col-span-4">
+          <p className="text-xs text-[#5c6b61]">Memorias ativas</p>
+          <p className="mt-1 text-2xl font-semibold text-[#142116]">{activeMemoryCount}</p>
         </div>
       </section>
 
@@ -369,20 +541,68 @@ export default function ContextResearchPage() {
             />
           ) : (
             <div className="space-y-3">
-              {findings.map((finding) => (
-                <div key={finding.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className="font-medium text-[#172018]">{finding.title}</p>
-                    <Badge variant={reviewVariant(finding.reviewStatus)}>
-                      {reviewStatusLabels[finding.reviewStatus]}
-                    </Badge>
+              {findings.map((finding) => {
+                const source = finding.sourceId ? sourcesById.get(finding.sourceId) : undefined;
+                const linkedMemory = memoryByFindingId.get(finding.id);
+
+                return (
+                  <div key={finding.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <p className="font-medium text-[#172018]">{finding.title}</p>
+                      <Badge variant={reviewVariant(finding.reviewStatus)}>
+                        {reviewStatusLabels[finding.reviewStatus]}
+                      </Badge>
+                    </div>
+                    <p className="mt-2 text-sm text-[#5c6b61]">{finding.finding}</p>
+                    {finding.evidence && (
+                      <p className="mt-2 text-xs text-[#5c6b61]">Evidencia: {finding.evidence}</p>
+                    )}
+                    <div className="mt-3 flex flex-wrap items-center gap-2 text-xs text-[#5c6b61]">
+                      {source?.url && (
+                        <a
+                          href={source.url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="font-medium text-[#476454] underline-offset-2 hover:underline"
+                        >
+                          Fonte: {hostFromUrl(source.url)}
+                        </a>
+                      )}
+                      {linkedMemory && (
+                        <span>
+                          Memoria vinculada: {memoryStatusLabels[linkedMemory.status]}
+                        </span>
+                      )}
+                    </div>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {finding.reviewStatus === 'needs_review' && (
+                        <>
+                          <ActionButton
+                            label="Aceitar"
+                            onClick={() => reviewFinding(finding, 'accepted')}
+                            disabled={!canReview || activeAction !== null}
+                            variant="primary"
+                          />
+                          <ActionButton
+                            label="Rejeitar"
+                            onClick={() => reviewFinding(finding, 'rejected')}
+                            disabled={!canReview || activeAction !== null}
+                            variant="danger"
+                          />
+                        </>
+                      )}
+                      {linkedMemory?.status === 'draft' && (
+                        <ActionButton
+                          label="Ativar memoria"
+                          onClick={() => updateMemory(linkedMemory, 'active')}
+                          disabled={!canReview || activeAction !== null}
+                          variant="secondary"
+                        />
+                      )}
+                    </div>
                   </div>
-                  <p className="mt-2 text-sm text-[#5c6b61]">{finding.finding}</p>
-                  {finding.evidence && (
-                    <p className="mt-2 text-xs text-[#5c6b61]">Evidencia: {finding.evidence}</p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -398,22 +618,99 @@ export default function ContextResearchPage() {
             />
           ) : (
             <div className="space-y-3">
-              {competitors.map((competitor) => (
-                <div key={competitor.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <p className="font-medium text-[#172018]">{competitor.name}</p>
-                    <Badge variant={competitor.status === 'active' ? 'green' : 'yellow'}>
-                      {competitor.status}
-                    </Badge>
+              {competitors.map((competitor) => {
+                const relatedInsights = insightsByCompetitorId.get(competitor.id) ?? [];
+
+                return (
+                  <div key={competitor.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <p className="font-medium text-[#172018]">{competitor.name}</p>
+                      <Badge
+                        variant={
+                          competitor.status === 'active'
+                            ? 'green'
+                            : competitor.status === 'dismissed'
+                              ? 'red'
+                              : 'yellow'
+                        }
+                      >
+                        {competitorStatusLabels[competitor.status]}
+                      </Badge>
+                    </div>
+                    <p className="mt-1 text-xs text-[#5c6b61]">
+                      {competitor.websiteUrl ?? 'Sem site registrado'}
+                    </p>
+                    {competitor.positioning && (
+                      <p className="mt-2 text-sm text-[#5c6b61]">{competitor.positioning}</p>
+                    )}
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {competitor.status !== 'active' && (
+                        <ActionButton
+                          label="Ativar"
+                          onClick={() => updateCompetitor(competitor, 'active')}
+                          disabled={!canReview || activeAction !== null}
+                          variant="primary"
+                        />
+                      )}
+                      {competitor.status !== 'dismissed' && (
+                        <ActionButton
+                          label="Descartar"
+                          onClick={() => updateCompetitor(competitor, 'dismissed')}
+                          disabled={!canReview || activeAction !== null}
+                          variant="danger"
+                        />
+                      )}
+                    </div>
+                    {relatedInsights.length > 0 && (
+                      <div className="mt-4 space-y-3 border-t border-[#d7ddd2] pt-4">
+                        {relatedInsights.map((insight) => (
+                          <div key={insight.id} className="rounded-md bg-[#f7f9f6] p-3">
+                            <div className="flex flex-wrap items-start justify-between gap-2">
+                              <p className="text-sm text-[#5c6b61]">{insight.insight}</p>
+                              <Badge variant={reviewVariant(insight.reviewStatus)}>
+                                {reviewStatusLabels[insight.reviewStatus]}
+                              </Badge>
+                            </div>
+                            {insight.evidence && (
+                              <p className="mt-2 text-xs text-[#5c6b61]">
+                                Evidencia: {insight.evidence}
+                              </p>
+                            )}
+                            <div className="mt-3 flex flex-wrap items-center gap-2">
+                              {insight.sourceUrl && (
+                                <a
+                                  href={insight.sourceUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="text-xs font-medium text-[#476454] underline-offset-2 hover:underline"
+                                >
+                                  Fonte: {hostFromUrl(insight.sourceUrl)}
+                                </a>
+                              )}
+                              {insight.reviewStatus === 'needs_review' && (
+                                <>
+                                  <ActionButton
+                                    label="Aceitar insight"
+                                    onClick={() => reviewInsight(insight, 'accepted')}
+                                    disabled={!canReview || activeAction !== null}
+                                    variant="primary"
+                                  />
+                                  <ActionButton
+                                    label="Rejeitar"
+                                    onClick={() => reviewInsight(insight, 'rejected')}
+                                    disabled={!canReview || activeAction !== null}
+                                    variant="danger"
+                                  />
+                                </>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <p className="mt-1 text-xs text-[#5c6b61]">
-                    {competitor.websiteUrl ?? 'Sem site registrado'}
-                  </p>
-                  {competitor.positioning && (
-                    <p className="mt-2 text-sm text-[#5c6b61]">{competitor.positioning}</p>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
@@ -434,9 +731,33 @@ export default function ContextResearchPage() {
               <div key={item.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <p className="font-medium text-[#172018]">{item.title}</p>
-                  <Badge variant={item.status === 'active' ? 'green' : 'yellow'}>{item.status}</Badge>
+                  <Badge
+                    variant={
+                      item.status === 'active' ? 'green' : item.status === 'archived' ? 'red' : 'yellow'
+                    }
+                  >
+                    {memoryStatusLabels[item.status]}
+                  </Badge>
                 </div>
                 <p className="mt-2 text-sm text-[#5c6b61]">{item.content}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.status !== 'active' && (
+                    <ActionButton
+                      label="Ativar"
+                      onClick={() => updateMemory(item, 'active')}
+                      disabled={!canReview || activeAction !== null}
+                      variant="primary"
+                    />
+                  )}
+                  {item.status !== 'archived' && (
+                    <ActionButton
+                      label="Arquivar"
+                      onClick={() => updateMemory(item, 'archived')}
+                      disabled={!canReview || activeAction !== null}
+                      variant="danger"
+                    />
+                  )}
+                </div>
               </div>
             ))}
           </div>

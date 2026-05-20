@@ -3,8 +3,11 @@ import type {
   BusinessContext,
   CompetitorInsight,
   CompetitorProfile,
+  CompetitorProfileStatus,
   ContextMemoryItem,
+  ContextMemoryStatus,
   ContextResearchFinding,
+  ContextResearchReviewStatus,
   ContextResearchRun,
   ContextResearchSource,
 } from '@/lib/domain/types';
@@ -25,6 +28,17 @@ type ActiveMembership = {
   clientId: string;
   userId: string;
 };
+
+type ScopedEntityInput = {
+  id: string;
+  contextId: string;
+  clientId: string;
+};
+
+type FindingReviewStatus = Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>;
+type InsightReviewStatus = Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>;
+type EditableCompetitorStatus = Extract<CompetitorProfileStatus, 'active' | 'dismissed'>;
+type EditableMemoryStatus = Extract<ContextMemoryStatus, 'active' | 'archived'>;
 
 function asObject(value: Json): Record<string, unknown> {
   if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -353,5 +367,148 @@ export async function createSupabaseContextResearchRun(
 
   if (error) {
     throw error;
+  }
+}
+
+export async function reviewSupabaseContextResearchFinding(
+  supabase: SupabaseClient<Database>,
+  input: ScopedEntityInput & { status: FindingReviewStatus },
+) {
+  const membership = await getActiveMembership(supabase);
+
+  if (membership.clientId !== input.clientId) {
+    throw new Error('Active membership does not match finding client.');
+  }
+
+  const { error } = await supabase
+    .from('context_research_findings')
+    .update({
+      review_status: input.status,
+      reviewed_by: membership.userId,
+      reviewed_at: new Date().toISOString(),
+    })
+    .eq('id', input.id)
+    .eq('context_id', input.contextId)
+    .eq('client_id', input.clientId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function reviewSupabaseCompetitorInsight(
+  supabase: SupabaseClient<Database>,
+  input: ScopedEntityInput & { status: InsightReviewStatus },
+) {
+  const membership = await getActiveMembership(supabase);
+
+  if (membership.clientId !== input.clientId) {
+    throw new Error('Active membership does not match insight client.');
+  }
+
+  const { error } = await supabase
+    .from('competitor_insights')
+    .update({
+      review_status: input.status,
+      reviewed_by: membership.userId,
+      reviewed_at: new Date().toISOString(),
+    })
+    .eq('id', input.id)
+    .eq('context_id', input.contextId)
+    .eq('client_id', input.clientId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function updateSupabaseCompetitorStatus(
+  supabase: SupabaseClient<Database>,
+  input: ScopedEntityInput & { status: EditableCompetitorStatus },
+) {
+  const membership = await getActiveMembership(supabase);
+
+  if (membership.clientId !== input.clientId) {
+    throw new Error('Active membership does not match competitor client.');
+  }
+
+  const { error } = await supabase
+    .from('competitor_profiles')
+    .update({ status: input.status })
+    .eq('id', input.id)
+    .eq('context_id', input.contextId)
+    .eq('client_id', input.clientId);
+
+  if (error) {
+    throw error;
+  }
+}
+
+export async function updateSupabaseContextMemoryStatus(
+  supabase: SupabaseClient<Database>,
+  input: ScopedEntityInput & {
+    status: EditableMemoryStatus;
+    sourceFindingId?: string;
+    sourceCompetitorInsightId?: string;
+  },
+) {
+  const membership = await getActiveMembership(supabase);
+
+  if (membership.clientId !== input.clientId) {
+    throw new Error('Active membership does not match memory client.');
+  }
+
+  const reviewedAt = new Date().toISOString();
+  const { error: memoryError } = await supabase
+    .from('context_memory_items')
+    .update({
+      status: input.status,
+      reviewed_by: membership.userId,
+      reviewed_at: reviewedAt,
+    })
+    .eq('id', input.id)
+    .eq('context_id', input.contextId)
+    .eq('client_id', input.clientId);
+
+  if (memoryError) {
+    throw memoryError;
+  }
+
+  if (input.status !== 'active') {
+    return;
+  }
+
+  if (input.sourceFindingId) {
+    const { error } = await supabase
+      .from('context_research_findings')
+      .update({
+        review_status: 'converted_to_memory',
+        reviewed_by: membership.userId,
+        reviewed_at: reviewedAt,
+      })
+      .eq('id', input.sourceFindingId)
+      .eq('context_id', input.contextId)
+      .eq('client_id', input.clientId);
+
+    if (error) {
+      throw error;
+    }
+  }
+
+  if (input.sourceCompetitorInsightId) {
+    const { error } = await supabase
+      .from('competitor_insights')
+      .update({
+        review_status: 'converted_to_memory',
+        reviewed_by: membership.userId,
+        reviewed_at: reviewedAt,
+      })
+      .eq('id', input.sourceCompetitorInsightId)
+      .eq('context_id', input.contextId)
+      .eq('client_id', input.clientId);
+
+    if (error) {
+      throw error;
+    }
   }
 }
