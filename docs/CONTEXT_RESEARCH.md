@@ -100,6 +100,7 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - Todos os concorrentes entram como `candidate`.
 - Todos os itens de memoria entram como `draft`.
 - Nada e promovido automaticamente para contexto ativo ou memoria ativa.
+- V33 validada pelo usuario em `/research` em 2026-05-20.
 - Ainda falta tela para revisar achados e promover para memoria.
 
 ## Fontes publicas usadas na pesquisa inicial

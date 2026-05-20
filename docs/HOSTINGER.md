@@ -201,6 +201,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-20: preparada v32 com Roadmap atualizado e carga local de achados supervisionados da pesquisa publica inicial da iBob. A migration de achados ainda depende de autorizacao explicita para aplicar no Supabase remoto.
 - 2026-05-20: aplicada migration `20260520100000_seed_ibob_supervised_research_findings.sql` no Supabase remoto.
 - 2026-05-20: preparado pacote v33 com Roadmap atualizado para achados supervisionados aplicados e pendentes de revisao humana.
+- 2026-05-20: v33 reimplantada e validada pelo usuario em `/research`.
+- 2026-05-20: preparado pacote v34 com Roadmap registrando o proximo marco de revisao/promocao dos achados.
 
 Validacao publica:
 

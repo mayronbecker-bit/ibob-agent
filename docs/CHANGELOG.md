@@ -116,3 +116,5 @@
 - Atualizado Roadmap para refletir que Context Research ja possui carga de achados preparada, mas ainda nao aplicada no Supabase remoto.
 - Aplicada e validada no Supabase remoto a migration `20260520100000_seed_ibob_supervised_research_findings.sql`.
 - Atualizado Roadmap para refletir que os achados supervisionados ja foram aplicados no remoto e agora dependem de revisao humana.
+- V33 reimplantada e validada pelo usuario em `/research`.
+- Roadmap atualizado para marcar o proximo marco: revisao dos achados e promocao manual para memoria ativa.
