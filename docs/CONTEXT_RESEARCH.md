@@ -105,6 +105,8 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - V35 prepara revisao operacional em `/research`.
 - `/research` passa a permitir aceitar/rejeitar achados e insights, ativar/descartar concorrentes e ativar/arquivar memoria contextual.
 - As acoes de revisao exigem dados reais do Supabase e respeitam RLS por `client_id`.
+- V35 reimplantada/testada pelo usuario.
+- V36 adiciona filtros de achados, painel de fontes publicas e indicador de prontidao da revisao.
 - Ainda falta criar tela dedicada de historico/justificativa de revisao e conversao para `context_answers`.
 
 ## Fontes publicas usadas na pesquisa inicial
@@ -128,4 +130,4 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 
 ## Proxima acao
 
-Validar a v35 em `/research`, usando um ou dois achados como teste controlado de revisao antes de promover o restante da memoria contextual.
+Validar a v36 em `/research`, conferindo filtros, fontes e contadores antes de revisar o restante dos achados.

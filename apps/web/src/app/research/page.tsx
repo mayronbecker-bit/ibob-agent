@@ -64,6 +64,26 @@ const memoryStatusLabels: Record<ContextMemoryStatus, string> = {
   archived: 'Arquivada',
 };
 
+const sourceTypeLabels: Record<ContextResearchSource['sourceType'], string> = {
+  company_site: 'Empresa',
+  competitor_site: 'Concorrente',
+  search_result: 'Busca',
+  social_profile: 'Social',
+  directory: 'Diretorio',
+  user_supplied: 'Usuario',
+  other: 'Outro',
+};
+
+type FindingFilter = 'all' | 'needs_review' | 'accepted' | 'rejected' | 'converted';
+
+const findingFilterLabels: Record<FindingFilter, string> = {
+  all: 'Todos',
+  needs_review: 'Pendentes',
+  accepted: 'Aceitos',
+  rejected: 'Rejeitados',
+  converted: 'Convertidos',
+};
+
 function runStatusVariant(status: ContextResearchRunStatus): 'green' | 'yellow' | 'red' | 'gray' {
   if (status === 'completed') return 'green';
   if (status === 'failed' || status === 'cancelled') return 'red';
@@ -101,6 +121,17 @@ function hostFromUrl(url?: string) {
 
 function countByRun<T extends { researchRunId?: string }>(items: T[], runId: string) {
   return items.filter((item) => item.researchRunId === runId).length;
+}
+
+function findingMatchesFilter(finding: ContextResearchFinding, filter: FindingFilter) {
+  if (filter === 'all') return true;
+  if (filter === 'converted') {
+    return (
+      finding.reviewStatus === 'converted_to_context' ||
+      finding.reviewStatus === 'converted_to_memory'
+    );
+  }
+  return finding.reviewStatus === filter;
 }
 
 type ActionButtonVariant = 'primary' | 'secondary' | 'danger';
@@ -145,6 +176,7 @@ export default function ContextResearchPage() {
   const [actionSuccess, setActionSuccess] = useState<string | null>(null);
   const [isCreatingRun, setIsCreatingRun] = useState(false);
   const [activeAction, setActiveAction] = useState<string | null>(null);
+  const [findingFilter, setFindingFilter] = useState<FindingFilter>('needs_review');
   const [reloadCount, setReloadCount] = useState(0);
 
   const supabase = useMemo(() => {
@@ -213,6 +245,29 @@ export default function ContextResearchPage() {
     competitors.filter((competitor) => competitor.status === 'candidate').length +
     memoryItems.filter((item) => item.status === 'draft').length;
   const activeMemoryCount = memoryItems.filter((item) => item.status === 'active').length;
+  const reviewedItemCount =
+    findings.filter((finding) => finding.reviewStatus !== 'needs_review').length +
+    competitorInsights.filter((insight) => insight.reviewStatus !== 'needs_review').length +
+    competitors.filter((competitor) => competitor.status !== 'candidate').length +
+    memoryItems.filter((item) => item.status !== 'draft').length;
+  const totalReviewItemCount =
+    findings.length + competitorInsights.length + competitors.length + memoryItems.length;
+  const reviewProgressPct =
+    totalReviewItemCount > 0 ? Math.round((reviewedItemCount / totalReviewItemCount) * 100) : 0;
+  const activeCompetitorCount = competitors.filter((competitor) => competitor.status === 'active').length;
+  const sourceHostCount = new Set(sources.map((source) => hostFromUrl(source.url))).size;
+  const filteredFindings = findings.filter((finding) => findingMatchesFilter(finding, findingFilter));
+  const findingFilterCounts: Record<FindingFilter, number> = {
+    all: findings.length,
+    needs_review: findings.filter((finding) => finding.reviewStatus === 'needs_review').length,
+    accepted: findings.filter((finding) => finding.reviewStatus === 'accepted').length,
+    rejected: findings.filter((finding) => finding.reviewStatus === 'rejected').length,
+    converted: findings.filter(
+      (finding) =>
+        finding.reviewStatus === 'converted_to_context' ||
+        finding.reviewStatus === 'converted_to_memory',
+    ).length,
+  };
 
   async function createRun() {
     if (!context) return;
@@ -409,7 +464,7 @@ export default function ContextResearchPage() {
         </DataStateNotice>
       )}
 
-      <section className="mb-8 grid gap-4 md:grid-cols-4">
+      <section className="mb-8 grid gap-4 md:grid-cols-5">
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
           <p className="text-xs text-[#5c6b61]">Runs</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{runs.length}</p>
@@ -419,16 +474,39 @@ export default function ContextResearchPage() {
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{sources.length}</p>
         </div>
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
-          <p className="text-xs text-[#5c6b61]">Concorrentes</p>
-          <p className="mt-1 text-2xl font-semibold text-[#142116]">{competitors.length}</p>
+          <p className="text-xs text-[#5c6b61]">Concorrentes ativos</p>
+          <p className="mt-1 text-2xl font-semibold text-[#142116]">{activeCompetitorCount}</p>
         </div>
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
           <p className="text-xs text-[#5c6b61]">Pendencias</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{pendingReviews}</p>
         </div>
-        <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm md:col-span-4">
+        <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
           <p className="text-xs text-[#5c6b61]">Memorias ativas</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">{activeMemoryCount}</p>
+        </div>
+      </section>
+
+      <section className="mb-8 rounded-xl border border-[#d7ddd2] bg-white p-5 shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+              Prontidao da revisao
+            </h2>
+            <p className="mt-1 text-sm text-[#5c6b61]">
+              {reviewedItemCount} de {totalReviewItemCount} itens revisados em {sourceHostCount}{' '}
+              fonte{sourceHostCount !== 1 ? 's' : ''} publica{sourceHostCount !== 1 ? 's' : ''}.
+            </p>
+          </div>
+          <Badge variant={pendingReviews === 0 ? 'green' : 'yellow'}>
+            {reviewProgressPct}% revisado
+          </Badge>
+        </div>
+        <div className="mt-4 h-2.5 w-full overflow-hidden rounded-full bg-[#e8ede9]">
+          <div
+            className="h-full rounded-full bg-[#476454] transition-all"
+            style={{ width: `${reviewProgressPct}%` }}
+          />
         </div>
       </section>
 
@@ -529,19 +607,90 @@ export default function ContextResearchPage() {
         )}
       </section>
 
+      <section className="mb-8">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+            Fontes revisaveis
+          </h2>
+          <span className="text-xs text-[#5c6b61]">
+            {sources.length} fonte{sources.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+
+        {sources.length === 0 ? (
+          <EmptyState
+            title="Nenhuma fonte registrada"
+            description="As fontes publicas pesquisadas aparecem aqui para conferir a origem dos achados."
+          />
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2">
+            {sources.map((source) => (
+              <div key={source.id} className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p className="font-medium text-[#172018]">
+                      {source.title ?? hostFromUrl(source.url)}
+                    </p>
+                    <p className="mt-1 text-xs text-[#5c6b61]">
+                      {source.publisher ?? hostFromUrl(source.url)}
+                    </p>
+                  </div>
+                  <Badge variant={source.sourceType === 'company_site' ? 'blue' : 'gray'}>
+                    {sourceTypeLabels[source.sourceType]}
+                  </Badge>
+                </div>
+                {source.snippet && <p className="mt-2 text-sm text-[#5c6b61]">{source.snippet}</p>}
+                {source.url && (
+                  <a
+                    href={source.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-3 inline-flex text-xs font-medium text-[#476454] underline-offset-2 hover:underline"
+                  >
+                    {hostFromUrl(source.url)}
+                  </a>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+
       <section className="grid gap-6 lg:grid-cols-2">
         <div>
-          <h2 className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-            Achados
-          </h2>
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+              Achados
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {(Object.keys(findingFilterLabels) as FindingFilter[]).map((filter) => (
+                <button
+                  key={filter}
+                  onClick={() => setFindingFilter(filter)}
+                  className={`rounded-full border px-3 py-1 text-xs font-semibold transition-colors ${
+                    findingFilter === filter
+                      ? 'border-[#476454] bg-[#476454] text-white'
+                      : 'border-[#d7ddd2] bg-white text-[#5c6b61] hover:bg-[#f3f6f2]'
+                  }`}
+                >
+                  {findingFilterLabels[filter]} ({findingFilterCounts[filter]})
+                </button>
+              ))}
+            </div>
+          </div>
           {findings.length === 0 ? (
             <EmptyState
               title="Nenhum achado registrado"
               description="Quando o agente pesquisar o site e o mercado, os achados entram aqui com evidencia e confianca."
             />
+          ) : filteredFindings.length === 0 ? (
+            <EmptyState
+              title="Nenhum achado neste filtro"
+              description="Troque o filtro para visualizar outros estados de revisao."
+            />
           ) : (
             <div className="space-y-3">
-              {findings.map((finding) => {
+              {filteredFindings.map((finding) => {
                 const source = finding.sourceId ? sourcesById.get(finding.sourceId) : undefined;
                 const linkedMemory = memoryByFindingId.get(finding.id);
 

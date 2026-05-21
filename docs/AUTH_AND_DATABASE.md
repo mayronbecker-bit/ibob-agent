@@ -662,3 +662,16 @@ Implementado em 2026-05-20:
 Proxima acao:
 
 Validar a revisao com poucos itens primeiro, antes de promover toda a memoria contextual da iBob.
+
+## Organizacao da fila de revisao
+
+Implementado em 2026-05-21:
+
+- filtros por status dos achados em `/research`;
+- painel de fontes publicas com tipo, publisher, trecho e link;
+- indicador de prontidao da revisao com total revisado, pendencias e memorias ativas;
+- contadores separados para concorrentes ativos e memorias ativas.
+
+Proxima acao:
+
+Validar a fila organizada antes de revisar/promover o restante dos achados da iBob.

@@ -122,3 +122,6 @@
 - Implementada revisao operacional em `/research`: aceitar/rejeitar achados, aceitar/rejeitar insights concorrenciais, ativar/descartar concorrentes e ativar/arquivar memoria contextual.
 - Atualizados helpers Supabase para gravar revisoes respeitando sessao autenticada e `client_id`.
 - Roadmap atualizado para refletir v35 como etapa maior apos validacao.
+- V35 reimplantada/testada pelo usuario.
+- Ampliada a experiencia de revisao em `/research` com filtros por status de achado, painel de fontes publicas e indicador de prontidao da revisao.
+- Roadmap atualizado para refletir v36 como bloco maior de organizacao da fila de pesquisa.
