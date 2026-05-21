@@ -177,6 +177,7 @@ export default function ContextResearchPage() {
   const [isCreatingRun, setIsCreatingRun] = useState(false);
   const [activeAction, setActiveAction] = useState<string | null>(null);
   const [findingFilter, setFindingFilter] = useState<FindingFilter>('needs_review');
+  const [reviewNote, setReviewNote] = useState('');
   const [reloadCount, setReloadCount] = useState(0);
 
   const supabase = useMemo(() => {
@@ -292,6 +293,7 @@ export default function ContextResearchPage() {
           clientId: context.clientId,
           companyUrl: cleanUrl,
           searchQuery: cleanQuery,
+          reviewNote,
         });
         setActionSuccess('Run supervisionado criado no Supabase.');
         setReloadCount((count) => count + 1);
@@ -367,6 +369,7 @@ export default function ContextResearchPage() {
         contextId: finding.contextId,
         clientId: finding.clientId,
         status,
+        reviewNote,
       }),
     );
   }
@@ -384,6 +387,7 @@ export default function ContextResearchPage() {
         contextId: insight.contextId,
         clientId: insight.clientId,
         status,
+        reviewNote,
       }),
     );
   }
@@ -401,6 +405,7 @@ export default function ContextResearchPage() {
         contextId: competitor.contextId,
         clientId: competitor.clientId,
         status,
+        reviewNote,
       }),
     );
   }
@@ -420,6 +425,7 @@ export default function ContextResearchPage() {
         status,
         sourceFindingId: item.sourceFindingId,
         sourceCompetitorInsightId: item.sourceCompetitorInsightId,
+        reviewNote,
       }),
     );
   }
@@ -507,6 +513,30 @@ export default function ContextResearchPage() {
             className="h-full rounded-full bg-[#476454] transition-all"
             style={{ width: `${reviewProgressPct}%` }}
           />
+        </div>
+      </section>
+
+      <section className="mb-8 rounded-xl border border-[#d7ddd2] bg-white p-5 shadow-sm">
+        <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+              Nota da revisao
+            </h2>
+            <p className="mt-1 text-sm text-[#5c6b61]">
+              Contexto decisorio para o historico operacional da pesquisa.
+            </p>
+          </div>
+          <Badge variant="purple">Auditoria</Badge>
+        </div>
+        <textarea
+          value={reviewNote}
+          onChange={(event) => setReviewNote(event.target.value)}
+          maxLength={1000}
+          placeholder="Nota interna da revisao"
+          className="min-h-24 w-full resize-y rounded-lg border border-[#d7ddd2] bg-white px-3 py-2 text-sm text-[#172018] outline-none transition-colors focus:border-[#476454]"
+        />
+        <div className="mt-2 flex justify-end text-xs text-[#5c6b61]">
+          {reviewNote.length}/1000
         </div>
       </section>
 

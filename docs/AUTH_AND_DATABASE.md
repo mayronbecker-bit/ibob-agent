@@ -675,3 +675,20 @@ Implementado em 2026-05-21:
 Proxima acao:
 
 Validar a fila organizada antes de revisar/promover o restante dos achados da iBob.
+
+## Auditoria da revisao contextual
+
+Implementado em 2026-05-21:
+
+- `/research` recebe uma nota opcional de revisao;
+- criacao de runs registra `context_research.run_created` em `audit_events`;
+- revisao de achados registra `context_research.finding_reviewed`;
+- revisao de insights registra `context_research.competitor_insight_reviewed`;
+- ativacao/descarte de concorrentes registra `context_research.competitor_status_updated`;
+- ativacao/arquivamento de memoria registra `context_research.memory_status_updated`;
+- os eventos guardam `client_id`, usuario ator, entidade, status e nota de revisao em metadata;
+- nenhuma tabela nova foi criada nesta etapa.
+
+Proxima acao:
+
+Validar em producao uma acao controlada de revisao e conferir o evento correspondente em `/audit`.

@@ -125,3 +125,7 @@
 - V35 reimplantada/testada pelo usuario.
 - Ampliada a experiencia de revisao em `/research` com filtros por status de achado, painel de fontes publicas e indicador de prontidao da revisao.
 - Roadmap atualizado para refletir v36 como bloco maior de organizacao da fila de pesquisa.
+- V36 reimplantada/testada pelo usuario.
+- Adicionada nota opcional de revisao em `/research`.
+- Acoes de revisao de achados, insights, concorrentes, memorias e novos runs passam a registrar eventos em `audit_events`.
+- Roadmap atualizado para refletir v37 como camada auditavel de revisao contextual.

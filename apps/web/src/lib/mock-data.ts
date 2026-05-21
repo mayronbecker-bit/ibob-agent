@@ -835,7 +835,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research validada e achados supervisionados aplicados. V35 adicionou acoes de revisao; v36 organiza a fila com filtros, painel de fontes e prontidao antes de promover memoria ativa.',
+      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research validada e achados supervisionados aplicados. V37 adiciona notas de revisao e eventos de auditoria para cada acao antes da memoria alimentar o Decision Engine.',
   },
   {
     number: 8,

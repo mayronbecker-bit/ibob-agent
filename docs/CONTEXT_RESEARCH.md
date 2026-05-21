@@ -107,6 +107,8 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - As acoes de revisao exigem dados reais do Supabase e respeitam RLS por `client_id`.
 - V35 reimplantada/testada pelo usuario.
 - V36 adiciona filtros de achados, painel de fontes publicas e indicador de prontidao da revisao.
+- V36 reimplantada/testada pelo usuario.
+- V37 adiciona nota opcional de revisao e registro automatico em `audit_events` para acoes de pesquisa contextual.
 - Ainda falta criar tela dedicada de historico/justificativa de revisao e conversao para `context_answers`.
 
 ## Fontes publicas usadas na pesquisa inicial
@@ -130,4 +132,4 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 
 ## Proxima acao
 
-Validar a v36 em `/research`, conferindo filtros, fontes e contadores antes de revisar o restante dos achados.
+Validar a v37 em `/research` e `/audit`, conferindo se a nota de revisao aparece no historico operacional apos uma acao controlada.

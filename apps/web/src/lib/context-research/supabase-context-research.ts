@@ -33,12 +33,21 @@ type ScopedEntityInput = {
   id: string;
   contextId: string;
   clientId: string;
+  reviewNote?: string;
 };
 
 type FindingReviewStatus = Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>;
 type InsightReviewStatus = Extract<ContextResearchReviewStatus, 'accepted' | 'rejected'>;
 type EditableCompetitorStatus = Extract<CompetitorProfileStatus, 'active' | 'dismissed'>;
 type EditableMemoryStatus = Extract<ContextMemoryStatus, 'active' | 'archived'>;
+
+type AuditInput = {
+  eventType: string;
+  entityType: string;
+  entityId: string;
+  description: string;
+  metadata?: Record<string, unknown>;
+};
 
 function asObject(value: Json): Record<string, unknown> {
   if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -221,6 +230,32 @@ async function getActiveMembership(
   };
 }
 
+function cleanReviewNote(note?: string) {
+  const trimmed = note?.trim();
+  return trimmed ? trimmed.slice(0, 1000) : undefined;
+}
+
+async function insertAuditEvent(
+  supabase: SupabaseClient<Database>,
+  membership: ActiveMembership,
+  input: AuditInput,
+) {
+  const { error } = await supabase.from('audit_events').insert({
+    client_id: membership.clientId,
+    actor_user_id: membership.userId,
+    event_type: input.eventType,
+    severity: 'info',
+    entity_type: input.entityType,
+    entity_id: input.entityId,
+    description: input.description,
+    metadata: (input.metadata ?? {}) as Json,
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
 export async function getSupabaseContextResearchData(
   supabase: SupabaseClient<Database>,
 ): Promise<SupabaseContextResearchData> {
@@ -339,6 +374,7 @@ export async function createSupabaseContextResearchRun(
     clientId: string;
     companyUrl: string;
     searchQuery: string;
+    reviewNote?: string;
   },
 ) {
   const membership = await getActiveMembership(supabase);
@@ -368,6 +404,19 @@ export async function createSupabaseContextResearchRun(
   if (error) {
     throw error;
   }
+
+  await insertAuditEvent(supabase, membership, {
+    eventType: 'context_research.run_created',
+    entityType: 'context_research_run',
+    entityId: input.companyUrl.trim(),
+    description: 'Run de pesquisa contextual supervisionada criado.',
+    metadata: {
+      context_id: input.contextId,
+      company_url: input.companyUrl.trim(),
+      search_query: input.searchQuery.trim(),
+      review_note: cleanReviewNote(input.reviewNote),
+    },
+  });
 }
 
 export async function reviewSupabaseContextResearchFinding(
@@ -394,6 +443,21 @@ export async function reviewSupabaseContextResearchFinding(
   if (error) {
     throw error;
   }
+
+  await insertAuditEvent(supabase, membership, {
+    eventType: 'context_research.finding_reviewed',
+    entityType: 'context_research_finding',
+    entityId: input.id,
+    description:
+      input.status === 'accepted'
+        ? 'Achado de pesquisa aceito por revisao humana.'
+        : 'Achado de pesquisa rejeitado por revisao humana.',
+    metadata: {
+      context_id: input.contextId,
+      review_status: input.status,
+      review_note: cleanReviewNote(input.reviewNote),
+    },
+  });
 }
 
 export async function reviewSupabaseCompetitorInsight(
@@ -420,6 +484,21 @@ export async function reviewSupabaseCompetitorInsight(
   if (error) {
     throw error;
   }
+
+  await insertAuditEvent(supabase, membership, {
+    eventType: 'context_research.competitor_insight_reviewed',
+    entityType: 'competitor_insight',
+    entityId: input.id,
+    description:
+      input.status === 'accepted'
+        ? 'Insight concorrencial aceito por revisao humana.'
+        : 'Insight concorrencial rejeitado por revisao humana.',
+    metadata: {
+      context_id: input.contextId,
+      review_status: input.status,
+      review_note: cleanReviewNote(input.reviewNote),
+    },
+  });
 }
 
 export async function updateSupabaseCompetitorStatus(
@@ -442,6 +521,21 @@ export async function updateSupabaseCompetitorStatus(
   if (error) {
     throw error;
   }
+
+  await insertAuditEvent(supabase, membership, {
+    eventType: 'context_research.competitor_status_updated',
+    entityType: 'competitor_profile',
+    entityId: input.id,
+    description:
+      input.status === 'active'
+        ? 'Concorrente ativado para uso contextual.'
+        : 'Concorrente descartado da memoria contextual ativa.',
+    metadata: {
+      context_id: input.contextId,
+      competitor_status: input.status,
+      review_note: cleanReviewNote(input.reviewNote),
+    },
+  });
 }
 
 export async function updateSupabaseContextMemoryStatus(
@@ -474,11 +568,7 @@ export async function updateSupabaseContextMemoryStatus(
     throw memoryError;
   }
 
-  if (input.status !== 'active') {
-    return;
-  }
-
-  if (input.sourceFindingId) {
+  if (input.status === 'active' && input.sourceFindingId) {
     const { error } = await supabase
       .from('context_research_findings')
       .update({
@@ -495,7 +585,7 @@ export async function updateSupabaseContextMemoryStatus(
     }
   }
 
-  if (input.sourceCompetitorInsightId) {
+  if (input.status === 'active' && input.sourceCompetitorInsightId) {
     const { error } = await supabase
       .from('competitor_insights')
       .update({
@@ -511,4 +601,21 @@ export async function updateSupabaseContextMemoryStatus(
       throw error;
     }
   }
+
+  await insertAuditEvent(supabase, membership, {
+    eventType: 'context_research.memory_status_updated',
+    entityType: 'context_memory_item',
+    entityId: input.id,
+    description:
+      input.status === 'active'
+        ? 'Memoria contextual ativada por revisao humana.'
+        : 'Memoria contextual arquivada por revisao humana.',
+    metadata: {
+      context_id: input.contextId,
+      memory_status: input.status,
+      source_finding_id: input.sourceFindingId,
+      source_competitor_insight_id: input.sourceCompetitorInsightId,
+      review_note: cleanReviewNote(input.reviewNote),
+    },
+  });
 }

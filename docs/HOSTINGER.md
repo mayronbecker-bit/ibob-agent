@@ -207,6 +207,8 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-20: preparado pacote v35 com revisao operacional em `/research` para achados, insights, concorrentes e memoria contextual.
 - 2026-05-21: v35 reimplantada/testada pelo usuario.
 - 2026-05-21: preparado pacote v36 com filtros de achados, painel de fontes e prontidao da revisao em `/research`.
+- 2026-05-21: v36 reimplantada/testada pelo usuario.
+- 2026-05-21: preparado pacote v37 com nota de revisao e audit_events nas acoes de pesquisa contextual.
 
 Validacao publica:
 
