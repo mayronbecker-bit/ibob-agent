@@ -937,7 +937,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Validacao deterministica',
     status: 'in_progress',
     description:
-      'V46 prepara o schema local de rule_validator e a tela /validator para testar regras deterministicas contra contexto, pesquisa, funil, Data Trust e proposta amostra, sem aplicar remoto ainda.',
+      'V47 aplica rule_validator no Supabase remoto e /validator passa a ler o catalogo ativo de regras quando ha sessao Supabase disponivel.',
   },
   {
     number: 12,

@@ -154,3 +154,6 @@
 - Criada a rota `/validator` para dry-run de regras deterministicas usando Decision Engine, Data Trust, funil e proposta amostra.
 - Roadmap atualizado para marcar `Validacao deterministica` em andamento, sem aplicar migration no Supabase remoto.
 - Criada documentacao `docs/RULE_VALIDATOR.md`.
+- V47 aplica `rule_validator` no Supabase remoto apos autorizacao explicita.
+- Confirmadas tabelas `rule_validator_rules`, `rule_validator_runs`, `rule_validator_checks`, enums, policies RLS e 8 regras v1 ativas.
+- `/validator` passa a ler o catalogo ativo de regras do Supabase quando ha sessao valida, mantendo fallback local.

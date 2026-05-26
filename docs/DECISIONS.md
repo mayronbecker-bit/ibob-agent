@@ -69,7 +69,7 @@ Consequencias:
 
 Status:
 
-Aceita localmente na v46; aplicacao remota pendente de autorizacao.
+Aceita localmente na v46 e aplicada no Supabase remoto em 2026-05-26 apos autorizacao explicita.
 
 ## 2026-05-23 - CMO Strategy Readiness antes do Decision Engine
 

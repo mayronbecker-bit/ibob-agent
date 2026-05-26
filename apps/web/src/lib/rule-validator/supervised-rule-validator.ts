@@ -22,6 +22,7 @@ type RuleKey =
 export type RuleValidatorDryRunInput = {
   decisionReadiness: DecisionReadiness;
   proposal?: Proposal;
+  rules?: RuleValidatorRule[];
 };
 
 export type RuleValidatorDryRun = {
@@ -231,12 +232,13 @@ function messageForOutcome(
 }
 
 function check(
+  rules: RuleValidatorRule[],
   ruleKey: RuleKey,
   result: RuleValidatorResult,
   evidence: Record<string, unknown>,
   passMessage: string,
 ): RuleValidatorCheck {
-  const rule = supervisedRuleCatalog.find((item) => item.ruleKey === ruleKey);
+  const rule = rules.find((item) => item.ruleKey === ruleKey);
 
   if (!rule) {
     throw new Error(`Rule not found: ${ruleKey}`);
@@ -307,6 +309,7 @@ export function runSupervisedRuleValidator(
   input: RuleValidatorDryRunInput,
 ): RuleValidatorDryRun {
   const readiness = input.decisionReadiness;
+  const rules = input.rules?.length ? input.rules : supervisedRuleCatalog;
   const contextGate = gateById(readiness, 'context-active');
   const gapGate = gateById(readiness, 'context-governance');
   const researchGate = gateById(readiness, 'research-memory');
@@ -316,6 +319,7 @@ export function runSupervisedRuleValidator(
 
   const checks: RuleValidatorCheck[] = [
     check(
+      rules,
       'context.active_minimum',
       outcomeFromGate(contextGate),
       {
@@ -325,6 +329,7 @@ export function runSupervisedRuleValidator(
       'Contexto ativo e suficiente para avaliar proposta.',
     ),
     check(
+      rules,
       'context.no_critical_gaps',
       outcomeFromGate(gapGate),
       {
@@ -335,6 +340,7 @@ export function runSupervisedRuleValidator(
       'Nao ha lacunas criticas abertas.',
     ),
     check(
+      rules,
       'research.memory_reviewed',
       outcomeFromGate(researchGate),
       {
@@ -346,6 +352,7 @@ export function runSupervisedRuleValidator(
       'Pesquisa e memoria revisadas sustentam a proposta.',
     ),
     check(
+      rules,
       'funnel.minimum_truth',
       outcomeFromGate(funnelGate),
       {
@@ -357,6 +364,7 @@ export function runSupervisedRuleValidator(
       'Funil real minimo esta presente.',
     ),
     check(
+      rules,
       'strategy.cmo_minimum_score',
       outcomeFromGate(cmoGate),
       {
@@ -366,6 +374,7 @@ export function runSupervisedRuleValidator(
       'Nota CMO sustenta proposta supervisionada.',
     ),
     check(
+      rules,
       'data_trust.no_red_sources',
       outcomeFromGate(dataTrustGate),
       {
@@ -375,6 +384,7 @@ export function runSupervisedRuleValidator(
       'Data Trust nao tem fonte vermelha.',
     ),
     check(
+      rules,
       'proposal.no_high_risk_without_review',
       proposalRiskResult(input.proposal),
       {
@@ -384,6 +394,7 @@ export function runSupervisedRuleValidator(
       'Risco da proposta nao exige revisao extra nesta etapa.',
     ),
     check(
+      rules,
       'proposal.budget_increase_requires_margin',
       budgetMarginResult(input),
       {
@@ -394,6 +405,7 @@ export function runSupervisedRuleValidator(
       'A proposta nao aumenta verba sem evidencia de margem.',
     ),
     check(
+      rules,
       'execution.external_action_locked',
       executionResult(readiness.canExecuteAds),
       {
@@ -403,6 +415,7 @@ export function runSupervisedRuleValidator(
       'Execucao externa segue bloqueada como esperado.',
     ),
     check(
+      rules,
       'execution.mcp_read_only_until_final_stage',
       'passed',
       {
@@ -429,7 +442,7 @@ export function runSupervisedRuleValidator(
     passCount,
     warningCount,
     failCount,
-    rules: supervisedRuleCatalog,
+    rules,
     checks,
   };
 }

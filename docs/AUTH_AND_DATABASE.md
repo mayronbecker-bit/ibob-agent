@@ -774,12 +774,12 @@ Tambem foi criada a rota `/validator` para executar dry-run local das regras.
 
 Estado:
 
-- migration criada localmente;
+- migration aplicada no Supabase remoto em 2026-05-26;
 - tipos TypeScript atualizados;
-- nenhuma aplicacao remota feita;
+- tabelas, enums, policies RLS e 8 regras ativas validadas por consulta remota;
 - nenhuma proposta nova gravada;
 - nenhuma integracao externa conectada.
 
 Proxima acao:
 
-Validar `/validator` em producao. Depois, se aprovado, pedir autorizacao explicita para aplicar `rule_validator` no Supabase remoto.
+Validar `/validator` em producao e confirmar leitura do catalogo Supabase.

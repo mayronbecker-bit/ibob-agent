@@ -24,15 +24,27 @@ Ela executa um dry-run local usando:
 - Data Trust;
 - primeira proposta pendente como amostra, quando existir.
 
-## Migration local preparada
+## Entrega v47
+
+A migration `20260525100000_create_rule_validator.sql` foi aplicada no Supabase remoto em 2026-05-26.
+
+Validacoes remotas:
+
+- migration local/remota alinhada;
+- tabelas `rule_validator_rules`, `rule_validator_runs` e `rule_validator_checks` presentes;
+- enums `rule_validator_rule_category`, `rule_validator_rule_severity`, `rule_validator_rule_status` e `rule_validator_result` presentes;
+- policies RLS de leitura e insercao/gestao presentes;
+- 8 regras v1 ativas para `client-ibob`.
+
+A rota `/validator` passa a ler o catalogo ativo de regras do Supabase quando a sessao esta disponivel. Se a leitura falhar, continua usando o catalogo local como fallback visual.
+
+## Migration aplicada
 
 ```text
 infra/supabase/migrations/20260525100000_create_rule_validator.sql
 ```
 
-Ela ainda nao foi aplicada no Supabase remoto.
-
-Quando autorizada, criara:
+Ela criou:
 
 - `rule_validator_rules`;
 - `rule_validator_runs`;
@@ -78,4 +90,4 @@ Na arquitetura final, eles serao conectores. O `rule_validator` deve continuar s
 
 ## Proxima etapa
 
-Validar `/validator` em producao. Depois, pedir autorizacao explicita para aplicar a migration `rule_validator` no Supabase remoto.
+Validar `/validator` em producao e confirmar que o badge mostra `Supabase` no catalogo de regras.

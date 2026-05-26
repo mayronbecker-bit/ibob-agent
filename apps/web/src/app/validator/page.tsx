@@ -24,30 +24,39 @@ import { getSupabaseFunnelData } from '@/lib/funnel/supabase-funnel';
 import { getSupabaseProposals } from '@/lib/proposals/supabase-proposals';
 import {
   runSupervisedRuleValidator,
+  supervisedRuleCatalog,
   severityLabel,
   type RuleValidatorDryRun,
 } from '@/lib/rule-validator/supervised-rule-validator';
+import { getSupabaseRuleValidatorRules } from '@/lib/rule-validator/supabase-rule-validator';
 import { buildCmoReadiness } from '@/lib/strategy/cmo-readiness';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
-import type { Proposal, RuleValidatorResult, RuleValidatorSeverity } from '@/types';
+import type {
+  Proposal,
+  RuleValidatorResult,
+  RuleValidatorRule,
+  RuleValidatorSeverity,
+} from '@/types';
 
 type BrowserSupabaseClient = ReturnType<typeof createSupabaseBrowserClient>;
 
 type RuleValidatorPageData = {
   readiness: DecisionReadiness;
   proposals: Proposal[];
+  rules: RuleValidatorRule[];
 };
 
 async function loadRealRuleValidatorData(
   supabase: BrowserSupabaseClient,
 ): Promise<RuleValidatorPageData> {
-  const [contextData, researchData, funnelData, dataTrustState, proposals] =
+  const [contextData, researchData, funnelData, dataTrustState, proposals, rules] =
     await Promise.all([
       getSupabaseContextIntelligenceData(supabase),
       getSupabaseContextResearchData(supabase),
       getSupabaseFunnelData(supabase),
       getSupabaseDataTrustState(supabase),
       getSupabaseProposals(supabase),
+      getSupabaseRuleValidatorRules(supabase),
     ]);
 
   const cmoReadiness = buildCmoReadiness({
@@ -77,6 +86,7 @@ async function loadRealRuleValidatorData(
       cmoReadiness,
     }),
     proposals,
+    rules,
   };
 }
 
@@ -108,6 +118,7 @@ function buildFallbackRuleValidatorData(): RuleValidatorPageData {
       cmoReadiness,
     }),
     proposals: mockProposals,
+    rules: supervisedRuleCatalog,
   };
 }
 
@@ -181,6 +192,7 @@ export default function ValidatorPage() {
   const dryRun: RuleValidatorDryRun = runSupervisedRuleValidator({
     decisionReadiness: data.readiness,
     proposal: selectedProposal,
+    rules: data.rules,
   });
   const sourceLabel = realData ? 'Supabase' : 'Mock';
 
@@ -211,10 +223,9 @@ export default function ValidatorPage() {
         </DataStateNotice>
       )}
 
-      <DataStateNotice title="Migration preparada, ainda nao aplicada" variant="info" className="mb-6">
-        A v46 criou o schema local em{' '}
-        <code>infra/supabase/migrations/20260525100000_create_rule_validator.sql</code>.
-        Nada foi aplicado no Supabase remoto sem sua autorizacao.
+      <DataStateNotice title="Rule Validator aplicado no Supabase" variant="success" className="mb-6">
+        A v47 aplicou <code>20260525100000_create_rule_validator.sql</code> no remoto.
+        Esta tela agora le o catalogo ativo de regras quando a sessao Supabase esta disponivel.
       </DataStateNotice>
 
       <section className="mb-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -354,7 +365,9 @@ export default function ValidatorPage() {
               Regras v1 que serao persistidas quando a migration for autorizada.
             </p>
           </div>
-          <Badge variant="blue">{dryRun.rules.length} regras</Badge>
+          <Badge variant={realData ? 'green' : 'blue'}>
+            {dryRun.rules.length} regras {realData ? 'Supabase' : 'locais'}
+          </Badge>
         </div>
 
         <div className="overflow-x-auto rounded-lg border border-[#d7ddd2] bg-white shadow-sm">
