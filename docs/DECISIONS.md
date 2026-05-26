@@ -20,6 +20,185 @@ Status:
 
 Aceita.
 
+## 2026-05-25 - Decision Engine supervisionado sem execucao externa
+
+Contexto:
+
+A iBob ja validou contexto comercial, pesquisa supervisionada, revisao CMO e funil real manual. O usuario confirmou que as integracoes de Google Ads MCP e Meta Ads MCP devem ficar para os ultimos eventos, com o agente iBob atuando como cerebro e conferente dos numeros.
+
+Decisao:
+
+Criar a fundacao do Decision Engine em `/decision` como pre-motor deterministico e supervisionado. Ele deve ler contexto, pesquisa, memoria, funil e Data Trust para avaliar gates e hipoteses, mas nao deve chamar IA externa, MCPs ou APIs de Ads.
+
+Motivo:
+
+Antes de gerar propostas ou tocar contas reais, o produto precisa provar que entende a empresa, separa contexto de Ads, confere CRM/funil e bloqueia decisoes quando os numeros nao sustentam escala.
+
+Consequencias:
+
+- `/decision` passa a mostrar prontidao do motor, gates, bloqueios, evidencias e hipoteses.
+- Decision Engine fica marcado como `in_progress` no Roadmap.
+- Google Ads MCP e Meta Ads MCP continuam como conectores futuros e supervisionados.
+- Execucao externa segue bloqueada ate rule_validator, aprovacao humana, dry-run e auditoria ficarem prontos.
+
+Status:
+
+Aceita.
+
+## 2026-05-25 - Rule Validator antes de propostas reais
+
+Contexto:
+
+A v45 validou a fundacao do Decision Engine supervisionado. O proximo risco e deixar uma hipotese virar proposta sem regras deterministicas claras para contexto, pesquisa, funil, Data Trust, margem, risco e execucao externa.
+
+Decisao:
+
+Criar a fundacao local do `rule_validator` antes de gerar ou persistir novas propostas. A v46 prepara migration local, contratos TypeScript e a tela `/validator` para dry-run, mas nao aplica o schema no Supabase remoto sem autorizacao explicita.
+
+Motivo:
+
+O agente pode ser inteligente, mas a promocao de recomendacao para proposta precisa de travas previsiveis, auditaveis e versionadas. Isso protege margem, capacidade comercial, qualidade do funil e seguranca operacional.
+
+Consequencias:
+
+- `rule_validator` passa a ter catalogo de regras v1.
+- `/validator` mostra checks, evidencias, falhas e caminhos de correcao.
+- Propostas futuras devem passar pelo `rule_validator` antes de aprovacao humana.
+- Execucao externa segue bloqueada mesmo quando as regras passam.
+- Migration remota depende de autorizacao posterior.
+
+Status:
+
+Aceita localmente na v46; aplicacao remota pendente de autorizacao.
+
+## 2026-05-23 - CMO Strategy Readiness antes do Decision Engine
+
+Contexto:
+
+O usuario preencheu todo o contexto comercial da iBob e pediu uma revisao como CMO estrategico, com foco em vender mais com menor custo de Ads e maior previsibilidade.
+
+Decisao:
+
+Adicionar a etapa `CMO Strategy Readiness` antes do Decision Engine. Essa camada cruza contexto, pesquisa, memoria, concorrentes, ticket, margem, CAC, budget, capacidade e ciclo comercial para dizer se a base esta pronta para estrategia e quais bloqueios impedem escala.
+
+Motivo:
+
+Um agente melhor que uma agencia precisa transformar contexto em guardrails economicos e comerciais antes de gerar propostas de midia. Ads deve otimizar para cliente qualificado, oportunidade e venda, nao apenas para lead barato.
+
+Consequencias:
+
+- Criada a tela `/strategy`.
+- O Roadmap passa a ter uma etapa explicita entre Context Research e Decision Engine.
+- Execution e integracoes externas continuam bloqueadas ate tracking de qualidade e venda estar pronto.
+- Rule validator deve usar CAC alvo, margem, capacidade, no-fit, sinais de lead bom/ruim e janela de venda.
+
+Status:
+
+Aceita e implementada localmente na v38.
+
+## 2026-05-24 - Tracking e Funil Real manual-first
+
+Contexto:
+
+A tela de estrategia mostrou que a iBob so chega a base 100 quando houver funil real por origem: lead qualificado, oportunidade, proposta e venda. O usuario quer deixar integracoes externas para os ultimos eventos.
+
+Decisao:
+
+Adicionar a etapa `Tracking e Funil Real` antes do Decision Engine e antes das integracoes externas. A primeira versao deve ser manual-first, com schema local, rota `/funnel` e template CSV para importar eventos revisados.
+
+Motivo:
+
+O agente precisa aprender qualidade e resultado comercial antes de recomendar escala de midia. Isso reduz o risco de otimizar por lead barato que nao compra.
+
+Consequencias:
+
+- Criada migration local `20260524100000_create_funnel_tracking.sql`.
+- Criada rota `/funnel`.
+- Criado template `docs/templates/funnel_events_import_template.csv`.
+- Nenhuma integracao externa e ativada nesta etapa.
+
+Status:
+
+Aceita e aplicada no Supabase remoto em 2026-05-24.
+
+## 2026-05-24 - MCPs de Ads como conectores supervisionados
+
+Contexto:
+
+O produto usara integracoes MCP para Google Ads e Meta Ads nas fases finais, mas o valor central deve continuar no agente iBob: contexto inteligente, analise de CRM/funil, validacao de numeros e governanca.
+
+Decisao:
+
+Tratar MCPs de Google Ads e Meta Ads como conectores/adaptadores de leitura e execucao supervisionada. O agente iBob permanece como cerebro, analista, orquestrador e guardiao dos numeros.
+
+Motivo:
+
+MCP deve executar operacoes bem definidas e retornar evidencias. Ele nao substitui contexto comercial, CRM, rule_validator, aprovacao humana, auditoria ou reconciliacao financeira.
+
+Consequencias:
+
+- Google Ads MCP e Meta Ads MCP entram nas etapas finais de integracao em modo leitura primeiro.
+- Acoes de escrita so ocorrem apos contexto, funil real, Data Trust, rule_validator e aprovacao humana.
+- O agente compara dados de Ads com CRM/funil antes de sugerir escala.
+- Toda ordem enviada a um MCP deve ter origem, justificativa, limites, resultado esperado e evento de auditoria.
+- Se os numeros de Ads e CRM divergirem, o agente bloqueia escala ate reconciliar.
+
+Status:
+
+Aceita como diretriz arquitetural.
+
+## 2026-05-24 - Entrada manual de eventos de funil
+
+Contexto:
+
+A tabela `funnel_events` ja estava aplicada no Supabase remoto, mas `/funnel` ainda mostrava apenas checklist e exemplos. Para comecar a construir a fonte de verdade comercial, o usuario aprovou seguir com o proximo passo.
+
+Decisao:
+
+Transformar `/funnel` em uma tela operacional para registrar eventos manuais reais no Supabase, antes de qualquer integracao externa.
+
+Motivo:
+
+Uma primeira amostra manual permite validar nomenclatura, etapas, origem, qualidade, valor e margem antes de conectar MCPs/API de Ads ou CRM.
+
+Consequencias:
+
+- `/funnel` grava em `funnel_events`;
+- eventos criados registram `funnel.event_created` em `audit_events`;
+- a tela lista os ultimos eventos reais;
+- o checklist passa a reagir aos eventos reais existentes;
+- nenhuma acao externa de Ads foi conectada.
+
+Status:
+
+Aceita e implementada localmente na v43.
+
+## 2026-05-24 - Avanco paralelo das etapas 5 a 9
+
+Contexto:
+
+O usuario solicitou avancar em paralelo as etapas 5 a 9. Essas etapas cobrem hardening, contexto, pesquisa, estrategia CMO e funil real.
+
+Decisao:
+
+Avancar com uma entrega coesa: fazer eventos reais de `/funnel` recalibrarem `/strategy`, adicionar resumo operacional em `/funnel` e mostrar no `/roadmap` a frente ativa conjunta das etapas 5 a 9.
+
+Motivo:
+
+O produto precisa evoluir como sistema, nao como telas isoladas. O funil real deve fechar o ciclo com contexto e pesquisa antes de MCPs e integracoes externas.
+
+Consequencias:
+
+- `/strategy` usa eventos reais de `funnel_events`;
+- a nota de tracking/funil deixa de ser fixa;
+- `/funnel` mostra resumo de eventos, etapas, vendas, receita e margem;
+- `/roadmap` mostra o bloco de avanco paralelo;
+- MCPs seguem fora da execucao ate a base estar consistente.
+
+Status:
+
+Aceita e implementada localmente na v44.
+
 ## 2026-05-19 - Context Intelligence antes do Decision Engine
 
 Contexto:

@@ -129,3 +129,28 @@
 - Adicionada nota opcional de revisao em `/research`.
 - Acoes de revisao de achados, insights, concorrentes, memorias e novos runs passam a registrar eventos em `audit_events`.
 - Roadmap atualizado para refletir v37 como camada auditavel de revisao contextual.
+- Revisado o contexto completo da iBob como CMO estrategico.
+- Criada a documentacao `docs/CMO_STRATEGY_REVIEW.md`.
+- Implementada a tela `/strategy` com prontidao estrategica, economia de CAC/margem, cenarios de CPL maximo, regras e bloqueios antes de escala.
+- Adicionado item `Estrategia CMO` ao menu lateral.
+- Roadmap atualizado com a etapa `CMO Strategy Readiness` antes do Decision Engine.
+- V39 abre a nota de prontidao em cinco blocos e mostra as acoes necessarias para a iBob sair de 87 para 100.
+- V40 adiciona botao `Resolver` para governanca do contexto e plano guiado para tracking/funil real em `/strategy`.
+- Preparada a fundacao local de `Tracking e Funil Real` com migration `20260524100000_create_funnel_tracking.sql`.
+- Criada a rota `/funnel` com checklist, caminho manual, colunas obrigatorias e exemplos de eventos de funil.
+- Criado template `docs/templates/funnel_events_import_template.csv` para primeira importacao manual.
+- Roadmap atualizado com a etapa `Tracking e Funil Real` antes do Decision Engine.
+- Aplicada e validada no Supabase remoto a migration `20260524100000_create_funnel_tracking.sql`.
+- Confirmadas tabelas `funnel_events` e `funnel_import_batches`, enums de funil e policies RLS.
+- V43 transforma `/funnel` em entrada manual real no Supabase, com leitura de eventos reais e auditoria `funnel.event_created`.
+- Tipos locais do Supabase atualizados para `funnel_events`, `funnel_import_batches` e enums de funil.
+- V44 avanca as etapas 5 a 9 em paralelo: `/strategy` passa a usar eventos reais de `/funnel`, `/funnel` ganha resumo operacional e `/roadmap` mostra a frente ativa conjunta.
+- Criada documentacao `docs/PARALLEL_STAGES_5_9.md` para registrar o fluxo Contexto -> Pesquisa -> Estrategia -> Funil Real -> Estrategia recalibrada.
+- V45 cria `/decision` com a fundacao do Decision Engine supervisionado.
+- O pre-motor le contexto, pesquisa, funil real e Data Trust para validar gates antes de qualquer proposta.
+- A v45 permanece em `SUPERVISED_DRY_RUN`: sem IA externa, sem MCP de Ads, sem escrita externa e sem execucao.
+- Criada documentacao `docs/DECISION_ENGINE.md` e Roadmap atualizado para marcar Decision Engine supervisionado em andamento.
+- V46 prepara a fundacao local do `rule_validator` com migration `20260525100000_create_rule_validator.sql`.
+- Criada a rota `/validator` para dry-run de regras deterministicas usando Decision Engine, Data Trust, funil e proposta amostra.
+- Roadmap atualizado para marcar `Validacao deterministica` em andamento, sem aplicar migration no Supabase remoto.
+- Criada documentacao `docs/RULE_VALIDATOR.md`.

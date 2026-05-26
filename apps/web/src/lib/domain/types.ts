@@ -340,6 +340,116 @@ export interface RawMetric {
   period: string;
 }
 
+// ===== Funnel Tracking =====
+
+export type FunnelEventStage =
+  | 'lead'
+  | 'qualified_lead'
+  | 'opportunity'
+  | 'proposal_sent'
+  | 'sale_won'
+  | 'sale_lost'
+  | 'disqualified';
+
+export type FunnelEventSource =
+  | 'google_ads'
+  | 'meta_ads'
+  | 'organic'
+  | 'whatsapp'
+  | 'marketplace'
+  | 'direct'
+  | 'referral'
+  | 'crm'
+  | 'other';
+
+export type FunnelRequirementStatus = 'done' | 'missing' | 'planned';
+
+export interface FunnelEvent {
+  id: string;
+  clientId: string;
+  stage: FunnelEventStage;
+  source: FunnelEventSource;
+  companyName?: string;
+  contactName?: string;
+  campaignName?: string;
+  leadQualityScore?: number;
+  dealValueBrl?: number;
+  grossMarginBrl?: number;
+  occurredAt: string;
+  notes?: string;
+}
+
+export interface FunnelTrackingRequirement {
+  id: string;
+  title: string;
+  description: string;
+  status: FunnelRequirementStatus;
+  impactPoints: number;
+}
+
+// ===== Rule Validator =====
+
+export type RuleValidatorCategory =
+  | 'context'
+  | 'research'
+  | 'strategy'
+  | 'funnel'
+  | 'data_trust'
+  | 'economics'
+  | 'proposal'
+  | 'approval'
+  | 'execution';
+
+export type RuleValidatorSeverity = 'blocking' | 'warning' | 'info';
+export type RuleValidatorRuleStatus = 'draft' | 'active' | 'archived';
+export type RuleValidatorResult = 'passed' | 'warning' | 'failed';
+
+export interface RuleValidatorRule {
+  id: string;
+  clientId: string;
+  ruleKey: string;
+  version: number;
+  title: string;
+  category: RuleValidatorCategory;
+  severity: RuleValidatorSeverity;
+  status: RuleValidatorRuleStatus;
+  description: string;
+  condition: Record<string, unknown>;
+  failureMessage: string;
+  remediation: string;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RuleValidatorCheck {
+  id: string;
+  runId?: string;
+  clientId: string;
+  ruleId?: string;
+  ruleKey: string;
+  result: RuleValidatorResult;
+  severity: RuleValidatorSeverity;
+  evidence: Record<string, unknown>;
+  message: string;
+  remediation: string;
+  createdAt: string;
+}
+
+export interface RuleValidatorRun {
+  id: string;
+  clientId: string;
+  proposalId?: string;
+  decisionContext: Record<string, unknown>;
+  result: RuleValidatorResult;
+  canPromoteToProposal: boolean;
+  canExecuteExternalAction: boolean;
+  summary: string;
+  createdBy?: string;
+  createdAt: string;
+  checks: RuleValidatorCheck[];
+}
+
 // ===== Agent Mode & State =====
 
 export type AgentMode = 'DRY_RUN' | 'SUPERVISED' | 'AUTONOMOUS';

@@ -1,0 +1,3 @@
+occurred_at,stage,source,company_name,contact_name,campaign_name,lead_quality_score,deal_value_brl,gross_margin_brl,notes
+2026-05-24,qualified_lead,whatsapp,Exemplo Maquinas Industriais,,Consulta tecnica motorredutor acima de 10cv,85,,,Fabricante de maquina sob demanda com decisor envolvido
+2026-05-24,sale_won,google_ads,Exemplo Equipamentos Ltda,,Search motorredutor industrial,92,15000,2250,Venda exemplo para tracking offline

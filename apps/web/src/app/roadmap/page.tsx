@@ -31,6 +31,37 @@ const statusColor: Record<
   },
 };
 
+const activeParallelTracks = [
+  {
+    title: '5. Hardening',
+    description: 'Seguranca, auditoria e deploy supervisionado continuam como base de operacao.',
+  },
+  {
+    title: '6. Contexto',
+    description: 'Diagnostico comercial completo e pronto para orientar regras de decisao.',
+  },
+  {
+    title: '7. Pesquisa',
+    description: 'Achados, concorrentes e memorias revisadas alimentam a estrategia.',
+  },
+  {
+    title: '8. Estrategia',
+    description: 'Nota CMO agora usa contexto, pesquisa e eventos reais de funil.',
+  },
+  {
+    title: '9. Funil Real',
+    description: 'Eventos manuais do Supabase passam a calibrar a prontidao estrategica.',
+  },
+  {
+    title: '10. Decision Engine',
+    description: 'V45 valida gates e hipoteses supervisionadas sem MCP, sem IA externa e sem execucao.',
+  },
+  {
+    title: '11. Rule Validator',
+    description: 'V46 versiona regras deterministicas e testa proposta em dry-run antes de aprovacao.',
+  },
+];
+
 export default function RoadmapPage() {
   const done = roadmapStages.filter((s) => s.status === 'done').length;
   const inProgress = roadmapStages.filter((s) => s.status === 'in_progress').length;
@@ -77,6 +108,35 @@ export default function RoadmapPage() {
           </span>
         </div>
       </div>
+
+      <section className="mb-8">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+              Avanco paralelo
+            </h2>
+            <p className="mt-1 text-sm text-[#5c6b61]">
+              Etapas 5 a 11 evoluindo juntas antes de MCPs e integracoes finais.
+            </p>
+          </div>
+          <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
+            v46
+          </span>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+          {activeParallelTracks.map((track) => (
+            <div
+              key={track.title}
+              className="rounded-lg border border-[#d7ddd2] bg-white p-3 shadow-sm"
+            >
+              <p className="text-sm font-semibold text-[#172018]">{track.title}</p>
+              <p className="mt-1 text-xs leading-relaxed text-[#5c6b61]">
+                {track.description}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Stages list */}
       <div className="relative">

@@ -54,6 +54,22 @@ export type {
   // Raw Metric
   RawMetric,
 
+  // Funnel Tracking
+  FunnelEventStage,
+  FunnelEventSource,
+  FunnelRequirementStatus,
+  FunnelEvent,
+  FunnelTrackingRequirement,
+
+  // Rule Validator
+  RuleValidatorCategory,
+  RuleValidatorSeverity,
+  RuleValidatorRuleStatus,
+  RuleValidatorResult,
+  RuleValidatorRule,
+  RuleValidatorCheck,
+  RuleValidatorRun,
+
   // Agent
   AgentMode,
   AgentState,

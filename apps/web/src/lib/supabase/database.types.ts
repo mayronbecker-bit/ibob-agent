@@ -866,6 +866,136 @@ export type Database = {
           occurred_at: string;
         }>
       >;
+      rule_validator_rules: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          client_id: string;
+          rule_key: string;
+          version: number;
+          title: string;
+          category: Database['public']['Enums']['rule_validator_rule_category'];
+          severity: Database['public']['Enums']['rule_validator_rule_severity'];
+          status: Database['public']['Enums']['rule_validator_rule_status'];
+          description: string;
+          condition: Json;
+          failure_message: string;
+          remediation: string;
+          created_by: string | null;
+        },
+        {
+          id?: string;
+          client_id: string;
+          rule_key: string;
+          version?: number;
+          title: string;
+          category: Database['public']['Enums']['rule_validator_rule_category'];
+          severity?: Database['public']['Enums']['rule_validator_rule_severity'];
+          status?: Database['public']['Enums']['rule_validator_rule_status'];
+          description: string;
+          condition?: Json;
+          failure_message: string;
+          remediation: string;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          rule_key: string;
+          version: number;
+          title: string;
+          category: Database['public']['Enums']['rule_validator_rule_category'];
+          severity: Database['public']['Enums']['rule_validator_rule_severity'];
+          status: Database['public']['Enums']['rule_validator_rule_status'];
+          description: string;
+          condition: Json;
+          failure_message: string;
+          remediation: string;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      rule_validator_runs: TableDefinition<
+        {
+          id: string;
+          client_id: string;
+          proposal_id: string | null;
+          decision_context: Json;
+          result: Database['public']['Enums']['rule_validator_result'];
+          can_promote_to_proposal: boolean;
+          can_execute_external_action: boolean;
+          summary: string;
+          created_by: string | null;
+          created_at: string;
+        },
+        {
+          id?: string;
+          client_id: string;
+          proposal_id?: string | null;
+          decision_context?: Json;
+          result: Database['public']['Enums']['rule_validator_result'];
+          can_promote_to_proposal?: boolean;
+          can_execute_external_action?: boolean;
+          summary: string;
+          created_by?: string | null;
+          created_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          proposal_id: string | null;
+          decision_context: Json;
+          result: Database['public']['Enums']['rule_validator_result'];
+          can_promote_to_proposal: boolean;
+          can_execute_external_action: boolean;
+          summary: string;
+          created_by: string | null;
+          created_at: string;
+        }>
+      >;
+      rule_validator_checks: TableDefinition<
+        {
+          id: string;
+          run_id: string;
+          client_id: string;
+          rule_id: string | null;
+          rule_key: string;
+          result: Database['public']['Enums']['rule_validator_result'];
+          severity: Database['public']['Enums']['rule_validator_rule_severity'];
+          evidence: Json;
+          message: string;
+          remediation: string;
+          created_at: string;
+        },
+        {
+          id?: string;
+          run_id: string;
+          client_id: string;
+          rule_id?: string | null;
+          rule_key: string;
+          result: Database['public']['Enums']['rule_validator_result'];
+          severity: Database['public']['Enums']['rule_validator_rule_severity'];
+          evidence?: Json;
+          message: string;
+          remediation: string;
+          created_at?: string;
+        },
+        Partial<{
+          id: string;
+          run_id: string;
+          client_id: string;
+          rule_id: string | null;
+          rule_key: string;
+          result: Database['public']['Enums']['rule_validator_result'];
+          severity: Database['public']['Enums']['rule_validator_rule_severity'];
+          evidence: Json;
+          message: string;
+          remediation: string;
+          created_at: string;
+        }>
+      >;
       execution_logs: TableDefinition<
         {
           id: string;
@@ -908,6 +1038,108 @@ export type Database = {
           state_after: Json | null;
           error_message: string | null;
           is_dry_run: boolean;
+        }>
+      >;
+      funnel_import_batches: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          client_id: string;
+          name: string;
+          status: Database['public']['Enums']['funnel_import_status'];
+          source_file_name: string | null;
+          row_count: number;
+          imported_by: string | null;
+          imported_at: string | null;
+          metadata: Json;
+        },
+        {
+          id?: string;
+          client_id: string;
+          name: string;
+          status?: Database['public']['Enums']['funnel_import_status'];
+          source_file_name?: string | null;
+          row_count?: number;
+          imported_by?: string | null;
+          imported_at?: string | null;
+          metadata?: Json;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          name: string;
+          status: Database['public']['Enums']['funnel_import_status'];
+          source_file_name: string | null;
+          row_count: number;
+          imported_by: string | null;
+          imported_at: string | null;
+          metadata: Json;
+          created_at: string;
+          updated_at: string;
+        }>
+      >;
+      funnel_events: TableDefinition<
+        TimestampColumns & {
+          id: string;
+          client_id: string;
+          import_batch_id: string | null;
+          stage: Database['public']['Enums']['funnel_event_stage'];
+          source: Database['public']['Enums']['funnel_event_source'];
+          company_name: string | null;
+          contact_name: string | null;
+          campaign_name: string | null;
+          campaign_id: string | null;
+          click_id: string | null;
+          lead_quality_score: number | null;
+          deal_value_brl: number | null;
+          gross_margin_brl: number | null;
+          occurred_at: string;
+          notes: string | null;
+          metadata: Json;
+          created_by: string | null;
+        },
+        {
+          id?: string;
+          client_id: string;
+          import_batch_id?: string | null;
+          stage: Database['public']['Enums']['funnel_event_stage'];
+          source: Database['public']['Enums']['funnel_event_source'];
+          company_name?: string | null;
+          contact_name?: string | null;
+          campaign_name?: string | null;
+          campaign_id?: string | null;
+          click_id?: string | null;
+          lead_quality_score?: number | null;
+          deal_value_brl?: number | null;
+          gross_margin_brl?: number | null;
+          occurred_at: string;
+          notes?: string | null;
+          metadata?: Json;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        },
+        Partial<{
+          id: string;
+          client_id: string;
+          import_batch_id: string | null;
+          stage: Database['public']['Enums']['funnel_event_stage'];
+          source: Database['public']['Enums']['funnel_event_source'];
+          company_name: string | null;
+          contact_name: string | null;
+          campaign_name: string | null;
+          campaign_id: string | null;
+          click_id: string | null;
+          lead_quality_score: number | null;
+          deal_value_brl: number | null;
+          gross_margin_brl: number | null;
+          occurred_at: string;
+          notes: string | null;
+          metadata: Json;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
         }>
       >;
     };
@@ -1027,6 +1259,38 @@ export type Database = {
         | 'opportunity'
         | 'constraint';
       context_memory_status: 'draft' | 'active' | 'archived';
+      funnel_event_stage:
+        | 'lead'
+        | 'qualified_lead'
+        | 'opportunity'
+        | 'proposal_sent'
+        | 'sale_won'
+        | 'sale_lost'
+        | 'disqualified';
+      funnel_event_source:
+        | 'google_ads'
+        | 'meta_ads'
+        | 'organic'
+        | 'whatsapp'
+        | 'marketplace'
+        | 'direct'
+        | 'referral'
+        | 'crm'
+        | 'other';
+      funnel_import_status: 'draft' | 'imported' | 'rejected';
+      rule_validator_rule_category:
+        | 'context'
+        | 'research'
+        | 'strategy'
+        | 'funnel'
+        | 'data_trust'
+        | 'economics'
+        | 'proposal'
+        | 'approval'
+        | 'execution';
+      rule_validator_rule_severity: 'blocking' | 'warning' | 'info';
+      rule_validator_rule_status: 'draft' | 'active' | 'archived';
+      rule_validator_result: 'passed' | 'warning' | 'failed';
     };
     CompositeTypes: Record<string, never>;
   };

@@ -692,3 +692,94 @@ Implementado em 2026-05-21:
 Proxima acao:
 
 Validar em producao uma acao controlada de revisao e conferir o evento correspondente em `/audit`.
+
+## Tracking e Funil Real
+
+Preparado localmente em 2026-05-24:
+
+```text
+infra/supabase/migrations/20260524100000_create_funnel_tracking.sql
+```
+
+Ela prepara:
+
+- `funnel_import_batches`;
+- `funnel_events`;
+- enums `funnel_event_stage`, `funnel_event_source` e `funnel_import_status`;
+- RLS por `client_id`;
+- leitura por membros do cliente;
+- escrita por `owner` e `admin`.
+
+Tambem foram criados:
+
+- rota `/funnel`;
+- template `docs/templates/funnel_events_import_template.csv`;
+- documentacao `docs/FUNNEL_TRACKING.md`.
+
+Estado:
+
+- migration aplicada no Supabase remoto em 2026-05-24;
+- tabelas, enums e policies RLS validados por consulta remota;
+- nenhuma integracao externa conectada;
+- nenhuma escrita em contas de Ads.
+
+Proxima acao:
+
+V43 implementa entrada manual em `/funnel` para gravar eventos reais em `funnel_events` e registrar `funnel.event_created` em `audit_events`.
+
+Proxima acao:
+
+Validar um evento manual controlado e conferir leitura em `/funnel` e auditoria em `/audit`.
+
+## Decision Engine supervisionado
+
+Implementado localmente em 2026-05-25.
+
+V45 cria `/decision` sem nova migration.
+
+A tela le as tabelas existentes de contexto, pesquisa, funil e Data Trust para avaliar gates antes de qualquer proposta:
+
+- contexto ativo e completo;
+- lacunas criticas resolvidas;
+- achados, memoria e concorrentes revisados;
+- funil real minimo com lead qualificado, oportunidade, proposta, venda e margem;
+- nota CMO de `/strategy` como consolidacao estrategica;
+- Data Trust sem fonte vermelha;
+- execucao externa bloqueada.
+
+O modo permanece `SUPERVISED_DRY_RUN`. Google Ads MCP, Meta Ads MCP e qualquer escrita externa seguem fora do fluxo ate rule_validator, aprovacao humana e dry-run de execucao ficarem prontos.
+
+Proxima acao:
+
+Validar `/decision` em producao e usar os bloqueios exibidos como base para o proximo schema de `rule_validator`.
+
+## Rule Validator
+
+Preparado localmente em 2026-05-25:
+
+```text
+infra/supabase/migrations/20260525100000_create_rule_validator.sql
+```
+
+Ela prepara:
+
+- `rule_validator_rules`;
+- `rule_validator_runs`;
+- `rule_validator_checks`;
+- enums `rule_validator_rule_category`, `rule_validator_rule_severity`, `rule_validator_rule_status` e `rule_validator_result`;
+- RLS por `client_id`;
+- catalogo inicial de regras v1.
+
+Tambem foi criada a rota `/validator` para executar dry-run local das regras.
+
+Estado:
+
+- migration criada localmente;
+- tipos TypeScript atualizados;
+- nenhuma aplicacao remota feita;
+- nenhuma proposta nova gravada;
+- nenhuma integracao externa conectada.
+
+Proxima acao:
+
+Validar `/validator` em producao. Depois, se aprovado, pedir autorizacao explicita para aplicar `rule_validator` no Supabase remoto.

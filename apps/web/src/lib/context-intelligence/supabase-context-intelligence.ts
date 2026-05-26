@@ -307,3 +307,72 @@ export async function upsertSupabaseContextAnswer(
 
   await updateContextCompleteness(supabase, input.contextId, input.clientId);
 }
+
+export async function resolveSupabaseContextGovernance(
+  supabase: SupabaseClient<Database>,
+  input: {
+    contextId: string;
+    clientId: string;
+    gapKeys: string[];
+  },
+) {
+  const membership = await getActiveMembership(supabase);
+
+  if (membership.clientId !== input.clientId) {
+    throw new Error('Active membership does not match context client.');
+  }
+
+  const resolvedAt = new Date().toISOString();
+
+  const { error: contextError } = await supabase
+    .from('business_contexts')
+    .update({
+      status: 'active',
+      reviewed_by: membership.userId,
+      reviewed_at: resolvedAt,
+      summary:
+        'Contexto comercial validado para orientar estrategia, rule_validator e Decision Engine supervisionado.',
+    })
+    .eq('id', input.contextId)
+    .eq('client_id', input.clientId);
+
+  if (contextError) {
+    throw contextError;
+  }
+
+  if (input.gapKeys.length > 0) {
+    const { error: gapsError } = await supabase
+      .from('context_gaps')
+      .update({
+        status: 'resolved',
+        resolved_by: membership.userId,
+        resolved_at: resolvedAt,
+      })
+      .eq('context_id', input.contextId)
+      .eq('client_id', input.clientId)
+      .eq('status', 'open')
+      .in('gap_key', input.gapKeys);
+
+    if (gapsError) {
+      throw gapsError;
+    }
+  }
+
+  const { error: auditError } = await supabase.from('audit_events').insert({
+    client_id: input.clientId,
+    actor_user_id: membership.userId,
+    event_type: 'context.governance_resolved',
+    severity: 'info',
+    entity_type: 'business_context',
+    entity_id: input.contextId,
+    description: 'Governanca do contexto resolvida pela tela de estrategia CMO.',
+    metadata: {
+      source: 'strategy_ui',
+      gap_keys: input.gapKeys,
+    },
+  });
+
+  if (auditError) {
+    throw auditError;
+  }
+}

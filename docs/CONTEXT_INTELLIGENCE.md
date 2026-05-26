@@ -159,5 +159,9 @@ Se uma campanha tem CPA alto, mas vende o produto de maior margem e maior recorr
 - Migration de pesquisa contextual aplicada no Supabase para site da empresa, concorrentes, achados, evidencias e memoria contextual.
 - Site oficial `https://www.ibob.com.br` registrado para o primeiro run supervisionado.
 - Console `/research` criada para acompanhar pesquisa contextual e criar novos runs supervisionados.
-- Ainda falta migrar o contexto comercial ja levantado da iBob para estrutura versionada.
-- Ainda falta executar a pesquisa supervisionada e revisar achados antes de promover para memoria.
+- Contexto comercial da iBob preenchido pelo usuario em 2026-05-23 com completude 100%.
+- Revisao CMO documentada em `docs/CMO_STRATEGY_REVIEW.md`.
+- Tela `/strategy` criada para transformar contexto em economia, CPL maximo, regras e bloqueios.
+- V39 mostra a decomposicao da base 100 e separa lacunas de governanca das lacunas de tracking/funil.
+- V40 adiciona acao guiada para resolver governanca do contexto e orientar tracking/funil real.
+- Ainda falta ativar formalmente a versao de contexto e resolver lacunas antigas que ja foram superadas.

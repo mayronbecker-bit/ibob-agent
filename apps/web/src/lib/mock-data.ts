@@ -14,6 +14,8 @@ import type {
   CompetitorProfile,
   CompetitorInsight,
   ContextMemoryItem,
+  FunnelEvent,
+  FunnelTrackingRequirement,
   Proposal,
   Approval,
   DecisionMemory,
@@ -246,6 +248,78 @@ export const contextGaps: ContextGap[] = [
       'Migrar as respostas existentes para context_answers antes de liberar Decision Engine supervisionado.',
     createdAt: '2026-05-19T13:30:00-03:00',
     updatedAt: '2026-05-19T13:30:00-03:00',
+  },
+];
+
+// ── Funnel Tracking ─────────────────────────────────────────────────────────
+
+export const funnelTrackingRequirements: FunnelTrackingRequirement[] = [
+  {
+    id: 'req-funnel-required-fields',
+    title: 'Campos obrigatorios',
+    description:
+      'Toda linha precisa ter data, etapa, origem, empresa/contato e observacao comercial.',
+    status: 'missing',
+    impactPoints: 2,
+  },
+  {
+    id: 'req-funnel-stage',
+    title: 'Etapa do funil',
+    description:
+      'Classificar cada registro como lead, qualificado, oportunidade, proposta, venda ou desqualificado.',
+    status: 'missing',
+    impactPoints: 2,
+  },
+  {
+    id: 'req-funnel-source',
+    title: 'Origem preservada',
+    description:
+      'Guardar a origem/campanha quando existir: Google, Meta, WhatsApp, organico, marketplace ou direto.',
+    status: 'missing',
+    impactPoints: 1,
+  },
+  {
+    id: 'req-funnel-value-margin',
+    title: 'Valor e margem',
+    description:
+      'Registrar valor e margem bruta nas vendas para o agente otimizar por lucro, nao so por lead.',
+    status: 'missing',
+    impactPoints: 1,
+  },
+  {
+    id: 'req-funnel-first-import',
+    title: 'Primeira importacao manual',
+    description:
+      'Importar uma amostra revisada antes de conectar Google, Meta, GA4 ou CRM por API.',
+    status: 'planned',
+    impactPoints: 1,
+  },
+];
+
+export const funnelEventExamples: FunnelEvent[] = [
+  {
+    id: 'funnel-example-qualified',
+    clientId: CLIENT_ID,
+    stage: 'qualified_lead',
+    source: 'whatsapp',
+    companyName: 'Exemplo Maquinas Industriais',
+    campaignName: 'Consulta tecnica motorredutor acima de 10cv',
+    leadQualityScore: 85,
+    occurredAt: '2026-05-24T10:00:00-03:00',
+    notes: 'Fabricante de maquina sob demanda, decisor envolvido e demanda tecnica compativel.',
+  },
+  {
+    id: 'funnel-example-sale',
+    clientId: CLIENT_ID,
+    stage: 'sale_won',
+    source: 'google_ads',
+    companyName: 'Exemplo Equipamentos Ltda',
+    campaignName: 'Search motorredutor industrial',
+    leadQualityScore: 92,
+    dealValueBrl: 15000,
+    grossMarginBrl: 2250,
+    occurredAt: '2026-05-24T11:30:00-03:00',
+    notes: 'Venda exemplo para demonstrar estrutura de tracking offline.',
   },
 ];
 
@@ -821,59 +895,73 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Hardening do produto piloto',
     status: 'in_progress',
     description:
-      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. Ja aplicados: redirect pos-login seguro, estados padronizados, headers defensivos, audit_events com RLS, UI de auditoria e checklist de backup/recuperacao.',
+      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. V44 mantem auditoria e deploy supervisionado como trilha transversal das etapas 5 a 9.',
   },
   {
     number: 6,
     title: 'Context Intelligence',
     status: 'in_progress',
     description:
-      'Diagnostico inteligente da empresa antes de analisar Ads. Schema aplicado no Supabase e primeira tela /context criada para ler perguntas, salvar respostas e acompanhar lacunas; proximo passo e migrar o contexto comercial da iBob.',
+      'Diagnostico inteligente antes de analisar Ads. As respostas comerciais da iBob estao no Supabase e seguem alimentando estrategia, rule_validator e funil real antes dos MCPs.',
   },
   {
     number: 7,
     title: 'Context Research Layer',
     status: 'in_progress',
     description:
-      'Camada para pesquisar site da empresa e concorrentes antes do Decision Engine. Schema aplicado no Supabase, console /research validada e achados supervisionados aplicados. V37 adiciona notas de revisao e eventos de auditoria para cada acao antes da memoria alimentar o Decision Engine.',
+      'Pesquisa de site e concorrentes antes do Decision Engine. Achados, memorias e concorrentes revisados seguem como evidencia para a nota CMO e futuras propostas.',
   },
   {
     number: 8,
-    title: 'Decision Engine supervisionado',
-    status: 'planned',
+    title: 'CMO Strategy Readiness',
+    status: 'in_progress',
     description:
-      'Gerar sugestoes com IA usando dados reais, contexto comercial estruturado, mocks controlados ou importacoes manuais. Modelo nunca executa diretamente e consulta contexto e memoria antes de sugerir.',
+      'A tela /strategy cruza contexto, economia, pesquisa, memoria e agora eventos reais de /funnel para recalcular a base 100 antes de qualquer escala de Ads.',
   },
   {
     number: 9,
-    title: 'Validação determinística',
-    status: 'planned',
+    title: 'Tracking e Funil Real',
+    status: 'in_progress',
     description:
-      'Limites de budget, estoque, margem, tracking, capacidade comercial e risco. Uma sugestao so vira proposta se passar por todas as regras deterministicas e pelo contexto da empresa.',
+      'V44 adiciona resumo de funil e conecta eventos reais do Supabase a /strategy, fechando o ciclo entre CRM/funil e decisao estrategica.',
   },
   {
     number: 10,
+    title: 'Decision Engine supervisionado',
+    status: 'in_progress',
+    description:
+      'V45 cria o pre-motor supervisionado em /decision. Ele le contexto, pesquisa, funil e Data Trust, valida gates e mostra hipoteses, sem IA externa, sem MCP e sem execucao de Ads.',
+  },
+  {
+    number: 11,
+    title: 'Validacao deterministica',
+    status: 'in_progress',
+    description:
+      'V46 prepara o schema local de rule_validator e a tela /validator para testar regras deterministicas contra contexto, pesquisa, funil, Data Trust e proposta amostra, sem aplicar remoto ainda.',
+  },
+  {
+    number: 12,
     title: 'Execution Engine (dry run)',
     status: 'planned',
     description:
       'Executor separado do Decision Engine. Simulacao completa antes de tocar contas reais. Logs, estado anterior e rollback desenhados antes de qualquer escrita externa.',
   },
   {
-    number: 11,
+    number: 13,
     title: 'Produto escalável',
     status: 'planned',
     description:
       'Generalizar configuracoes da iBob. Onboarding de novos clientes, diagnostico de contexto por cliente, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
   },
   {
-    number: 12,
+    number: 14,
     title: 'Integrações em modo leitura',
     status: 'planned',
     description:
       'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos contexto, produto e governanca estarem validados.',
   },
   {
-    number: 13,
+    number: 15,
     title: 'Execução controlada',
     status: 'planned',
     description:

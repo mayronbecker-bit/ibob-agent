@@ -209,6 +209,16 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-21: preparado pacote v36 com filtros de achados, painel de fontes e prontidao da revisao em `/research`.
 - 2026-05-21: v36 reimplantada/testada pelo usuario.
 - 2026-05-21: preparado pacote v37 com nota de revisao e audit_events nas acoes de pesquisa contextual.
+- 2026-05-23: preparado pacote v38 com `/strategy`, revisao CMO, calculos de CAC/CPL e Roadmap atualizado para `CMO Strategy Readiness`.
+- 2026-05-23: preparado pacote v39 com breakdown da nota CMO e checklist para chegar a base 100.
+- 2026-05-23: preparado pacote v40 com botao `Resolver` e plano de resolucao em `/strategy`.
+- 2026-05-24: preparado pacote v41 com `/funnel`, schema local de funil real e template CSV de importacao manual.
+- 2026-05-24: aplicada e validada no Supabase remoto a migration `funnel_tracking`.
+- 2026-05-24: preparado pacote v42 com Roadmap atualizado apos `funnel_tracking` remoto e diretriz de MCPs supervisionados.
+- 2026-05-24: preparado pacote v43 com entrada manual real em `/funnel`, leitura do Supabase e auditoria de eventos de funil.
+- 2026-05-24: preparado pacote v44 com avanco paralelo das etapas 5 a 9, estrategia recalibrada por eventos de funil e resumo operacional em `/roadmap`.
+- 2026-05-25: preparado pacote v45 com `/decision`, fundacao do Decision Engine supervisionado e Roadmap atualizado para etapas 5 a 10.
+- 2026-05-25: preparado pacote v46 com `/validator`, schema local de `rule_validator` e Roadmap atualizado para etapas 5 a 11.
 
 Validacao publica:
 
@@ -219,6 +229,10 @@ Validacao publica:
 - `/audit`
 - `/context`
 - `/research`
+- `/strategy`
+- `/funnel`
+- `/decision`
+- `/validator`
 - `/memory`
 - `/roadmap`
 - `/settings`

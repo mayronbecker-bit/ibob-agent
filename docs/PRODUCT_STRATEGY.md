@@ -35,6 +35,8 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Definir precificacao, limites de uso e suporte.
 - Melhorar observabilidade: logs, erros, metricas e auditoria.
 - Validar Decision Engine supervisionado, rule_validator e fluxo de aprovacao usando dados existentes, mocks controlados ou importacoes manuais antes de conectar APIs externas.
+- V45 cria `/decision` como pre-motor deterministico: ele valida contexto, pesquisa, funil e Data Trust antes de qualquer proposta, sem MCP e sem execucao externa.
+- V46 cria `/validator` para transformar gates em regras deterministicas versionadas antes de qualquer proposta real.
 - Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
 - Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel. Schema inicial ja aplicado no Supabase em 2026-05-19.
 - Pesquisar site oficial e concorrentes com evidencias revisaveis antes de alimentar memoria contextual ou Decision Engine. Site oficial da iBob registrado para o primeiro run supervisionado em 2026-05-19.
@@ -47,6 +49,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Formalizar seguranca, privacidade e politicas operacionais.
 - Conectar integracoes externas em modo leitura somente depois do produto estar robusto e validado.
 - Conectar Ads apenas depois que o contexto comercial minimo estiver estruturado por cliente.
+- Usar MCPs de Google Ads e Meta Ads como conectores supervisionados, nao como cerebro do produto. O agente iBob continua responsavel por contexto, CRM/funil, regras, auditoria e decisao.
 
 ## Decisoes a evitar no inicio
 

@@ -17,6 +17,10 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/memory', label: 'Memória de Decisão' },
   { href: '/context', label: 'Diagnóstico' },
   { href: '/research', label: 'Pesquisa' },
+  { href: '/strategy', label: 'Estrategia CMO' },
+  { href: '/funnel', label: 'Funil Real' },
+  { href: '/decision', label: 'Decision Engine' },
+  { href: '/validator', label: 'Rule Validator' },
   { href: '/audit', label: 'Auditoria' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/settings', label: 'Configurações' },
@@ -88,6 +92,50 @@ function NavIcon({ href }: { href: string }) {
         <path
           fillRule="evenodd"
           d="M8.5 3a5.5 5.5 0 014.383 8.823l3.147 3.147a.75.75 0 11-1.06 1.06l-3.147-3.147A5.5 5.5 0 118.5 3zM4.5 8.5a4 4 0 108 0 4 4 0 00-8 0z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/strategy') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M3 4a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-1 1h-1.586l-2 2H16a1 1 0 011 1v5a1 1 0 01-1 1H4a1 1 0 01-1-1v-3a1 1 0 011-1h1.586l2-2H4a1 1 0 01-1-1V4zm2 1v3h4.586l2-2H15V5H5zm10 7h-4.586l-2 2H5v1h10v-3z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/funnel') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M3 4a1 1 0 011-1h12a1 1 0 01.8 1.6L12 11v4a1 1 0 01-.553.894l-3 1.5A1 1 0 017 16.5V11L3.2 4.6A1 1 0 013 4zm2.754 1L8.8 10.137A1 1 0 019 10.647v4.235l1-.5v-3.735a1 1 0 01.2-.6L14.246 5H5.754z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/decision') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M10 2a6 6 0 00-3 11.196V16a1 1 0 001.447.894L10 16.118l1.553.776A1 1 0 0013 16v-2.804A6 6 0 0010 2zM6 8a4 4 0 118 0 4 4 0 01-8 0zm2.25-.25a.75.75 0 000 1.5h1v1a.75.75 0 001.5 0v-1h1a.75.75 0 000-1.5h-1v-1a.75.75 0 00-1.5 0v1h-1z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/validator') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm2 4a1 1 0 000 2h2a1 1 0 000-2H6zm5.293.293a1 1 0 011.414 0L14 8.586l1.293-1.293a1 1 0 111.414 1.414L15.414 10l1.293 1.293a1 1 0 01-1.414 1.414L14 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L12.586 10l-1.293-1.293a1 1 0 010-1.414zM6 11a1 1 0 100 2h3a1 1 0 100-2H6z"
           clipRule="evenodd"
         />
       </svg>

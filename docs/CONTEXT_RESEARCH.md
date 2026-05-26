@@ -109,6 +109,7 @@ infra/supabase/migrations/20260520100000_seed_ibob_supervised_research_findings.
 - V36 adiciona filtros de achados, painel de fontes publicas e indicador de prontidao da revisao.
 - V36 reimplantada/testada pelo usuario.
 - V37 adiciona nota opcional de revisao e registro automatico em `audit_events` para acoes de pesquisa contextual.
+- V38 adiciona `/strategy` para usar achados, memoria e concorrentes revisados em uma leitura CMO antes do Decision Engine.
 - Ainda falta criar tela dedicada de historico/justificativa de revisao e conversao para `context_answers`.
 
 ## Fontes publicas usadas na pesquisa inicial
