@@ -220,6 +220,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-25: preparado pacote v45 com `/decision`, fundacao do Decision Engine supervisionado e Roadmap atualizado para etapas 5 a 10.
 - 2026-05-25: preparado pacote v46 com `/validator`, schema local de `rule_validator` e Roadmap atualizado para etapas 5 a 11.
 - 2026-05-26: aplicada migration `rule_validator` no Supabase remoto e preparado pacote v47 com `/validator` lendo catalogo ativo de regras.
+- 2026-05-26: preparado pacote v48 com hotfix para `/validator`, mesclando catalogo Supabase com fallback local quando regras ainda nao existem no remoto.
 
 Validacao publica:
 

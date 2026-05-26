@@ -212,6 +212,20 @@ export const supervisedRuleCatalog: RuleValidatorRule[] = [
   },
 ];
 
+function mergeRuleCatalog(rules?: RuleValidatorRule[]) {
+  if (!rules?.length) {
+    return supervisedRuleCatalog;
+  }
+
+  const byKey = new Map(supervisedRuleCatalog.map((rule) => [rule.ruleKey, rule]));
+
+  rules.forEach((rule) => {
+    byKey.set(rule.ruleKey, rule);
+  });
+
+  return Array.from(byKey.values());
+}
+
 function gateById(readiness: DecisionReadiness, id: string) {
   return readiness.gates.find((gate) => gate.id === id);
 }
@@ -309,7 +323,7 @@ export function runSupervisedRuleValidator(
   input: RuleValidatorDryRunInput,
 ): RuleValidatorDryRun {
   const readiness = input.decisionReadiness;
-  const rules = input.rules?.length ? input.rules : supervisedRuleCatalog;
+  const rules = mergeRuleCatalog(input.rules);
   const contextGate = gateById(readiness, 'context-active');
   const gapGate = gateById(readiness, 'context-governance');
   const researchGate = gateById(readiness, 'research-memory');

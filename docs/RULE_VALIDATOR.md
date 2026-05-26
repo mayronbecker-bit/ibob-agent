@@ -38,6 +38,17 @@ Validacoes remotas:
 
 A rota `/validator` passa a ler o catalogo ativo de regras do Supabase quando a sessao esta disponivel. Se a leitura falhar, continua usando o catalogo local como fallback visual.
 
+## Hotfix v48
+
+O catalogo remoto aplicado na v47 tem 8 regras ativas, enquanto o dry-run local ja validava 10 regras. Em sessoes autenticadas, isso podia derrubar `/validator` ao tentar avaliar uma regra ainda ausente no remoto.
+
+A v48 corrige isso mesclando:
+
+- regras ativas do Supabase;
+- regras locais de fallback por `ruleKey`.
+
+Assim o Supabase continua sendo fonte preferencial, mas a tela nao quebra enquanto o catalogo remoto evolui.
+
 ## Migration aplicada
 
 ```text

@@ -157,3 +157,5 @@
 - V47 aplica `rule_validator` no Supabase remoto apos autorizacao explicita.
 - Confirmadas tabelas `rule_validator_rules`, `rule_validator_runs`, `rule_validator_checks`, enums, policies RLS e 8 regras v1 ativas.
 - `/validator` passa a ler o catalogo ativo de regras do Supabase quando ha sessao valida, mantendo fallback local.
+- V48 corrige crash em `/validator` quando o catalogo remoto ainda tem menos regras que o dry-run local.
+- O `rule_validator` agora mescla regras ativas do Supabase com fallback local por `ruleKey`, evitando tela branca enquanto o catalogo remoto evolui.
