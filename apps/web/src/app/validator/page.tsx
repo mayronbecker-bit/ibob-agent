@@ -28,7 +28,10 @@ import {
   severityLabel,
   type RuleValidatorDryRun,
 } from '@/lib/rule-validator/supervised-rule-validator';
-import { getSupabaseRuleValidatorRules } from '@/lib/rule-validator/supabase-rule-validator';
+import {
+  getSupabaseRuleValidatorRules,
+  recordSupabaseRuleValidatorRun,
+} from '@/lib/rule-validator/supabase-rule-validator';
 import { buildCmoReadiness } from '@/lib/strategy/cmo-readiness';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
 import type {
@@ -153,6 +156,12 @@ function formatCategory(value: string) {
 export default function ValidatorPage() {
   const [realData, setRealData] = useState<RuleValidatorPageData | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordNotice, setRecordNotice] = useState<{
+    title: string;
+    detail: string;
+    variant: 'success' | 'warning' | 'error';
+  } | null>(null);
 
   const supabase = useMemo(() => {
     try {
@@ -196,6 +205,39 @@ export default function ValidatorPage() {
   });
   const sourceLabel = realData ? 'Supabase' : 'Mock';
 
+  async function handleRecordDryRun() {
+    if (!supabase || !realData) {
+      setRecordNotice({
+        title: 'Registro indisponivel',
+        detail:
+          'Entre com uma sessao Supabase valida e carregue dados reais antes de registrar o dry-run.',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    setIsRecording(true);
+    setRecordNotice(null);
+
+    try {
+      const result = await recordSupabaseRuleValidatorRun(supabase, dryRun);
+      setRecordNotice({
+        title: 'Dry-run registrado',
+        detail: `Run ${result.runId} salvo com checks e auditoria. Nenhuma execucao externa foi realizada.`,
+        variant: 'success',
+      });
+    } catch {
+      setRecordNotice({
+        title: 'Nao foi possivel registrar',
+        detail:
+          'Confira se seu usuario tem papel owner/admin e se a sessao continua ativa. Nenhuma acao externa foi executada.',
+        variant: 'error',
+      });
+    } finally {
+      setIsRecording(false);
+    }
+  }
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-8">
       <header className="mb-8 flex flex-wrap items-start justify-between gap-4">
@@ -223,9 +265,18 @@ export default function ValidatorPage() {
         </DataStateNotice>
       )}
 
+      {recordNotice && (
+        <DataStateNotice
+          title={recordNotice.title}
+          variant={recordNotice.variant}
+          className="mb-4"
+        >
+          {recordNotice.detail}
+        </DataStateNotice>
+      )}
+
       <DataStateNotice title="Rule Validator aplicado no Supabase" variant="success" className="mb-6">
-        A v47 aplicou <code>20260525100000_create_rule_validator.sql</code> no remoto.
-        Esta tela agora le o catalogo ativo de regras quando a sessao Supabase esta disponivel.
+        A v49 registra dry-runs em <code>rule_validator_runs</code> e <code>rule_validator_checks</code> quando voce aciona o botao. Ads e MCPs continuam bloqueados.
       </DataStateNotice>
 
       <section className="mb-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -254,6 +305,19 @@ export default function ValidatorPage() {
               <Badge variant="red">Nao</Badge>
             </div>
           </div>
+          <button
+            type="button"
+            onClick={handleRecordDryRun}
+            disabled={isRecording || !realData}
+            className="mt-4 w-full rounded-lg bg-[#476454] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#34473b] disabled:cursor-not-allowed disabled:bg-[#9fb0a4]"
+          >
+            {isRecording ? 'Registrando...' : 'Registrar dry-run'}
+          </button>
+          {!realData && (
+            <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
+              O registro fica disponivel apenas quando a leitura real do Supabase estiver ativa.
+            </p>
+          )}
         </div>
 
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-5 shadow-sm">
@@ -362,7 +426,7 @@ export default function ValidatorPage() {
               Catalogo versionado
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Regras v1 que serao persistidas quando a migration for autorizada.
+              Regras v1 ativas no Supabase, complementadas por fallback local quando necessario.
             </p>
           </div>
           <Badge variant={realData ? 'green' : 'blue'}>

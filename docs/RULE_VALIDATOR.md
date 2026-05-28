@@ -49,6 +49,25 @@ A v48 corrige isso mesclando:
 
 Assim o Supabase continua sendo fonte preferencial, mas a tela nao quebra enquanto o catalogo remoto evolui.
 
+## Entrega v49
+
+A rota `/validator` passa a registrar dry-runs reais no Supabase quando o usuario clica em `Registrar dry-run`.
+
+O registro grava:
+
+- uma linha em `rule_validator_runs`;
+- uma linha por regra em `rule_validator_checks`;
+- um evento `rule_validator.run_recorded` em `audit_events`.
+
+O botao fica disponivel apenas quando a tela carrega dados reais do Supabase. Em modo fallback/mock, ele permanece bloqueado.
+
+Essa acao nao:
+
+- cria proposta nova;
+- solicita aprovacao humana;
+- chama Google Ads MCP ou Meta Ads MCP;
+- executa qualquer acao externa.
+
 ## Migration aplicada
 
 ```text

@@ -159,3 +159,5 @@
 - `/validator` passa a ler o catalogo ativo de regras do Supabase quando ha sessao valida, mantendo fallback local.
 - V48 corrige crash em `/validator` quando o catalogo remoto ainda tem menos regras que o dry-run local.
 - O `rule_validator` agora mescla regras ativas do Supabase com fallback local por `ruleKey`, evitando tela branca enquanto o catalogo remoto evolui.
+- V49 adiciona registro operacional de dry-run em `/validator`.
+- O botao `Registrar dry-run` grava `rule_validator_runs`, `rule_validator_checks` e auditoria `rule_validator.run_recorded`, sem criar proposta e sem executar Ads/MCP.

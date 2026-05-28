@@ -777,9 +777,11 @@ Estado:
 - migration aplicada no Supabase remoto em 2026-05-26;
 - tipos TypeScript atualizados;
 - tabelas, enums, policies RLS e 8 regras ativas validadas por consulta remota;
-- nenhuma proposta nova gravada;
+- v49 registra dry-runs em `rule_validator_runs` e `rule_validator_checks` pela tela `/validator`;
+- cada registro cria auditoria `rule_validator.run_recorded`;
+- nenhuma proposta nova gravada automaticamente;
 - nenhuma integracao externa conectada.
 
 Proxima acao:
 
-Validar `/validator` em producao e confirmar leitura do catalogo Supabase.
+Validar `/validator` em producao, registrar um dry-run controlado e conferir o evento em `/audit`.
