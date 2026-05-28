@@ -779,9 +779,10 @@ Estado:
 - tabelas, enums, policies RLS e 8 regras ativas validadas por consulta remota;
 - v49 registra dry-runs em `rule_validator_runs` e `rule_validator_checks` pela tela `/validator`;
 - cada registro cria auditoria `rule_validator.run_recorded`;
+- v50 lista os ultimos dry-runs e checks em `/validator`, permitindo conferencia operacional antes de qualquer promocao para proposta;
 - nenhuma proposta nova gravada automaticamente;
 - nenhuma integracao externa conectada.
 
 Proxima acao:
 
-Validar `/validator` em producao, registrar um dry-run controlado e conferir o evento em `/audit`.
+Validar `/validator` em producao, registrar um dry-run controlado, conferir o historico na propria tela e confirmar o evento em `/audit`.

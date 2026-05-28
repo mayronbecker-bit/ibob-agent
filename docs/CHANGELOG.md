@@ -161,3 +161,5 @@
 - O `rule_validator` agora mescla regras ativas do Supabase com fallback local por `ruleKey`, evitando tela branca enquanto o catalogo remoto evolui.
 - V49 adiciona registro operacional de dry-run em `/validator`.
 - O botao `Registrar dry-run` grava `rule_validator_runs`, `rule_validator_checks` e auditoria `rule_validator.run_recorded`, sem criar proposta e sem executar Ads/MCP.
+- V50 adiciona historico supervisionado em `/validator`.
+- A tela passa a listar os ultimos dry-runs salvos no Supabase com resultado, checks principais, status de promocao e trava explicita de Ads/MCP.

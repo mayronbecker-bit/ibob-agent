@@ -937,7 +937,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Validacao deterministica',
     status: 'in_progress',
     description:
-      'V49 registra dry-runs em rule_validator_runs e rule_validator_checks, com auditoria, mantendo Ads e MCPs bloqueados.',
+      'V50 mostra historico de dry-runs, checks e bloqueios em /validator, preparando promocao supervisionada para propostas sem liberar Ads ou MCPs.',
   },
   {
     number: 12,

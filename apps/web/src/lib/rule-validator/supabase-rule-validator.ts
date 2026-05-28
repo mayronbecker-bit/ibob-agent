@@ -9,6 +9,30 @@ type ActiveMembership = {
 };
 
 type RuleRow = Database['public']['Tables']['rule_validator_rules']['Row'];
+type RunRow = Database['public']['Tables']['rule_validator_runs']['Row'];
+type CheckRow = Database['public']['Tables']['rule_validator_checks']['Row'];
+
+export type RuleValidatorRunLog = {
+  id: string;
+  clientId: string;
+  proposalId?: string;
+  result: RunRow['result'];
+  canPromoteToProposal: boolean;
+  canExecuteExternalAction: boolean;
+  summary: string;
+  createdBy?: string;
+  createdAt: string;
+  decisionContext: Record<string, unknown>;
+  checks: Array<{
+    id: string;
+    ruleKey: string;
+    result: CheckRow['result'];
+    severity: CheckRow['severity'];
+    message: string;
+    remediation: string;
+    evidence: Record<string, unknown>;
+  }>;
+};
 
 function asObject(value: Json): Record<string, unknown> {
   if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -85,6 +109,75 @@ export async function getSupabaseRuleValidatorRules(
   }
 
   return (data ?? []).map(mapRule);
+}
+
+export async function getSupabaseRuleValidatorRunLogs(
+  supabase: SupabaseClient<Database>,
+  limit = 5,
+): Promise<RuleValidatorRunLog[]> {
+  const membership = await getActiveMembership(supabase);
+
+  const { data: runs, error: runsError } = await supabase
+    .from('rule_validator_runs')
+    .select(
+      'id, client_id, proposal_id, decision_context, result, can_promote_to_proposal, can_execute_external_action, summary, created_by, created_at',
+    )
+    .eq('client_id', membership.clientId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  if (runsError) {
+    throw runsError;
+  }
+
+  const runRows = runs ?? [];
+  const runIds = runRows.map((run) => run.id);
+
+  if (runIds.length === 0) {
+    return [];
+  }
+
+  const { data: checks, error: checksError } = await supabase
+    .from('rule_validator_checks')
+    .select(
+      'id, run_id, client_id, rule_id, rule_key, result, severity, evidence, message, remediation, created_at',
+    )
+    .in('run_id', runIds)
+    .order('created_at', { ascending: true });
+
+  if (checksError) {
+    throw checksError;
+  }
+
+  const checksByRun = new Map<string, CheckRow[]>();
+
+  (checks ?? []).forEach((checkRow) => {
+    const existing = checksByRun.get(checkRow.run_id) ?? [];
+    existing.push(checkRow);
+    checksByRun.set(checkRow.run_id, existing);
+  });
+
+  return runRows.map((run) => ({
+    id: run.id,
+    clientId: run.client_id,
+    proposalId: run.proposal_id ?? undefined,
+    result: run.result,
+    canPromoteToProposal: run.can_promote_to_proposal,
+    canExecuteExternalAction: run.can_execute_external_action,
+    summary: run.summary,
+    createdBy: run.created_by ?? undefined,
+    createdAt: run.created_at,
+    decisionContext: asObject(run.decision_context),
+    checks: (checksByRun.get(run.id) ?? []).map((checkRow) => ({
+      id: checkRow.id,
+      ruleKey: checkRow.rule_key,
+      result: checkRow.result,
+      severity: checkRow.severity,
+      message: checkRow.message,
+      remediation: checkRow.remediation,
+      evidence: asObject(checkRow.evidence),
+    })),
+  }));
 }
 
 function uuidOrNull(value?: string) {

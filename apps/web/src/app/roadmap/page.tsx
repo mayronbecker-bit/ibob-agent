@@ -58,7 +58,7 @@ const activeParallelTracks = [
   },
   {
     title: '11. Rule Validator',
-    description: 'V49 registra dry-runs e checks no Supabase antes de qualquer proposta real.',
+    description: 'V50 exibe historico de dry-runs e checks antes de promover propostas.',
   },
 ];
 
@@ -120,7 +120,7 @@ export default function RoadmapPage() {
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v49
+            v50
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

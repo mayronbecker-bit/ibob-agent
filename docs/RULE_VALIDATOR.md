@@ -1,7 +1,7 @@
 # Rule Validator
 
 Data: 2026-05-25
-Versao: v46
+Versao: v50
 
 ## Objetivo
 
@@ -68,6 +68,21 @@ Essa acao nao:
 - chama Google Ads MCP ou Meta Ads MCP;
 - executa qualquer acao externa.
 
+## Entrega v50
+
+A rota `/validator` passa a exibir o historico supervisionado dos ultimos dry-runs salvos no Supabase.
+
+A tela mostra:
+
+- data/hora do run;
+- resultado geral;
+- contagem de regras que passaram, alertas e falhas;
+- se o run pode ser promovido para proposta supervisionada;
+- confirmacao de que Ads/MCPs continuam bloqueados;
+- principais checks que exigem conferencia humana.
+
+Essa entrega prepara a ponte entre `Decision Engine -> rule_validator -> proposta`, mas ainda nao cria proposta nova automaticamente.
+
 ## Migration aplicada
 
 ```text
@@ -120,4 +135,4 @@ Na arquitetura final, eles serao conectores. O `rule_validator` deve continuar s
 
 ## Proxima etapa
 
-Validar `/validator` em producao e confirmar que o badge mostra `Supabase` no catalogo de regras.
+Validar o historico em `/validator` depois de registrar um dry-run em producao. A proxima camada sera a promocao supervisionada para proposta, ainda com aprovacao humana obrigatoria e sem execucao externa.

@@ -30,7 +30,9 @@ import {
 } from '@/lib/rule-validator/supervised-rule-validator';
 import {
   getSupabaseRuleValidatorRules,
+  getSupabaseRuleValidatorRunLogs,
   recordSupabaseRuleValidatorRun,
+  type RuleValidatorRunLog,
 } from '@/lib/rule-validator/supabase-rule-validator';
 import { buildCmoReadiness } from '@/lib/strategy/cmo-readiness';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
@@ -47,12 +49,13 @@ type RuleValidatorPageData = {
   readiness: DecisionReadiness;
   proposals: Proposal[];
   rules: RuleValidatorRule[];
+  runLogs: RuleValidatorRunLog[];
 };
 
 async function loadRealRuleValidatorData(
   supabase: BrowserSupabaseClient,
 ): Promise<RuleValidatorPageData> {
-  const [contextData, researchData, funnelData, dataTrustState, proposals, rules] =
+  const [contextData, researchData, funnelData, dataTrustState, proposals, rules, runLogs] =
     await Promise.all([
       getSupabaseContextIntelligenceData(supabase),
       getSupabaseContextResearchData(supabase),
@@ -60,6 +63,7 @@ async function loadRealRuleValidatorData(
       getSupabaseDataTrustState(supabase),
       getSupabaseProposals(supabase),
       getSupabaseRuleValidatorRules(supabase),
+      getSupabaseRuleValidatorRunLogs(supabase),
     ]);
 
   const cmoReadiness = buildCmoReadiness({
@@ -90,6 +94,7 @@ async function loadRealRuleValidatorData(
     }),
     proposals,
     rules,
+    runLogs,
   };
 }
 
@@ -122,6 +127,7 @@ function buildFallbackRuleValidatorData(): RuleValidatorPageData {
     }),
     proposals: mockProposals,
     rules: supervisedRuleCatalog,
+    runLogs: [],
   };
 }
 
@@ -151,6 +157,25 @@ function formatCategory(value: string) {
   return value
     .replace('_', ' ')
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function formatDateTime(iso: string) {
+  return new Date(iso).toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'America/Sao_Paulo',
+  });
+}
+
+function runCounts(run: RuleValidatorRunLog) {
+  return {
+    passed: run.checks.filter((check) => check.result === 'passed').length,
+    warnings: run.checks.filter((check) => check.result === 'warning').length,
+    failures: run.checks.filter((check) => check.result === 'failed').length,
+  };
 }
 
 export default function ValidatorPage() {
@@ -221,6 +246,8 @@ export default function ValidatorPage() {
 
     try {
       const result = await recordSupabaseRuleValidatorRun(supabase, dryRun);
+      const runLogs = await getSupabaseRuleValidatorRunLogs(supabase);
+      setRealData((current) => (current ? { ...current, runLogs } : current));
       setRecordNotice({
         title: 'Dry-run registrado',
         detail: `Run ${result.runId} salvo com checks e auditoria. Nenhuma execucao externa foi realizada.`,
@@ -276,7 +303,7 @@ export default function ValidatorPage() {
       )}
 
       <DataStateNotice title="Rule Validator aplicado no Supabase" variant="success" className="mb-6">
-        A v49 registra dry-runs em <code>rule_validator_runs</code> e <code>rule_validator_checks</code> quando voce aciona o botao. Ads e MCPs continuam bloqueados.
+        A v50 exibe o historico dos dry-runs registrados em <code>rule_validator_runs</code> e <code>rule_validator_checks</code>. Ads e MCPs continuam bloqueados.
       </DataStateNotice>
 
       <section className="mb-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -367,6 +394,117 @@ export default function ValidatorPage() {
             />
           )}
         </div>
+      </section>
+
+      <section className="mb-8">
+        <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
+              Historico supervisionado
+            </h2>
+            <p className="mt-1 text-sm text-[#5c6b61]">
+              Ultimos registros salvos no Supabase para conferir evidencia antes de promover qualquer proposta.
+            </p>
+          </div>
+          <Badge variant={realData ? 'green' : 'gray'}>
+            {data.runLogs.length} registros
+          </Badge>
+        </div>
+
+        {data.runLogs.length === 0 ? (
+          <EmptyState
+            title="Nenhum dry-run registrado ainda"
+            description="Clique em Registrar dry-run para criar a primeira evidencia auditavel. A tela continua sem executar Ads ou MCPs."
+          />
+        ) : (
+          <div className="grid gap-4 lg:grid-cols-2">
+            {data.runLogs.map((run) => {
+              const counts = runCounts(run);
+              const relevantChecks = run.checks.filter((check) => check.result !== 'passed');
+
+              return (
+                <div
+                  key={run.id}
+                  className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm"
+                >
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-[#172018]">
+                        {formatDateTime(run.createdAt)}
+                      </p>
+                      <p className="mt-1 text-xs text-[#5c6b61]">
+                        Run {run.id.slice(0, 8)}... {run.proposalId ? `- proposta ${run.proposalId.slice(0, 8)}...` : ''}
+                      </p>
+                    </div>
+                    <Badge variant={resultVariant[run.result]}>
+                      {resultLabel[run.result]}
+                    </Badge>
+                  </div>
+
+                  <p className="mt-3 text-sm leading-relaxed text-[#34473b]">
+                    {run.summary}
+                  </p>
+
+                  <div className="mt-4 grid gap-2 text-xs sm:grid-cols-3">
+                    <div className="rounded-lg bg-[#f7f9f6] px-3 py-2">
+                      <p className="text-[#5c6b61]">Passou</p>
+                      <p className="mt-1 font-semibold text-[#172018]">{counts.passed}</p>
+                    </div>
+                    <div className="rounded-lg bg-[#f7f9f6] px-3 py-2">
+                      <p className="text-[#5c6b61]">Alertas</p>
+                      <p className="mt-1 font-semibold text-[#172018]">{counts.warnings}</p>
+                    </div>
+                    <div className="rounded-lg bg-[#f7f9f6] px-3 py-2">
+                      <p className="text-[#5c6b61]">Falhas</p>
+                      <p className="mt-1 font-semibold text-[#172018]">{counts.failures}</p>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Badge variant={run.canPromoteToProposal ? 'green' : 'red'}>
+                      {run.canPromoteToProposal ? 'Promocao liberada' : 'Promocao bloqueada'}
+                    </Badge>
+                    <Badge variant={run.canExecuteExternalAction ? 'red' : 'blue'}>
+                      {run.canExecuteExternalAction ? 'Execucao externa liberada' : 'Ads/MCP bloqueados'}
+                    </Badge>
+                  </div>
+
+                  <div className="mt-4 border-t border-[#d7ddd2] pt-3">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#476454]">
+                      Pontos para conferencia
+                    </p>
+                    {relevantChecks.length === 0 ? (
+                      <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
+                        Sem alertas ou falhas neste registro.
+                      </p>
+                    ) : (
+                      <div className="mt-2 space-y-2">
+                        {relevantChecks.slice(0, 3).map((check) => (
+                          <div
+                            key={check.id}
+                            className="rounded-lg bg-[#f7f9f6] px-3 py-2 text-xs"
+                          >
+                            <div className="flex flex-wrap items-center justify-between gap-2">
+                              <span className="font-semibold text-[#172018]">
+                                {check.ruleKey}
+                              </span>
+                              <Badge variant={resultVariant[check.result]}>
+                                {resultLabel[check.result]}
+                              </Badge>
+                            </div>
+                            <p className="mt-1 leading-relaxed text-[#5c6b61]">
+                              {check.remediation}
+                            </p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <section className="mb-8">
