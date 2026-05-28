@@ -21,6 +21,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/funnel', label: 'Funil Real' },
   { href: '/decision', label: 'Decision Engine' },
   { href: '/validator', label: 'Rule Validator' },
+  { href: '/execution', label: 'Execution Engine' },
   { href: '/audit', label: 'Auditoria' },
   { href: '/roadmap', label: 'Roadmap' },
   { href: '/settings', label: 'Configurações' },
@@ -136,6 +137,17 @@ function NavIcon({ href }: { href: string }) {
         <path
           fillRule="evenodd"
           d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm2 4a1 1 0 000 2h2a1 1 0 000-2H6zm5.293.293a1 1 0 011.414 0L14 8.586l1.293-1.293a1 1 0 111.414 1.414L15.414 10l1.293 1.293a1 1 0 01-1.414 1.414L14 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L12.586 10l-1.293-1.293a1 1 0 010-1.414zM6 11a1 1 0 100 2h3a1 1 0 100-2H6z"
+          clipRule="evenodd"
+        />
+      </svg>
+    );
+  }
+  if (href === '/execution') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M4 3a1 1 0 011-1h5a1 1 0 01.8.4l5 6.667a1 1 0 010 1.2l-5 6.667a1 1 0 01-.8.4H5a1 1 0 01-.8-1.6L8.5 10 4.2 4.6A1 1 0 014 3zm6.5 3.5a1 1 0 00-1.6 1.2L10.625 10 8.9 12.3a1 1 0 101.6 1.2l2.175-2.9a1 1 0 000-1.2L10.5 6.5z"
           clipRule="evenodd"
         />
       </svg>

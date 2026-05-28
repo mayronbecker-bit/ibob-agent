@@ -60,6 +60,10 @@ const activeParallelTracks = [
     title: '11. Rule Validator',
     description: 'V51 certifica proposta existente apos dry-run aprovado, sem execucao externa.',
   },
+  {
+    title: '12. Execution Engine',
+    description: 'V52 registra simulacoes em execution_logs sem chamar Ads ou MCPs.',
+  },
 ];
 
 export default function RoadmapPage() {
@@ -116,11 +120,11 @@ export default function RoadmapPage() {
               Avanco paralelo
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 11 evoluindo juntas antes de MCPs e integracoes finais.
+              Etapas 5 a 12 evoluindo juntas antes de MCPs e integracoes finais.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v51
+            v52
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

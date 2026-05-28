@@ -165,3 +165,5 @@
 - A tela passa a listar os ultimos dry-runs salvos no Supabase com resultado, checks principais, status de promocao e trava explicita de Ads/MCP.
 - V51 adiciona certificacao supervisionada de proposta existente em `/validator`.
 - O botao `Certificar proposta` registra novo dry-run, atualiza `proposals.rule_validator_passed`, grava notas e cria auditoria `rule_validator.proposal_certified`, sem criar proposta nova e sem executar Ads/MCP.
+- V52 cria `/execution` como fundacao do Execution Engine em dry-run.
+- A tela lista propostas aprovadas e certificadas, registra simulacoes em `execution_logs` e cria auditoria `execution.dry_run_recorded`, sem chamar Google Ads, Meta Ads ou MCP.

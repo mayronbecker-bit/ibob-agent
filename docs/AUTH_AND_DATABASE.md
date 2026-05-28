@@ -787,3 +787,18 @@ Estado:
 Proxima acao:
 
 Validar `/validator` em producao, certificar uma proposta apta e conferir `/proposals`, `/approvals` e `/audit`.
+
+## Execution Engine
+
+Estado v52:
+
+- `/execution` usa a tabela existente `execution_logs`;
+- nenhuma migration nova foi necessaria;
+- a tela lista propostas aprovadas e certificadas pelo `rule_validator`;
+- `Simular execucao` grava `result = simulated` e `is_dry_run = true`;
+- cada simulacao cria auditoria `execution.dry_run_recorded`;
+- Google Ads, Meta Ads e MCPs seguem bloqueados.
+
+Proxima acao:
+
+Validar `/execution` em producao, registrar um dry-run e conferir o evento em `/audit`.

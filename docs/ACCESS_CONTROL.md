@@ -54,6 +54,7 @@ Protege as rotas do dashboard, incluindo:
 - `/data-trust`
 - `/proposals`
 - `/approvals`
+- `/execution`
 - `/memory`
 - `/roadmap`
 - `/settings`

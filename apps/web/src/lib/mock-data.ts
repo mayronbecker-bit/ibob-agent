@@ -942,9 +942,9 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 12,
     title: 'Execution Engine (dry run)',
-    status: 'planned',
+    status: 'in_progress',
     description:
-      'Executor separado do Decision Engine. Simulacao completa antes de tocar contas reais. Logs, estado anterior e rollback desenhados antes de qualquer escrita externa.',
+      'V52 cria /execution para registrar simulacoes em execution_logs apos rule_validator e aprovacao humana, sem chamar Ads ou MCPs.',
   },
   {
     number: 13,

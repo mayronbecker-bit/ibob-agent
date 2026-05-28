@@ -64,6 +64,7 @@ Consequencias:
 - `rule_validator` passa a ter catalogo de regras v1.
 - `/validator` mostra checks, evidencias, falhas e caminhos de correcao.
 - A v49 registra dry-runs e checks no Supabase antes de qualquer promocao para proposta.
+- A v52 registra apenas simulacoes em `execution_logs`, mantendo execucao externa bloqueada ate autorizacao futura especifica.
 - Propostas futuras devem passar pelo `rule_validator` antes de aprovacao humana.
 - Execucao externa segue bloqueada mesmo quando as regras passam.
 - Migration remota depende de autorizacao posterior.
