@@ -1,7 +1,7 @@
 # Rule Validator
 
 Data: 2026-05-25
-Versao: v50
+Versao: v51
 
 ## Objetivo
 
@@ -83,6 +83,21 @@ A tela mostra:
 
 Essa entrega prepara a ponte entre `Decision Engine -> rule_validator -> proposta`, mas ainda nao cria proposta nova automaticamente.
 
+## Entrega v51
+
+A rota `/validator` passa a permitir a certificacao de uma proposta existente quando o dry-run esta aprovado para promocao supervisionada.
+
+A acao `Certificar proposta`:
+
+- registra um novo dry-run auditavel;
+- atualiza a proposta em `proposals.rule_validator_passed`;
+- grava notas em `proposals.rule_validator_notes`;
+- cria o evento `rule_validator.proposal_certified` em `audit_events`;
+- mantem aprovacao humana obrigatoria em `/approvals`;
+- mantem `can_execute_external_action = false`.
+
+Essa acao nao cria proposta nova e nao executa nenhuma acao em Google Ads, Meta Ads ou MCP.
+
 ## Migration aplicada
 
 ```text
@@ -135,4 +150,4 @@ Na arquitetura final, eles serao conectores. O `rule_validator` deve continuar s
 
 ## Proxima etapa
 
-Validar o historico em `/validator` depois de registrar um dry-run em producao. A proxima camada sera a promocao supervisionada para proposta, ainda com aprovacao humana obrigatoria e sem execucao externa.
+Validar `/validator` em producao, certificar uma proposta aprovada pelo dry-run e conferir se `/proposals` e `/approvals` mostram `rule_validator: passou`.

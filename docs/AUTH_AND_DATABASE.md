@@ -780,9 +780,10 @@ Estado:
 - v49 registra dry-runs em `rule_validator_runs` e `rule_validator_checks` pela tela `/validator`;
 - cada registro cria auditoria `rule_validator.run_recorded`;
 - v50 lista os ultimos dry-runs e checks em `/validator`, permitindo conferencia operacional antes de qualquer promocao para proposta;
+- v51 permite certificar uma proposta existente quando o dry-run esta aprovado, atualizando `proposals.rule_validator_passed` e gravando auditoria `rule_validator.proposal_certified`;
 - nenhuma proposta nova gravada automaticamente;
 - nenhuma integracao externa conectada.
 
 Proxima acao:
 
-Validar `/validator` em producao, registrar um dry-run controlado, conferir o historico na propria tela e confirmar o evento em `/audit`.
+Validar `/validator` em producao, certificar uma proposta apta e conferir `/proposals`, `/approvals` e `/audit`.

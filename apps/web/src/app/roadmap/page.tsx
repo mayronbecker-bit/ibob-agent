@@ -58,7 +58,7 @@ const activeParallelTracks = [
   },
   {
     title: '11. Rule Validator',
-    description: 'V50 exibe historico de dry-runs e checks antes de promover propostas.',
+    description: 'V51 certifica proposta existente apos dry-run aprovado, sem execucao externa.',
   },
 ];
 
@@ -120,7 +120,7 @@ export default function RoadmapPage() {
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v50
+            v51
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

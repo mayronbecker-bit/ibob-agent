@@ -29,6 +29,7 @@ import {
   type RuleValidatorDryRun,
 } from '@/lib/rule-validator/supervised-rule-validator';
 import {
+  certifySupabaseProposalWithRuleValidator,
   getSupabaseRuleValidatorRules,
   getSupabaseRuleValidatorRunLogs,
   recordSupabaseRuleValidatorRun,
@@ -182,6 +183,7 @@ export default function ValidatorPage() {
   const [realData, setRealData] = useState<RuleValidatorPageData | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [isCertifying, setIsCertifying] = useState(false);
   const [recordNotice, setRecordNotice] = useState<{
     title: string;
     detail: string;
@@ -229,6 +231,11 @@ export default function ValidatorPage() {
     rules: data.rules,
   });
   const sourceLabel = realData ? 'Supabase' : 'Mock';
+  const canCertifyProposal =
+    !!realData &&
+    !!selectedProposal &&
+    dryRun.canPromoteToProposal &&
+    !selectedProposal.ruleValidatorPassed;
 
   async function handleRecordDryRun() {
     if (!supabase || !realData) {
@@ -262,6 +269,54 @@ export default function ValidatorPage() {
       });
     } finally {
       setIsRecording(false);
+    }
+  }
+
+  async function handleCertifyProposal() {
+    if (!supabase || !realData || !selectedProposal) {
+      setRecordNotice({
+        title: 'Certificacao indisponivel',
+        detail:
+          'Entre com uma sessao Supabase valida e carregue uma proposta real antes de certificar.',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    if (!dryRun.canPromoteToProposal) {
+      setRecordNotice({
+        title: 'Promocao bloqueada',
+        detail:
+          'Resolva as regras bloqueantes antes de certificar a proposta para aprovacao humana.',
+        variant: 'warning',
+      });
+      return;
+    }
+
+    setIsCertifying(true);
+    setRecordNotice(null);
+
+    try {
+      const result = await certifySupabaseProposalWithRuleValidator(supabase, dryRun);
+      const [proposals, runLogs] = await Promise.all([
+        getSupabaseProposals(supabase),
+        getSupabaseRuleValidatorRunLogs(supabase),
+      ]);
+      setRealData((current) => (current ? { ...current, proposals, runLogs } : current));
+      setRecordNotice({
+        title: 'Proposta certificada',
+        detail: `Proposta ${result.proposalId.slice(0, 8)}... vinculada ao run ${result.runId.slice(0, 8)}... para aprovacao humana. Ads/MCPs continuam bloqueados.`,
+        variant: 'success',
+      });
+    } catch {
+      setRecordNotice({
+        title: 'Nao foi possivel certificar',
+        detail:
+          'Confira se a proposta ainda existe, se seu usuario tem papel owner/admin e se a sessao continua ativa.',
+        variant: 'error',
+      });
+    } finally {
+      setIsCertifying(false);
     }
   }
 
@@ -303,7 +358,7 @@ export default function ValidatorPage() {
       )}
 
       <DataStateNotice title="Rule Validator aplicado no Supabase" variant="success" className="mb-6">
-        A v50 exibe o historico dos dry-runs registrados em <code>rule_validator_runs</code> e <code>rule_validator_checks</code>. Ads e MCPs continuam bloqueados.
+        A v51 permite certificar uma proposta existente apos dry-run aprovado, mantendo aprovacao humana obrigatoria e Ads/MCPs bloqueados.
       </DataStateNotice>
 
       <section className="mb-8 grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
@@ -335,14 +390,31 @@ export default function ValidatorPage() {
           <button
             type="button"
             onClick={handleRecordDryRun}
-            disabled={isRecording || !realData}
+            disabled={isRecording || isCertifying || !realData}
             className="mt-4 w-full rounded-lg bg-[#476454] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#34473b] disabled:cursor-not-allowed disabled:bg-[#9fb0a4]"
           >
             {isRecording ? 'Registrando...' : 'Registrar dry-run'}
           </button>
+          <button
+            type="button"
+            onClick={handleCertifyProposal}
+            disabled={isRecording || isCertifying || !canCertifyProposal}
+            className="mt-2 w-full rounded-lg border border-[#476454] bg-white px-4 py-2.5 text-sm font-semibold text-[#34473b] transition hover:bg-[#f0f5f1] disabled:cursor-not-allowed disabled:border-[#c8d0ca] disabled:text-[#9fb0a4]"
+          >
+            {isCertifying
+              ? 'Certificando...'
+              : selectedProposal?.ruleValidatorPassed
+                ? 'Proposta ja certificada'
+                : 'Certificar proposta'}
+          </button>
           {!realData && (
             <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
               O registro fica disponivel apenas quando a leitura real do Supabase estiver ativa.
+            </p>
+          )}
+          {realData && selectedProposal && !dryRun.canPromoteToProposal && (
+            <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
+              A certificacao fica bloqueada enquanto houver regra bloqueante falhando.
             </p>
           )}
         </div>
@@ -364,6 +436,9 @@ export default function ValidatorPage() {
                 </div>
                 <Badge variant={selectedProposal.riskLevel === 'low' ? 'green' : 'yellow'}>
                   Risco {selectedProposal.riskLevel}
+                </Badge>
+                <Badge variant={selectedProposal.ruleValidatorPassed ? 'green' : 'red'}>
+                  rule_validator {selectedProposal.ruleValidatorPassed ? 'passou' : 'pendente'}
                 </Badge>
               </div>
               <div className="mt-4 grid gap-3 md:grid-cols-3">

@@ -40,6 +40,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - V47 aplica o schema `rule_validator` no Supabase remoto e passa a ler o catalogo ativo de regras na tela `/validator`.
 - V49 registra dry-runs do `rule_validator` antes de qualquer proposta real, criando evidencia auditavel de decisao.
 - V50 torna esses dry-runs conferiveis na propria UI, com historico, checks e trava explicita de Ads/MCP antes da promocao para proposta.
+- V51 permite certificar uma proposta existente apos dry-run aprovado, fechando a ponte para aprovacao humana sem liberar execucao externa.
 - Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
 - Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel. Schema inicial ja aplicado no Supabase em 2026-05-19.
 - Pesquisar site oficial e concorrentes com evidencias revisaveis antes de alimentar memoria contextual ou Decision Engine. Site oficial da iBob registrado para o primeiro run supervisionado em 2026-05-19.

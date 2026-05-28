@@ -274,3 +274,73 @@ export async function recordSupabaseRuleValidatorRun(
     runId: run.id,
   };
 }
+
+export async function certifySupabaseProposalWithRuleValidator(
+  supabase: SupabaseClient<Database>,
+  dryRun: RuleValidatorDryRun,
+) {
+  const membership = await getActiveMembership(supabase);
+  const proposalId = uuidOrNull(dryRun.selectedProposal?.id);
+
+  if (!proposalId) {
+    throw new Error('A valid proposal id is required to certify a proposal.');
+  }
+
+  if (!dryRun.canPromoteToProposal) {
+    throw new Error('The dry-run cannot be promoted to a supervised proposal.');
+  }
+
+  const { runId } = await recordSupabaseRuleValidatorRun(supabase, dryRun);
+  const noteParts = [
+    `Certificada pelo rule_validator em dry-run ${runId.slice(0, 8)}.`,
+    `Resultado: ${dryRun.result}.`,
+    `Passou ${dryRun.passCount}/${dryRun.checks.length} regras.`,
+  ];
+
+  if (dryRun.warningCount > 0) {
+    noteParts.push(`${dryRun.warningCount} alerta(s) devem acompanhar a aprovacao humana.`);
+  }
+
+  const { error: proposalError } = await supabase
+    .from('proposals')
+    .update({
+      rule_validator_passed: true,
+      rule_validator_notes: noteParts.join(' '),
+    })
+    .eq('id', proposalId)
+    .eq('client_id', membership.clientId)
+    .select('id')
+    .single();
+
+  if (proposalError) {
+    throw proposalError;
+  }
+
+  const { error: auditError } = await supabase.from('audit_events').insert({
+    client_id: membership.clientId,
+    actor_user_id: membership.userId,
+    event_type: 'rule_validator.proposal_certified',
+    severity: 'info',
+    entity_type: 'proposal',
+    entity_id: proposalId,
+    description: 'Proposta certificada pelo rule_validator para aprovacao humana.',
+    metadata: {
+      source: 'validator_ui',
+      run_id: runId,
+      proposal_id: proposalId,
+      result: dryRun.result,
+      can_promote_to_proposal: dryRun.canPromoteToProposal,
+      can_execute_external_action: false,
+      warning_count: dryRun.warningCount,
+    } as Json,
+  });
+
+  if (auditError) {
+    throw auditError;
+  }
+
+  return {
+    proposalId,
+    runId,
+  };
+}

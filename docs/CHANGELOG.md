@@ -163,3 +163,5 @@
 - O botao `Registrar dry-run` grava `rule_validator_runs`, `rule_validator_checks` e auditoria `rule_validator.run_recorded`, sem criar proposta e sem executar Ads/MCP.
 - V50 adiciona historico supervisionado em `/validator`.
 - A tela passa a listar os ultimos dry-runs salvos no Supabase com resultado, checks principais, status de promocao e trava explicita de Ads/MCP.
+- V51 adiciona certificacao supervisionada de proposta existente em `/validator`.
+- O botao `Certificar proposta` registra novo dry-run, atualiza `proposals.rule_validator_passed`, grava notas e cria auditoria `rule_validator.proposal_certified`, sem criar proposta nova e sem executar Ads/MCP.
