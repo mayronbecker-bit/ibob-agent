@@ -944,7 +944,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Execution Engine (dry run)',
     status: 'in_progress',
     description:
-      'V52 cria /execution para registrar simulacoes em execution_logs apos rule_validator e aprovacao humana, sem chamar Ads ou MCPs.',
+      'V53 fecha o dry-run de /execution com preflight, plano de rollback e auditoria antes de qualquer integracao de escrita.',
   },
   {
     number: 13,

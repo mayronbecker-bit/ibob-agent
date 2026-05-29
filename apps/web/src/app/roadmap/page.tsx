@@ -62,7 +62,7 @@ const activeParallelTracks = [
   },
   {
     title: '12. Execution Engine',
-    description: 'V52 registra simulacoes em execution_logs sem chamar Ads ou MCPs.',
+    description: 'V53 fecha dry-run com preflight e plano de rollback, sem Ads/MCPs.',
   },
 ];
 
@@ -124,7 +124,7 @@ export default function RoadmapPage() {
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v52
+            v53
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

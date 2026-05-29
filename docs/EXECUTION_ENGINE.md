@@ -1,7 +1,7 @@
 # Execution Engine
 
 Data: 2026-05-28
-Versao: v52
+Versao: v53
 
 ## Objetivo
 
@@ -22,6 +22,17 @@ Ela le dados reais do Supabase quando ha sessao valida e mostra:
 - aprovacao humana correspondente;
 - historico de `execution_logs`;
 - botao `Simular execucao`.
+
+## Entrega v53
+
+A rota `/execution` passa a fechar o dry-run com governanca operacional:
+
+- checklist de preflight por proposta;
+- bloqueio visual quando uma pre-condicao falha;
+- alerta quando ja existe simulacao anterior;
+- plano de rollback antes de qualquer execucao real futura;
+- preflight e rollback gravados em `execution_logs.state_before` e `execution_logs.state_after`;
+- metadata de auditoria com status de preflight e quantidade de passos de rollback.
 
 ## O que o botao faz
 
@@ -55,4 +66,4 @@ Uma proposta so entra na fila de simulacao quando:
 
 ## Proxima etapa
 
-Validar `/execution` em producao, executar uma simulacao, conferir `execution_logs` na tela e confirmar o evento `execution.dry_run_recorded` em `/audit`.
+Validar `/execution` em producao, conferir o preflight, executar uma simulacao e confirmar o evento `execution.dry_run_recorded` em `/audit`.

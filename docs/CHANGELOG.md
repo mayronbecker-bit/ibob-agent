@@ -167,3 +167,5 @@
 - O botao `Certificar proposta` registra novo dry-run, atualiza `proposals.rule_validator_passed`, grava notas e cria auditoria `rule_validator.proposal_certified`, sem criar proposta nova e sem executar Ads/MCP.
 - V52 cria `/execution` como fundacao do Execution Engine em dry-run.
 - A tela lista propostas aprovadas e certificadas, registra simulacoes em `execution_logs` e cria auditoria `execution.dry_run_recorded`, sem chamar Google Ads, Meta Ads ou MCP.
+- V53 adiciona preflight e plano de rollback ao `/execution`.
+- O dry-run passa a gravar checks de seguranca e rollback em `execution_logs`, mantendo execucao externa bloqueada.

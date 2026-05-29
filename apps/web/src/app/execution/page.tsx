@@ -8,6 +8,7 @@ import {
   getSupabaseExecutionData,
   recordSupabaseExecutionDryRun,
   type ExecutionCandidate,
+  type ExecutionPreflightStatus,
   type SupabaseExecutionData,
 } from '@/lib/execution/supabase-execution';
 import { createSupabaseBrowserClient } from '@/lib/supabase/client';
@@ -41,6 +42,18 @@ function actionLabel(proposal: Proposal) {
   return `Simular rotacao de criativos em ${channel}`;
 }
 
+function preflightVariant(status: ExecutionPreflightStatus): 'green' | 'yellow' | 'red' {
+  if (status === 'blocked') return 'red';
+  if (status === 'warning') return 'yellow';
+  return 'green';
+}
+
+function preflightLabel(status: ExecutionPreflightStatus) {
+  if (status === 'blocked') return 'Bloqueado';
+  if (status === 'warning') return 'Alerta';
+  return 'OK';
+}
+
 function buildFallbackData(): SupabaseExecutionData {
   const approvedProposals = mockProposals.filter(
     (proposal) => proposal.status === 'approved' && proposal.ruleValidatorPassed,
@@ -57,6 +70,39 @@ function buildFallbackData(): SupabaseExecutionData {
         proposal,
         approval,
         alreadySimulated: false,
+        canDryRun: true,
+        preflightChecks: [
+          {
+            id: 'proposal_approved',
+            title: 'Proposta aprovada',
+            status: 'passed',
+            detail: 'A proposta passou pela fila de aprovacao humana.',
+          },
+          {
+            id: 'rule_validator_certified',
+            title: 'Rule Validator certificado',
+            status: 'passed',
+            detail: 'A proposta esta certificada pelo rule_validator.',
+          },
+          {
+            id: 'external_writes_locked',
+            title: 'Escrita externa bloqueada',
+            status: 'passed',
+            detail: 'Google Ads, Meta Ads e MCPs permanecem fora do fluxo de escrita.',
+          },
+        ],
+        rollbackPlan: [
+          {
+            order: 1,
+            title: 'Capturar estado anterior',
+            detail: 'Salvar configuracao atual antes de uma execucao real futura.',
+          },
+          {
+            order: 2,
+            title: 'Reverter se romper limite',
+            detail: 'Restaurar estado anterior se custo, margem ou qualidade sairem do limite.',
+          },
+        ],
       };
     })
     .filter((candidate): candidate is ExecutionCandidate => candidate !== null);
@@ -71,8 +117,16 @@ function buildFallbackData(): SupabaseExecutionData {
       result: 'simulated',
       channel: 'google_ads',
       action: 'DRY_RUN: simular rotacao de criativos em Google Ads',
-      stateBefore: { source: 'mock', external_write: false },
-      stateAfter: { simulated: true, external_write: false },
+      stateBefore: {
+        source: 'mock',
+        external_write: false,
+        preflight_status: 'passed',
+      },
+      stateAfter: {
+        simulated: true,
+        external_write: false,
+        rollback_plan_registered: true,
+      },
       isDryRun: true,
     },
   ];
@@ -213,10 +267,10 @@ export default function ExecutionPage() {
       )}
 
       <DataStateNotice title="Execucao externa bloqueada" variant="success" className="mb-6">
-        A v52 registra apenas logs simulados em <code>execution_logs</code>. O app nao chama Google Ads, Meta Ads ou MCPs nesta etapa.
+        A v53 adiciona preflight e plano de rollback ao dry-run. O app continua sem chamar Google Ads, Meta Ads ou MCPs nesta etapa.
       </DataStateNotice>
 
-      <section className="mb-8 grid gap-4 md:grid-cols-3">
+      <section className="mb-8 grid gap-4 md:grid-cols-4">
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
           <p className="text-xs text-[#5c6b61]">Candidatas a dry-run</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">
@@ -227,6 +281,12 @@ export default function ExecutionPage() {
           <p className="text-xs text-[#5c6b61]">Logs simulados</p>
           <p className="mt-1 text-2xl font-semibold text-[#142116]">
             {data.executionLogs.filter((log) => log.isDryRun).length}
+          </p>
+        </div>
+        <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
+          <p className="text-xs text-[#5c6b61]">Preflight OK</p>
+          <p className="mt-1 text-2xl font-semibold text-[#142116]">
+            {data.candidates.filter((candidate) => candidate.canDryRun).length}
           </p>
         </div>
         <div className="rounded-lg border border-[#d7ddd2] bg-white p-4 shadow-sm">
@@ -298,10 +358,67 @@ export default function ExecutionPage() {
                     </div>
                   </div>
 
+                  <div className="mt-4 border-t border-[#d7ddd2] pt-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-[#476454]">
+                        Preflight
+                      </p>
+                      <Badge variant={candidate.canDryRun ? 'green' : 'red'}>
+                        {candidate.canDryRun ? 'Apto' : 'Bloqueado'}
+                      </Badge>
+                    </div>
+                    <div className="mt-3 grid gap-2">
+                      {candidate.preflightChecks.map((check) => (
+                        <div
+                          key={check.id}
+                          className="rounded-lg bg-[#f7f9f6] px-3 py-2 text-xs"
+                        >
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="font-semibold text-[#172018]">
+                              {check.title}
+                            </span>
+                            <Badge variant={preflightVariant(check.status)}>
+                              {preflightLabel(check.status)}
+                            </Badge>
+                          </div>
+                          <p className="mt-1 leading-relaxed text-[#5c6b61]">
+                            {check.detail}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-4 border-t border-[#d7ddd2] pt-4">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-[#476454]">
+                      Plano de rollback
+                    </p>
+                    <div className="mt-3 space-y-2">
+                      {candidate.rollbackPlan.map((step) => (
+                        <div
+                          key={step.order}
+                          className="grid grid-cols-[1.75rem_1fr] gap-2 rounded-lg bg-[#f7f9f6] px-3 py-2 text-xs"
+                        >
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-white font-semibold text-[#476454]">
+                            {step.order}
+                          </span>
+                          <span>
+                            <span className="font-semibold text-[#172018]">
+                              {step.title}
+                            </span>
+                            <span className="mt-1 block leading-relaxed text-[#5c6b61]">
+                              {step.detail}
+                            </span>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
                   <button
                     type="button"
                     onClick={() => handleDryRun(candidate)}
-                    disabled={isSubmitting || !realData}
+                    disabled={isSubmitting || !realData || !candidate.canDryRun}
                     className="mt-4 w-full rounded-lg bg-[#476454] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#34473b] disabled:cursor-not-allowed disabled:bg-[#9fb0a4]"
                   >
                     {isSubmitting ? 'Simulando...' : 'Simular execucao'}
@@ -309,6 +426,11 @@ export default function ExecutionPage() {
                   {!realData && (
                     <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
                       O registro em banco fica disponivel apenas quando o Supabase real esta ativo.
+                    </p>
+                  )}
+                  {realData && !candidate.canDryRun && (
+                    <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
+                      Resolva os itens bloqueados do preflight antes de registrar simulacao.
                     </p>
                   )}
                 </div>
@@ -345,6 +467,7 @@ export default function ExecutionPage() {
                   <th className="px-4 py-3 font-semibold text-[#5c6b61]">Canal</th>
                   <th className="px-4 py-3 font-semibold text-[#5c6b61]">Acao</th>
                   <th className="px-4 py-3 font-semibold text-[#5c6b61]">Resultado</th>
+                  <th className="px-4 py-3 font-semibold text-[#5c6b61]">Governanca</th>
                 </tr>
               </thead>
               <tbody>
@@ -368,6 +491,12 @@ export default function ExecutionPage() {
                       <div className="flex flex-wrap gap-2">
                         <Badge variant="green">{log.result}</Badge>
                         {log.isDryRun && <Badge variant="blue">dry-run</Badge>}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex flex-wrap gap-2">
+                        <Badge variant="green">preflight</Badge>
+                        <Badge variant="blue">rollback</Badge>
                       </div>
                     </td>
                   </tr>

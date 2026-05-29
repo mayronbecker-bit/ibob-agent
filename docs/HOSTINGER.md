@@ -225,6 +225,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-28: preparado pacote v50 com historico supervisionado de dry-runs e checks em `/validator`.
 - 2026-05-28: preparado pacote v51 com certificacao supervisionada de proposta existente pelo `rule_validator`.
 - 2026-05-28: preparado pacote v52 com `/execution` registrando simulacoes em `execution_logs`, sem escrita externa.
+- 2026-05-29: preparado pacote v53 com preflight e plano de rollback no `/execution`.
 
 Validacao publica:
 

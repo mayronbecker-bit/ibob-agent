@@ -15,11 +15,29 @@ export type ExecutionCandidate = {
   proposal: Proposal;
   approval: Approval;
   alreadySimulated: boolean;
+  canDryRun: boolean;
+  preflightChecks: ExecutionPreflightCheck[];
+  rollbackPlan: ExecutionRollbackStep[];
 };
 
 export type SupabaseExecutionData = {
   candidates: ExecutionCandidate[];
   executionLogs: ExecutionLog[];
+};
+
+export type ExecutionPreflightStatus = 'passed' | 'warning' | 'blocked';
+
+export type ExecutionPreflightCheck = {
+  id: string;
+  title: string;
+  status: ExecutionPreflightStatus;
+  detail: string;
+};
+
+export type ExecutionRollbackStep = {
+  order: number;
+  title: string;
+  detail: string;
 };
 
 function asObject(value: Json | null): Record<string, unknown> | undefined {
@@ -113,6 +131,84 @@ function proposalAction(proposal: Proposal) {
   }
 }
 
+function buildPreflightChecks(
+  proposal: Proposal,
+  approval: ApprovalRow,
+  alreadySimulated: boolean,
+): ExecutionPreflightCheck[] {
+  return [
+    {
+      id: 'proposal_approved',
+      title: 'Proposta aprovada',
+      status: proposal.status === 'approved' ? 'passed' : 'blocked',
+      detail:
+        proposal.status === 'approved'
+          ? 'A proposta passou pela fila de aprovacao humana.'
+          : 'A proposta precisa estar aprovada antes de qualquer simulacao.',
+    },
+    {
+      id: 'rule_validator_certified',
+      title: 'Rule Validator certificado',
+      status: proposal.ruleValidatorPassed ? 'passed' : 'blocked',
+      detail:
+        proposal.ruleValidatorPassed
+          ? 'A proposta esta certificada pelo rule_validator.'
+          : 'Certifique a proposta em /validator antes de simular.',
+    },
+    {
+      id: 'human_approval_recorded',
+      title: 'Aprovacao humana registrada',
+      status: approval.decision === 'approved' ? 'passed' : 'blocked',
+      detail:
+        approval.decision === 'approved'
+          ? 'Existe aprovacao humana positiva vinculada.'
+          : 'A aprovacao vinculada nao libera simulacao.',
+    },
+    {
+      id: 'external_writes_locked',
+      title: 'Escrita externa bloqueada',
+      status: 'passed',
+      detail: 'Google Ads, Meta Ads e MCPs permanecem fora do fluxo de escrita.',
+    },
+    {
+      id: 'duplicate_dry_run',
+      title: 'Simulacao repetida',
+      status: alreadySimulated ? 'warning' : 'passed',
+      detail: alreadySimulated
+        ? 'Ja existe execution_log para esta proposta. Repetir gera nova evidencia, nao nova execucao.'
+        : 'Nenhuma simulacao anterior encontrada para esta proposta.',
+    },
+  ];
+}
+
+function buildRollbackPlan(proposal: Proposal): ExecutionRollbackStep[] {
+  const channel = proposal.channel === 'google_ads' ? 'Google Ads' : 'Meta Ads';
+
+  return [
+    {
+      order: 1,
+      title: 'Capturar estado anterior',
+      detail: `Antes de uma execucao real futura, salvar configuracao atual da entidade em ${channel}.`,
+    },
+    {
+      order: 2,
+      title: 'Aplicar janela de observacao',
+      detail:
+        'Acompanhar impacto financeiro e qualidade do funil antes de considerar a execucao como definitiva.',
+    },
+    {
+      order: 3,
+      title: 'Reverter se romper limite',
+      detail:
+        'Se custo, margem ou qualidade passarem do limite aprovado, restaurar o estado anterior e registrar auditoria.',
+    },
+  ];
+}
+
+function canDryRun(preflightChecks: ExecutionPreflightCheck[]) {
+  return preflightChecks.every((check) => check.status !== 'blocked');
+}
+
 function mapApproval(row: ApprovalRow, proposal: Proposal): Approval {
   return {
     id: row.id,
@@ -167,11 +263,16 @@ export async function getSupabaseExecutionData(
     .map((approval) => {
       const proposal = proposalsById.get(approval.proposal_id);
       if (!proposal) return null;
+      const alreadySimulated = simulatedProposalIds.has(proposal.id);
+      const preflightChecks = buildPreflightChecks(proposal, approval, alreadySimulated);
 
       return {
         proposal,
         approval: mapApproval(approval, proposal),
-        alreadySimulated: simulatedProposalIds.has(proposal.id),
+        alreadySimulated,
+        canDryRun: canDryRun(preflightChecks),
+        preflightChecks,
+        rollbackPlan: buildRollbackPlan(proposal),
       };
     })
     .filter((candidate): candidate is ExecutionCandidate => candidate !== null);
@@ -216,14 +317,39 @@ export async function recordSupabaseExecutionDryRun(
   }
 
   const proposal = mapProposal(proposalRow);
+  const existingLogsResult = await supabase
+    .from('execution_logs')
+    .select('id')
+    .eq('client_id', membership.clientId)
+    .eq('proposal_id', proposalId)
+    .limit(1);
+
+  if (existingLogsResult.error) {
+    throw existingLogsResult.error;
+  }
+
+  const preflightChecks = buildPreflightChecks(
+    proposal,
+    approvalRow,
+    (existingLogsResult.data ?? []).length > 0,
+  );
+
+  if (!canDryRun(preflightChecks)) {
+    throw new Error('Execution dry-run preflight is blocked.');
+  }
+
+  const rollbackPlan = buildRollbackPlan(proposal);
   const action = proposalAction(proposal);
   const stateBefore = {
     source: 'execution_engine_ui',
+    version: 'v53',
     mode: 'dry_run',
     external_write: false,
     proposal_status: proposal.status,
     rule_validator_passed: proposal.ruleValidatorPassed,
     approval_decision: approvalRow.decision,
+    preflight_checks: preflightChecks,
+    rollback_plan: rollbackPlan,
   };
   const stateAfter = {
     simulated: true,
@@ -231,6 +357,9 @@ export async function recordSupabaseExecutionDryRun(
     mcp_called: false,
     google_ads_called: false,
     meta_ads_called: false,
+    preflight_status: 'passed',
+    rollback_plan_registered: true,
+    rollback_plan: rollbackPlan,
     next_required_step: 'manual_review_before_any_real_execution',
   };
 
@@ -270,6 +399,9 @@ export async function recordSupabaseExecutionDryRun(
       result: 'simulated',
       is_dry_run: true,
       external_write: false,
+      preflight_status: 'passed',
+      preflight_warnings: preflightChecks.filter((check) => check.status === 'warning').length,
+      rollback_steps: rollbackPlan.length,
     } as Json,
   });
 

@@ -799,6 +799,14 @@ Estado v52:
 - cada simulacao cria auditoria `execution.dry_run_recorded`;
 - Google Ads, Meta Ads e MCPs seguem bloqueados.
 
+Estado v53:
+
+- `/execution` mostra preflight por proposta;
+- simulacoes bloqueadas exibem o motivo antes de gravar qualquer log;
+- plano de rollback fica visivel antes do dry-run;
+- preflight e rollback sao gravados nos campos JSON de `execution_logs`;
+- nenhuma migration nova foi necessaria.
+
 Proxima acao:
 
-Validar `/execution` em producao, registrar um dry-run e conferir o evento em `/audit`.
+Validar `/execution` em producao, conferir preflight/rollback, registrar um dry-run e conferir o evento em `/audit`.
