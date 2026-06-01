@@ -810,3 +810,12 @@ Estado v53:
 Proxima acao:
 
 Validar `/execution` em producao, conferir preflight/rollback, registrar um dry-run e conferir o evento em `/audit`.
+
+## Nucleo supervisionado validado
+
+Estado v54:
+
+- etapas 5 a 12 consolidadas como concluidas no Roadmap;
+- nenhum conector externo em modo escrita foi liberado;
+- o fluxo validado termina em `execution_logs` com `is_dry_run = true`;
+- a proxima fase planejada e `Produto escalavel`, antes das integracoes finais.

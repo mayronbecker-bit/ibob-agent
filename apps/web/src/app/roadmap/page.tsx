@@ -34,35 +34,35 @@ const statusColor: Record<
 const activeParallelTracks = [
   {
     title: '5. Hardening',
-    description: 'Seguranca, auditoria e deploy supervisionado continuam como base de operacao.',
+    description: 'Seguranca, auditoria e deploy supervisionado validados.',
   },
   {
     title: '6. Contexto',
-    description: 'Diagnostico comercial completo e pronto para orientar regras de decisao.',
+    description: 'Diagnostico comercial completo e reutilizavel pelo agente.',
   },
   {
     title: '7. Pesquisa',
-    description: 'Achados, concorrentes e memorias revisadas alimentam a estrategia.',
+    description: 'Achados, concorrentes e memoria revisados.',
   },
   {
     title: '8. Estrategia',
-    description: 'Nota CMO agora usa contexto, pesquisa e eventos reais de funil.',
+    description: 'Nota CMO usando contexto, pesquisa e funil.',
   },
   {
     title: '9. Funil Real',
-    description: 'Eventos manuais do Supabase passam a calibrar a prontidao estrategica.',
+    description: 'Eventos reais calibram qualidade, venda e margem.',
   },
   {
     title: '10. Decision Engine',
-    description: 'V45 valida gates e hipoteses supervisionadas sem MCP, sem IA externa e sem execucao.',
+    description: 'Gates e hipoteses supervisionadas validados.',
   },
   {
     title: '11. Rule Validator',
-    description: 'V51 certifica proposta existente apos dry-run aprovado, sem execucao externa.',
+    description: 'Dry-runs, historico e certificacao supervisionada validados.',
   },
   {
     title: '12. Execution Engine',
-    description: 'V53 fecha dry-run com preflight e plano de rollback, sem Ads/MCPs.',
+    description: 'Dry-run com preflight, rollback e auditoria validado.',
   },
 ];
 
@@ -117,14 +117,14 @@ export default function RoadmapPage() {
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-              Avanco paralelo
+              Nucleo supervisionado
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 12 evoluindo juntas antes de MCPs e integracoes finais.
+              Etapas 5 a 12 concluidas antes de MCPs, Ads e integracoes finais.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v53
+            v54
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

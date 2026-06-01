@@ -893,58 +893,58 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 5,
     title: 'Hardening do produto piloto',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'Antes das integracoes externas: fortalecer seguranca, estados vazios/erro, auditoria, testes, backup e experiencia. V44 mantem auditoria e deploy supervisionado como trilha transversal das etapas 5 a 9.',
+      'Concluido no nucleo supervisionado: seguranca, auditoria, deploy supervisionado, backup checklist e estados operacionais validados antes de integracoes externas.',
   },
   {
     number: 6,
     title: 'Context Intelligence',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'Diagnostico inteligente antes de analisar Ads. As respostas comerciais da iBob estao no Supabase e seguem alimentando estrategia, rule_validator e funil real antes dos MCPs.',
+      'Concluido: diagnostico inteligente da empresa, respostas comerciais, lacunas e memoria de contexto alimentam estrategia, rule_validator e funil antes dos MCPs.',
   },
   {
     number: 7,
     title: 'Context Research Layer',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'Pesquisa de site e concorrentes antes do Decision Engine. Achados, memorias e concorrentes revisados seguem como evidencia para a nota CMO e futuras propostas.',
+      'Concluido: pesquisa de site, concorrentes, achados, memorias e revisoes humanas sustentam a nota CMO e as futuras propostas.',
   },
   {
     number: 8,
     title: 'CMO Strategy Readiness',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'A tela /strategy cruza contexto, economia, pesquisa, memoria e agora eventos reais de /funnel para recalcular a base 100 antes de qualquer escala de Ads.',
+      'Concluido: /strategy cruza contexto, economia, pesquisa, memoria e funil real para medir a base estrategica antes de qualquer escala de Ads.',
   },
   {
     number: 9,
     title: 'Tracking e Funil Real',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'V44 adiciona resumo de funil e conecta eventos reais do Supabase a /strategy, fechando o ciclo entre CRM/funil e decisao estrategica.',
+      'Concluido: eventos reais do Supabase calibram /strategy e fecham o ciclo entre CRM/funil, qualidade, margem e decisao estrategica.',
   },
   {
     number: 10,
     title: 'Decision Engine supervisionado',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'V45 cria o pre-motor supervisionado em /decision. Ele le contexto, pesquisa, funil e Data Trust, valida gates e mostra hipoteses, sem IA externa, sem MCP e sem execucao de Ads.',
+      'Concluido: /decision valida contexto, pesquisa, funil e Data Trust para formular hipoteses supervisionadas sem IA externa, MCP ou execucao de Ads.',
   },
   {
     number: 11,
     title: 'Validacao deterministica',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'V51 permite certificar uma proposta existente apos dry-run aprovado, mantendo aprovacao humana obrigatoria e Ads/MCPs bloqueados.',
+      'Concluido: /validator registra dry-runs, mostra historico, certifica propostas existentes e mantem aprovacao humana obrigatoria com Ads/MCPs bloqueados.',
   },
   {
     number: 12,
     title: 'Execution Engine (dry run)',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'V53 fecha o dry-run de /execution com preflight, plano de rollback e auditoria antes de qualquer integracao de escrita.',
+      'Concluido: /execution registra simulacoes com preflight, plano de rollback, execution_logs e auditoria antes de qualquer integracao de escrita.',
   },
   {
     number: 13,

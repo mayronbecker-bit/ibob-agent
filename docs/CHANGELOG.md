@@ -169,3 +169,6 @@
 - A tela lista propostas aprovadas e certificadas, registra simulacoes em `execution_logs` e cria auditoria `execution.dry_run_recorded`, sem chamar Google Ads, Meta Ads ou MCP.
 - V53 adiciona preflight e plano de rollback ao `/execution`.
 - O dry-run passa a gravar checks de seguranca e rollback em `execution_logs`, mantendo execucao externa bloqueada.
+- V54 consolida o nucleo supervisionado como concluido no Roadmap.
+- Etapas 5 a 12 passam para concluido: hardening, contexto, pesquisa, estrategia, funil, decision engine, rule_validator e execution dry-run.
+- Criada documentacao `docs/SUPERVISED_CORE_COMPLETION.md` para registrar o fluxo validado antes da fase de produto escalavel.
