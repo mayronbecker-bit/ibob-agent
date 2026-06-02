@@ -1,7 +1,7 @@
 # Conversar com o Agente
 
 Data: 2026-06-02
-Versao: v56
+Versao: v57
 
 ## Objetivo
 
@@ -48,6 +48,17 @@ Caracteristicas:
 - o modelo pode ser trocado por `OPENAI_MODEL`;
 - se a chave faltar, a API falhar ou a analise externa for desativada, o agente responde pelo fallback supervisionado local;
 - MCPs, Google Ads, Meta Ads, CRM e qualquer escrita externa continuam bloqueados.
+
+## Entrega v57
+
+A tela `/agent` mostra o status da IA externa no topo:
+
+- `OpenAI pronta - <modelo>`: a chave existe no runtime e a analise externa sera tentada;
+- `OpenAI sem chave`: `OPENAI_API_KEY` nao chegou ao ambiente da Hostinger;
+- `OpenAI desativada`: `OPENAI_ANALYSIS_ENABLED=false`;
+- `OpenAI verificando`: status ainda em carregamento.
+
+A rota `/api/agent/analyze` tambem aceita `GET` para diagnostico seguro, sem expor chave.
 
 ## Como responde
 

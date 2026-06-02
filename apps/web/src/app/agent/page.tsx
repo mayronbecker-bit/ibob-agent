@@ -51,6 +51,12 @@ type UiMessage = AgentChatMessage & {
   model?: string;
 };
 
+type ExternalAgentStatus = {
+  enabled: boolean;
+  configured: boolean;
+  model: string;
+};
+
 const quickPrompts = [
   'Estamos recebendo leads desqualificados. O que podemos fazer?',
   'Como vender mais sem aumentar CAC?',
@@ -186,6 +192,28 @@ async function requestExternalAgentAnalysis(
   };
 }
 
+async function requestExternalAgentStatus(): Promise<ExternalAgentStatus> {
+  const response = await fetch('/api/agent/analyze', {
+    method: 'GET',
+  });
+
+  const payload = (await response.json().catch(() => null)) as {
+    enabled?: unknown;
+    configured?: unknown;
+    model?: unknown;
+  } | null;
+
+  if (!response.ok || !payload) {
+    throw new Error('Nao foi possivel verificar o status da IA externa.');
+  }
+
+  return {
+    enabled: payload.enabled === true,
+    configured: payload.configured === true,
+    model: typeof payload.model === 'string' ? payload.model : 'modelo nao informado',
+  };
+}
+
 function buildFallbackData(): AgentPageData {
   const cmoReadiness = buildCmoReadiness({
     context: mockBusinessContext,
@@ -287,6 +315,7 @@ export default function AgentPage() {
   const [realData, setRealData] = useState<AgentPageData | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
   const [externalNotice, setExternalNotice] = useState<string | null>(null);
+  const [externalStatus, setExternalStatus] = useState<ExternalAgentStatus | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<UiMessage[]>([
@@ -332,8 +361,39 @@ export default function AgentPage() {
     };
   }, [supabase]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    requestExternalAgentStatus()
+      .then((status) => {
+        if (!isMounted) return;
+        setExternalStatus(status);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setExternalStatus(null);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const data = realData ?? fallbackData;
   const sourceLabel = realData ? 'Supabase' : 'Mock';
+  const externalStatusLabel = externalStatus
+    ? !externalStatus.enabled
+      ? 'OpenAI desativada'
+      : externalStatus.configured
+        ? `OpenAI pronta - ${externalStatus.model}`
+        : 'OpenAI sem chave'
+    : 'OpenAI verificando';
+  const externalStatusVariant =
+    externalStatus?.enabled && externalStatus.configured
+      ? 'green'
+      : externalStatus
+        ? 'yellow'
+        : 'gray';
 
   async function submitQuestion(question: string) {
     const trimmed = question.trim();
@@ -416,7 +476,7 @@ export default function AgentPage() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={realData ? 'green' : 'gray'}>{sourceLabel}</Badge>
-          <Badge variant="blue">OpenAI opcional</Badge>
+          <Badge variant={externalStatusVariant}>{externalStatusLabel}</Badge>
           <Badge variant="blue">Supervisionado</Badge>
           <Badge variant="red">Sem escrita externa</Badge>
         </div>
@@ -431,6 +491,18 @@ export default function AgentPage() {
       {externalNotice && (
         <DataStateNotice title="Fallback do agente" variant="warning" className="mb-4">
           {externalNotice}
+        </DataStateNotice>
+      )}
+
+      {externalStatus && externalStatus.enabled && !externalStatus.configured && (
+        <DataStateNotice title="OpenAI nao configurada" variant="warning" className="mb-4">
+          Cadastre `OPENAI_API_KEY` nas variaveis de ambiente da Hostinger e reimplante para a analise externa entrar em uso.
+        </DataStateNotice>
+      )}
+
+      {externalStatus && !externalStatus.enabled && (
+        <DataStateNotice title="OpenAI desativada" variant="warning" className="mb-4">
+          `OPENAI_ANALYSIS_ENABLED` esta como `false`. Altere para `true` e reimplante se quiser usar a IA externa.
         </DataStateNotice>
       )}
 

@@ -297,7 +297,7 @@ function defaultAnswer(question: string, context: AgentChatContext): AgentChatRe
   return {
     title: 'Leitura estrategica supervisionada',
     summary:
-      'Eu responderia isso olhando primeiro para contexto, qualidade do funil e margem. Ainda nao estou usando IA externa; esta resposta vem do nucleo supervisionado.',
+      'Eu responderia isso olhando primeiro para contexto, qualidade do funil e margem. Esta resposta veio do nucleo supervisionado local.',
     diagnosis: [
       'Se a pergunta envolve marketing e vendas, a primeira decisao e separar volume de qualidade.',
       'O agente deve proteger margem, capacidade comercial e previsibilidade antes de recomendar mais gasto.',

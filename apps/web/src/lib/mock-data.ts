@@ -951,7 +951,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Produto escalável',
     status: 'in_progress',
     description:
-      'V56 adiciona IA externa OpenAI ao /agent como cerebro analitico server-side, com fallback supervisionado local e MCPs reservados para o gran finale.',
+      'V57 mostra o status da IA externa no /agent, diagnostica chave ausente/desativada e mantem fallback local antes do gran finale de MCPs.',
   },
   {
     number: 14,

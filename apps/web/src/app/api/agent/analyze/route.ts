@@ -111,6 +111,30 @@ function buildInput(question: string, context: unknown) {
   ].join('\n');
 }
 
+function getOpenAIConfig() {
+  const apiKey = process.env.OPENAI_API_KEY?.trim();
+  const enabled = process.env.OPENAI_ANALYSIS_ENABLED?.toLowerCase() !== 'false';
+  const model = process.env.OPENAI_MODEL?.trim() || DEFAULT_MODEL;
+
+  return {
+    apiKey,
+    enabled,
+    model,
+  };
+}
+
+export async function GET() {
+  const config = getOpenAIConfig();
+
+  return NextResponse.json({
+    mode: 'openai_status',
+    enabled: config.enabled,
+    configured: Boolean(config.apiKey),
+    model: config.model,
+    fallbackAvailable: true,
+  });
+}
+
 export async function POST(request: Request) {
   const payload = (await request.json().catch(() => null)) as AgentAnalyzeRequest | null;
   const question = typeof payload?.question === 'string' ? payload.question.trim() : '';
@@ -122,36 +146,33 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.OPENAI_API_KEY?.trim();
-  const externalAnalysisDisabled =
-    process.env.OPENAI_ANALYSIS_ENABLED?.toLowerCase() === 'false';
+  const config = getOpenAIConfig();
 
-  if (externalAnalysisDisabled) {
+  if (!config.enabled) {
     return NextResponse.json(
       { error: 'Analise externa desativada por ambiente.', fallback: true },
       { status: 503 },
     );
   }
 
-  if (!apiKey) {
+  if (!config.apiKey) {
     return NextResponse.json(
       { error: 'OPENAI_API_KEY nao configurada.', fallback: true },
       { status: 503 },
     );
   }
 
-  const model = process.env.OPENAI_MODEL?.trim() || DEFAULT_MODEL;
   const safeQuestion = question.slice(0, MAX_QUESTION_LENGTH);
 
   try {
     const openAIResponse = await fetch('https://api.openai.com/v1/responses', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${config.apiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model,
+        model: config.model,
         instructions: buildInstructions(),
         input: buildInput(safeQuestion, payload?.context),
         max_output_tokens: 1_200,
@@ -182,7 +203,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({
       mode: 'openai',
-      model,
+      model: config.model,
       content,
     });
   } catch (error) {

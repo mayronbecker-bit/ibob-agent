@@ -146,6 +146,7 @@ Observacoes:
 - `OPENAI_API_KEY` e server-only. Nunca colocar em variavel `NEXT_PUBLIC_`.
 - Nao salvar a chave em arquivo versionado.
 - Se a chave nao estiver configurada, `/agent` continua funcionando com fallback supervisionado local.
+- A partir da v57, `/agent` mostra se a OpenAI esta pronta, sem chave ou desativada.
 - Google Ads, Meta Ads, CRM e MCPs continuam sem execucao nesta versao.
 
 ## Pendencias antes do primeiro deploy
@@ -248,6 +249,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-06-01: preparado pacote v54 consolidando o nucleo supervisionado como concluido no Roadmap.
 - 2026-06-02: preparado pacote v55 com `/agent` para conversa supervisionada sobre vendas e marketing.
 - 2026-06-02: preparado pacote v56 com analise externa OpenAI em `/agent`, mantendo fallback local e MCPs bloqueados.
+- 2026-06-02: preparado pacote v57 com diagnostico visivel de status OpenAI em `/agent`.
 
 Validacao publica:
 

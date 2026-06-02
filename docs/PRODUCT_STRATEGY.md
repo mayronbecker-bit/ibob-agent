@@ -46,6 +46,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - V54 consolida o nucleo supervisionado como concluido: contexto, pesquisa, estrategia, funil, decisao, validacao, aprovacao e dry-run.
 - V55 inicia a experiencia conversacional do produto com `/agent`, permitindo perguntas de vendas e marketing antes de gerar propostas.
 - V56 conecta IA externa OpenAI / ChatGPT API ao `/agent` como camada analitica server-side, mantendo fallback local e sem liberar MCPs ou escrita externa.
+- V57 adiciona diagnostico visivel do status OpenAI, reduzindo suporte manual e preparando a experiencia para operacao por novos clientes.
 - Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
 - Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel. Schema inicial ja aplicado no Supabase em 2026-05-19.
 - Pesquisar site oficial e concorrentes com evidencias revisaveis antes de alimentar memoria contextual ou Decision Engine. Site oficial da iBob registrado para o primeiro run supervisionado em 2026-05-19.

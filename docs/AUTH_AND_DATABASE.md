@@ -839,3 +839,10 @@ Estado v56:
 - nenhuma migration nova foi necessaria;
 - historico da conversa ainda nao e persistido em banco;
 - MCPs, Google Ads, Meta Ads, CRM e escrita externa seguem bloqueados.
+
+Estado v57:
+
+- `/api/agent/analyze` passa a responder `GET` com status seguro da IA externa;
+- `/agent` exibe se a OpenAI esta pronta, sem chave ou desativada;
+- o diagnostico nao mostra a chave nem qualquer segredo;
+- nenhuma migration nova foi necessaria.

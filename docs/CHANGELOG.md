@@ -176,3 +176,4 @@
 - A primeira versao responde com regras locais usando contexto, pesquisa, estrategia e funil, sem LLM externo, sem MCP e sem escrita em Ads.
 - V56 adiciona analise externa OpenAI / ChatGPT API em `/agent`, com rota server-side `/api/agent/analyze`, chave protegida por ambiente e fallback supervisionado local.
 - MCPs de Google Ads, Meta Ads e CRM seguem reservados para o gran finale, sem escrita externa nesta versao.
+- V57 adiciona diagnostico de status da IA externa em `/agent`, mostrando se a OpenAI esta pronta, sem chave ou desativada, e remove frase ambigua do fallback local.
