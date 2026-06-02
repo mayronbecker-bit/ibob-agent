@@ -45,6 +45,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - V53 fecha a etapa de dry-run com preflight e rollback, preparando a futura integracao em modo leitura/escrita controlada.
 - V54 consolida o nucleo supervisionado como concluido: contexto, pesquisa, estrategia, funil, decisao, validacao, aprovacao e dry-run.
 - V55 inicia a experiencia conversacional do produto com `/agent`, permitindo perguntas de vendas e marketing antes de gerar propostas.
+- V56 conecta IA externa OpenAI / ChatGPT API ao `/agent` como camada analitica server-side, mantendo fallback local e sem liberar MCPs ou escrita externa.
 - Criar Context Intelligence para entender oferta, margem, publico, capacidade e restricoes comerciais antes de qualquer sugestao de Ads.
 - Versionar perguntas, respostas, lacunas e revisoes de contexto por cliente antes de transformar recomendacoes em produto vendavel. Schema inicial ja aplicado no Supabase em 2026-05-19.
 - Pesquisar site oficial e concorrentes com evidencias revisaveis antes de alimentar memoria contextual ou Decision Engine. Site oficial da iBob registrado para o primeiro run supervisionado em 2026-05-19.
@@ -58,6 +59,7 @@ O objetivo e validar valor, fluxo operacional, experiencia do usuario e viabilid
 - Conectar integracoes externas em modo leitura somente depois do produto estar robusto e validado.
 - Conectar Ads apenas depois que o contexto comercial minimo estiver estruturado por cliente.
 - Usar MCPs de Google Ads e Meta Ads como conectores supervisionados, nao como cerebro do produto. O agente iBob continua responsavel por contexto, CRM/funil, regras, auditoria e decisao.
+- Usar OpenAI como cerebro analitico conversacional antes do gran finale de MCPs, sempre com guardrails, fallback e sem secrets no client.
 
 ## Decisoes a evitar no inicio
 

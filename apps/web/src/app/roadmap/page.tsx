@@ -66,7 +66,7 @@ const activeParallelTracks = [
   },
   {
     title: '13. Produto escalavel',
-    description: 'V55 adiciona conversa supervisionada com o agente.',
+    description: 'V56 adiciona IA externa segura no /agent, com fallback local.',
   },
 ];
 
@@ -124,11 +124,11 @@ export default function RoadmapPage() {
               Nucleo supervisionado + produto escalavel
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 12 concluidas; etapa 13 iniciada antes de MCPs e Ads.
+              Etapas 5 a 12 concluidas; etapa 13 agora usa IA externa antes de MCPs e Ads.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v55
+            v56
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

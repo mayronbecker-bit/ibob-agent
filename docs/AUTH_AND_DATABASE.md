@@ -829,3 +829,13 @@ Estado v55:
 - nao ha LLM externo nesta versao;
 - nao ha persistencia de historico em banco nesta versao;
 - nenhuma proposta ou execucao externa e criada automaticamente.
+
+Estado v56:
+
+- `/agent` passa a chamar `/api/agent/analyze` para analise externa OpenAI / ChatGPT API quando `OPENAI_API_KEY` estiver configurada;
+- a rota e server-side e nao expoe a chave ao navegador;
+- o snapshot enviado para a IA e enxuto e evita dados pessoais de leads, preservando foco em origem, etapa, qualidade, margem, contexto e memorias;
+- se a IA externa falhar, o agente usa o fallback supervisionado local;
+- nenhuma migration nova foi necessaria;
+- historico da conversa ainda nao e persistido em banco;
+- MCPs, Google Ads, Meta Ads, CRM e escrita externa seguem bloqueados.

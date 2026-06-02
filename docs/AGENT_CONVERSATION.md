@@ -1,7 +1,7 @@
 # Conversar com o Agente
 
 Data: 2026-06-02
-Versao: v55
+Versao: v56
 
 ## Objetivo
 
@@ -31,9 +31,27 @@ A tela permite perguntar ao agente sobre:
 - prioridades comerciais;
 - bloqueios antes de crescer investimento.
 
+## Entrega v56
+
+A rota `/agent` agora tenta usar IA externa pela OpenAI / ChatGPT API para analise estrategica, mantendo o nucleo supervisionado local como fallback.
+
+Foi criada a rota server-side:
+
+```text
+/api/agent/analyze
+```
+
+Caracteristicas:
+
+- a chave `OPENAI_API_KEY` fica somente no servidor;
+- o browser nao recebe nem exibe a chave;
+- o modelo pode ser trocado por `OPENAI_MODEL`;
+- se a chave faltar, a API falhar ou a analise externa for desativada, o agente responde pelo fallback supervisionado local;
+- MCPs, Google Ads, Meta Ads, CRM e qualquer escrita externa continuam bloqueados.
+
 ## Como responde
 
-Nesta versao, o agente responde em modo supervisionado e deterministico, usando:
+O agente responde usando:
 
 - contexto comercial;
 - pesquisa e memoria contextual;
@@ -41,12 +59,30 @@ Nesta versao, o agente responde em modo supervisionado e deterministico, usando:
 - eventos de funil;
 - lacunas abertas;
 - regras ja validadas do nucleo supervisionado.
+- IA externa quando `OPENAI_API_KEY` estiver configurada no servidor.
+
+Mesmo quando usa IA externa, o agente nao executa acoes. Ele apenas orienta o caminho supervisionado:
+
+```text
+Contexto -> Estrategia -> Funil -> Decision Engine -> Rule Validator -> Aprovacao -> Execution dry-run
+```
+
+## Variaveis
+
+Configurar localmente em `.env.local` e em producao na Hostinger:
+
+```text
+OPENAI_API_KEY=<chave da OpenAI>
+OPENAI_MODEL=gpt-5.4-mini
+OPENAI_ANALYSIS_ENABLED=true
+```
+
+`gpt-5.4-mini` fica como padrao de custo/latencia. Para analises mais profundas, pode ser trocado por `gpt-5.5` no ambiente.
 
 ## O que ainda nao faz
 
-A v55 nao:
+A v56 nao:
 
-- chama LLM externo;
 - chama Google Ads;
 - chama Meta Ads;
 - chama MCP;
@@ -60,4 +96,4 @@ Depois da validacao da tela, a evolucao natural e:
 - persistir conversas por cliente;
 - transformar uma resposta em hipotese do Decision Engine;
 - gerar proposta supervisionada a partir da conversa;
-- somente depois avaliar LLM externo com guardrails.
+- deixar MCPs de Google Ads, Meta Ads e CRM por ultimo, como conectores supervisionados.

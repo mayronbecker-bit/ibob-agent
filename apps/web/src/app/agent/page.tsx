@@ -47,6 +47,8 @@ type AgentPageData = {
 
 type UiMessage = AgentChatMessage & {
   response?: AgentChatResponse;
+  mode?: 'openai' | 'fallback';
+  model?: string;
 };
 
 const quickPrompts = [
@@ -58,6 +60,130 @@ const quickPrompts = [
 
 function nowIso() {
   return new Date().toISOString();
+}
+
+function compactText(value: string | undefined, maxLength = 420) {
+  const trimmed = value?.trim();
+  if (!trimmed) return undefined;
+
+  if (trimmed.length <= maxLength) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, maxLength)}...`;
+}
+
+function buildExternalAnalysisContext(data: AgentPageData, sourceLabel: string) {
+  const cmo = data.cmoReadiness;
+  const openGaps = data.gaps.filter((gap) => gap.status === 'open');
+  const acceptedFindings = data.findings.filter(
+    (finding) =>
+      finding.reviewStatus === 'accepted' ||
+      finding.reviewStatus === 'converted_to_context' ||
+      finding.reviewStatus === 'converted_to_memory',
+  );
+  const activeMemoryItems = data.memoryItems.filter((item) => item.status === 'active');
+
+  return {
+    generatedAt: nowIso(),
+    dataSource: sourceLabel,
+    guardrails: [
+      'Nao executar Ads, CRM ou MCP nesta fase.',
+      'Usar Decision Engine, Rule Validator, aprovacao humana e execution dry-run antes de qualquer acao real.',
+      'Separar volume de leads, qualidade, margem, capacidade comercial e previsibilidade.',
+    ],
+    businessContext: data.businessContext
+      ? {
+          name: data.businessContext.name,
+          status: data.businessContext.status,
+          completenessScore: data.businessContext.completenessScore,
+          summary: compactText(data.businessContext.summary, 700),
+        }
+      : null,
+    cmoReadiness: {
+      score: cmo.score,
+      statusLabel: cmo.statusLabel,
+      verdict: cmo.verdict,
+      economics: cmo.economics,
+      evidence: cmo.evidence,
+      scoreBreakdown: cmo.scoreBreakdown,
+      blockers: cmo.blockers.slice(0, 6),
+      strategicRules: cmo.strategicRules.slice(0, 8),
+      keyAnswers: Array.from(cmo.answerByKey.entries())
+        .slice(0, 16)
+        .map(([key, answer]) => ({
+          key,
+          answer: compactText(answer, 520),
+        })),
+    },
+    funnel: {
+      totalEvents: data.funnelEvents.length,
+      recentEvents: data.funnelEvents.slice(0, 20).map((event) => ({
+        stage: event.stage,
+        source: event.source,
+        campaignName: compactText(event.campaignName, 160),
+        leadQualityScore: event.leadQualityScore,
+        dealValueBrl: event.dealValueBrl,
+        grossMarginBrl: event.grossMarginBrl,
+        occurredAt: event.occurredAt,
+        notes: compactText(event.notes, 260),
+      })),
+    },
+    openGaps: openGaps.slice(0, 12).map((gap) => ({
+      severity: gap.severity,
+      description: compactText(gap.description, 420),
+      recommendation: compactText(gap.recommendation, 420),
+    })),
+    acceptedFindings: acceptedFindings.slice(0, 12).map((finding) => ({
+      type: finding.findingType,
+      title: finding.title,
+      finding: compactText(finding.finding, 520),
+      evidence: compactText(finding.evidence, 420),
+      confidence: finding.confidence,
+    })),
+    activeMemoryItems: activeMemoryItems.slice(0, 12).map((item) => ({
+      type: item.memoryType,
+      title: item.title,
+      content: compactText(item.content, 520),
+      confidence: item.confidence,
+    })),
+  };
+}
+
+async function requestExternalAgentAnalysis(
+  question: string,
+  context: ReturnType<typeof buildExternalAnalysisContext>,
+) {
+  const response = await fetch('/api/agent/analyze', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ question, context }),
+  });
+
+  const payload = (await response.json().catch(() => null)) as {
+    content?: unknown;
+    model?: unknown;
+    error?: unknown;
+  } | null;
+
+  if (!response.ok) {
+    throw new Error(
+      typeof payload?.error === 'string'
+        ? payload.error
+        : 'IA externa indisponivel no momento.',
+    );
+  }
+
+  if (typeof payload?.content !== 'string' || !payload.content.trim()) {
+    throw new Error('A IA externa nao retornou uma resposta valida.');
+  }
+
+  return {
+    content: payload.content.trim(),
+    model: typeof payload.model === 'string' ? payload.model : undefined,
+  };
 }
 
 function buildFallbackData(): AgentPageData {
@@ -114,6 +240,12 @@ async function loadAgentPageData(supabase: BrowserSupabaseClient): Promise<Agent
 
 function MessageBubble({ message }: { message: UiMessage }) {
   const isUser = message.role === 'user';
+  const modeLabel =
+    message.mode === 'openai'
+      ? `OpenAI${message.model ? ` - ${message.model}` : ''}`
+      : message.mode === 'fallback'
+        ? 'Fallback supervisionado'
+        : null;
 
   return (
     <div className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
@@ -124,6 +256,11 @@ function MessageBubble({ message }: { message: UiMessage }) {
             : 'border-[#d7ddd2] bg-white text-[#34473b]'
         }`}
       >
+        {!isUser && modeLabel && (
+          <div className="mb-2 inline-flex rounded-full border border-[#d7ddd2] bg-[#f7f9f6] px-2 py-0.5 text-[11px] font-semibold text-[#5c6b61]">
+            {modeLabel}
+          </div>
+        )}
         <div className="whitespace-pre-line leading-relaxed">{message.content}</div>
         {message.response && (
           <div className="mt-4 grid gap-2 border-t border-[#d7ddd2] pt-3 sm:grid-cols-2">
@@ -149,6 +286,8 @@ function MessageBubble({ message }: { message: UiMessage }) {
 export default function AgentPage() {
   const [realData, setRealData] = useState<AgentPageData | null>(null);
   const [dataError, setDataError] = useState<string | null>(null);
+  const [externalNotice, setExternalNotice] = useState<string | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<UiMessage[]>([
     {
@@ -196,11 +335,11 @@ export default function AgentPage() {
   const data = realData ?? fallbackData;
   const sourceLabel = realData ? 'Supabase' : 'Mock';
 
-  function submitQuestion(question: string) {
+  async function submitQuestion(question: string) {
     const trimmed = question.trim();
-    if (!trimmed) return;
+    if (!trimmed || isAnalyzing) return;
 
-    const response = buildSupervisedAgentResponse(trimmed, data);
+    const fallbackResponse = buildSupervisedAgentResponse(trimmed, data);
     const timestamp = nowIso();
 
     setMessages((current) => [
@@ -211,20 +350,54 @@ export default function AgentPage() {
         content: trimmed,
         createdAt: timestamp,
       },
-      {
-        id: `assistant-${timestamp}`,
-        role: 'assistant',
-        content: formatAgentResponse(response),
-        createdAt: timestamp,
-        response,
-      },
     ]);
     setInput('');
+    setExternalNotice(null);
+    setIsAnalyzing(true);
+
+    try {
+      const externalResponse = await requestExternalAgentAnalysis(
+        trimmed,
+        buildExternalAnalysisContext(data, sourceLabel),
+      );
+
+      setMessages((current) => [
+        ...current,
+        {
+          id: `assistant-openai-${timestamp}`,
+          role: 'assistant',
+          content: externalResponse.content,
+          createdAt: nowIso(),
+          response: fallbackResponse,
+          mode: 'openai',
+          model: externalResponse.model,
+        },
+      ]);
+    } catch (error) {
+      setExternalNotice(
+        error instanceof Error
+          ? `${error.message} Usei o nucleo supervisionado local como fallback.`
+          : 'IA externa indisponivel. Usei o nucleo supervisionado local como fallback.',
+      );
+      setMessages((current) => [
+        ...current,
+        {
+          id: `assistant-fallback-${timestamp}`,
+          role: 'assistant',
+          content: formatAgentResponse(fallbackResponse),
+          createdAt: nowIso(),
+          response: fallbackResponse,
+          mode: 'fallback',
+        },
+      ]);
+    } finally {
+      setIsAnalyzing(false);
+    }
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    submitQuestion(input);
+    void submitQuestion(input);
   }
 
   return (
@@ -243,6 +416,7 @@ export default function AgentPage() {
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant={realData ? 'green' : 'gray'}>{sourceLabel}</Badge>
+          <Badge variant="blue">OpenAI opcional</Badge>
           <Badge variant="blue">Supervisionado</Badge>
           <Badge variant="red">Sem escrita externa</Badge>
         </div>
@@ -251,6 +425,12 @@ export default function AgentPage() {
       {dataError && (
         <DataStateNotice title="Modo fallback ativo" variant="warning" className="mb-4">
           {dataError} A conversa esta usando dados mockados para manter a experiencia visivel.
+        </DataStateNotice>
+      )}
+
+      {externalNotice && (
+        <DataStateNotice title="Fallback do agente" variant="warning" className="mb-4">
+          {externalNotice}
         </DataStateNotice>
       )}
 
@@ -286,8 +466,11 @@ export default function AgentPage() {
           <button
             key={prompt}
             type="button"
-            onClick={() => submitQuestion(prompt)}
-            className="rounded-full border border-[#d7ddd2] bg-white px-3 py-1.5 text-xs font-medium text-[#34473b] transition hover:border-[#476454] hover:bg-[#f0f5f1]"
+            onClick={() => {
+              void submitQuestion(prompt);
+            }}
+            disabled={isAnalyzing}
+            className="rounded-full border border-[#d7ddd2] bg-white px-3 py-1.5 text-xs font-medium text-[#34473b] transition hover:border-[#476454] hover:bg-[#f0f5f1] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {prompt}
           </button>
@@ -298,6 +481,13 @@ export default function AgentPage() {
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
+        {isAnalyzing && (
+          <div className="flex justify-start">
+            <div className="rounded-lg border border-[#d7ddd2] bg-white px-4 py-3 text-sm text-[#5c6b61] shadow-sm">
+              Analisando contexto, funil e estrategia...
+            </div>
+          </div>
+        )}
       </section>
 
       <form onSubmit={onSubmit} className="rounded-lg border border-[#d7ddd2] bg-white p-3 shadow-sm">
@@ -314,16 +504,18 @@ export default function AgentPage() {
             onChange={(event) => setInput(event.target.value)}
             placeholder="Ex.: Estamos recebendo leads desqualificados. O que podemos fazer?"
             className="min-h-24 resize-y rounded-lg border border-[#d7ddd2] bg-white px-3 py-2 text-sm text-[#172018] outline-none transition-colors focus:border-[#476454]"
+            disabled={isAnalyzing}
           />
           <button
             type="submit"
-            className="rounded-lg bg-[#476454] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#34473b]"
+            disabled={isAnalyzing}
+            className="rounded-lg bg-[#476454] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#34473b] disabled:cursor-not-allowed disabled:bg-[#8fa093]"
           >
-            Enviar
+            {isAnalyzing ? 'Analisando' : 'Enviar'}
           </button>
         </div>
         <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
-          Esta versao responde com regras supervisionadas. Persistencia do historico e IA externa entram em uma etapa autorizada separada.
+          Esta versao usa IA externa quando `OPENAI_API_KEY` estiver configurada no servidor. Sem chave ou em caso de falha, o nucleo supervisionado local responde automaticamente. MCPs e escrita em Ads seguem bloqueados.
         </p>
       </form>
     </div>

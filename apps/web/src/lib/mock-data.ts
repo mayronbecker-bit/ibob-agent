@@ -951,7 +951,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Produto escalável',
     status: 'in_progress',
     description:
-      'V55 inicia a fase escalavel com /agent: conversa supervisionada sobre vendas e marketing usando contexto, pesquisa, estrategia e funil.',
+      'V56 adiciona IA externa OpenAI ao /agent como cerebro analitico server-side, com fallback supervisionado local e MCPs reservados para o gran finale.',
   },
   {
     number: 14,

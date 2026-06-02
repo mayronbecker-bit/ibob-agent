@@ -129,6 +129,25 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 
 Essas variaveis precisam existir antes do build da Hostinger, pois sao usadas pelo cliente web.
 
+## OpenAI / ChatGPT API
+
+A partir da v56, a rota `/agent` pode usar IA externa para analise estrategica.
+
+Configurar estas variaveis na Hostinger antes de reimplantar:
+
+```text
+OPENAI_API_KEY=<chave da OpenAI>
+OPENAI_MODEL=gpt-5.4-mini
+OPENAI_ANALYSIS_ENABLED=true
+```
+
+Observacoes:
+
+- `OPENAI_API_KEY` e server-only. Nunca colocar em variavel `NEXT_PUBLIC_`.
+- Nao salvar a chave em arquivo versionado.
+- Se a chave nao estiver configurada, `/agent` continua funcionando com fallback supervisionado local.
+- Google Ads, Meta Ads, CRM e MCPs continuam sem execucao nesta versao.
+
 ## Pendencias antes do primeiro deploy
 
 - Confirmar plano Hostinger: Business, Cloud ou VPS.
@@ -228,6 +247,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-05-29: preparado pacote v53 com preflight e plano de rollback no `/execution`.
 - 2026-06-01: preparado pacote v54 consolidando o nucleo supervisionado como concluido no Roadmap.
 - 2026-06-02: preparado pacote v55 com `/agent` para conversa supervisionada sobre vendas e marketing.
+- 2026-06-02: preparado pacote v56 com analise externa OpenAI em `/agent`, mantendo fallback local e MCPs bloqueados.
 
 Validacao publica:
 
