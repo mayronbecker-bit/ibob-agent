@@ -1,7 +1,7 @@
 # Conversar com o Agente
 
 Data: 2026-06-02
-Versao: v57
+Versao: v58
 
 ## Objetivo
 
@@ -60,6 +60,15 @@ A tela `/agent` mostra o status da IA externa no topo:
 
 A rota `/api/agent/analyze` tambem aceita `GET` para diagnostico seguro, sem expor chave.
 
+## Entrega v58
+
+A analise externa ficou mais resiliente:
+
+- modelo padrao ajustado para `gpt-5-mini`;
+- se o modelo configurado falhar, a API tenta fallbacks seguros;
+- ordem de tentativa: `OPENAI_MODEL`, `gpt-5-mini`, `gpt-4.1-mini`;
+- quando a OpenAI falha, a tela mostra o motivo sanitizado da queda para fallback.
+
 ## Como responde
 
 O agente responde usando:
@@ -84,11 +93,11 @@ Configurar localmente em `.env.local` e em producao na Hostinger:
 
 ```text
 OPENAI_API_KEY=<chave da OpenAI>
-OPENAI_MODEL=gpt-5.4-mini
+OPENAI_MODEL=gpt-5-mini
 OPENAI_ANALYSIS_ENABLED=true
 ```
 
-`gpt-5.4-mini` fica como padrao de custo/latencia. Para analises mais profundas, pode ser trocado por `gpt-5.5` no ambiente.
+`gpt-5-mini` fica como padrao de custo/latencia. A rota ainda tenta `gpt-4.1-mini` como fallback se houver erro de modelo, permissao ou disponibilidade.
 
 ## O que ainda nao faz
 

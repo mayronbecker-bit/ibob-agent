@@ -177,3 +177,4 @@
 - V56 adiciona analise externa OpenAI / ChatGPT API em `/agent`, com rota server-side `/api/agent/analyze`, chave protegida por ambiente e fallback supervisionado local.
 - MCPs de Google Ads, Meta Ads e CRM seguem reservados para o gran finale, sem escrita externa nesta versao.
 - V57 adiciona diagnostico de status da IA externa em `/agent`, mostrando se a OpenAI esta pronta, sem chave ou desativada, e remove frase ambigua do fallback local.
+- V58 troca o padrao OpenAI para `gpt-5-mini`, adiciona fallback automatico para `gpt-4.1-mini` e mostra detalhe sanitizado quando todos os modelos falham.

@@ -846,3 +846,10 @@ Estado v57:
 - `/agent` exibe se a OpenAI esta pronta, sem chave ou desativada;
 - o diagnostico nao mostra a chave nem qualquer segredo;
 - nenhuma migration nova foi necessaria.
+
+Estado v58:
+
+- o modelo padrao da OpenAI foi ajustado para `gpt-5-mini`;
+- a rota tenta automaticamente `OPENAI_MODEL`, `gpt-5-mini` e `gpt-4.1-mini`;
+- se todos falharem, a UI mostra erro sanitizado por modelo e cai no fallback local;
+- nenhuma migration nova foi necessaria.

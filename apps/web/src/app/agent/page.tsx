@@ -55,6 +55,7 @@ type ExternalAgentStatus = {
   enabled: boolean;
   configured: boolean;
   model: string;
+  candidateModels: string[];
 };
 
 const quickPrompts = [
@@ -172,12 +173,37 @@ async function requestExternalAgentAnalysis(
     content?: unknown;
     model?: unknown;
     error?: unknown;
+    failures?: unknown;
   } | null;
 
   if (!response.ok) {
+    const failureSummary = Array.isArray(payload?.failures)
+      ? payload.failures
+          .map((failure) => {
+            if (typeof failure !== 'object' || failure === null) {
+              return null;
+            }
+
+            const item = failure as {
+              model?: unknown;
+              status?: unknown;
+              message?: unknown;
+            };
+            const model = typeof item.model === 'string' ? item.model : 'modelo';
+            const status =
+              typeof item.status === 'number' ? `HTTP ${item.status}` : 'sem status';
+            const message =
+              typeof item.message === 'string' ? item.message : 'erro nao informado';
+
+            return `${model} (${status}): ${message}`;
+          })
+          .filter(Boolean)
+          .join(' | ')
+      : '';
+
     throw new Error(
       typeof payload?.error === 'string'
-        ? payload.error
+        ? `${payload.error}${failureSummary ? ` Detalhe: ${failureSummary}` : ''}`
         : 'IA externa indisponivel no momento.',
     );
   }
@@ -201,6 +227,7 @@ async function requestExternalAgentStatus(): Promise<ExternalAgentStatus> {
     enabled?: unknown;
     configured?: unknown;
     model?: unknown;
+    candidateModels?: unknown;
   } | null;
 
   if (!response.ok || !payload) {
@@ -211,6 +238,11 @@ async function requestExternalAgentStatus(): Promise<ExternalAgentStatus> {
     enabled: payload.enabled === true,
     configured: payload.configured === true,
     model: typeof payload.model === 'string' ? payload.model : 'modelo nao informado',
+    candidateModels: Array.isArray(payload.candidateModels)
+      ? payload.candidateModels.filter(
+          (model): model is string => typeof model === 'string',
+        )
+      : [],
   };
 }
 
@@ -394,6 +426,10 @@ export default function AgentPage() {
       : externalStatus
         ? 'yellow'
         : 'gray';
+  const candidateModelText =
+    externalStatus?.candidateModels.length
+      ? externalStatus.candidateModels.join(', ')
+      : 'gpt-5-mini, gpt-4.1-mini';
 
   async function submitQuestion(question: string) {
     const trimmed = question.trim();
@@ -496,7 +532,7 @@ export default function AgentPage() {
 
       {externalStatus && externalStatus.enabled && !externalStatus.configured && (
         <DataStateNotice title="OpenAI nao configurada" variant="warning" className="mb-4">
-          Cadastre `OPENAI_API_KEY` nas variaveis de ambiente da Hostinger e reimplante para a analise externa entrar em uso.
+          Cadastre `OPENAI_API_KEY` nas variaveis de ambiente da Hostinger e reimplante para a analise externa entrar em uso. Modelos de tentativa: {candidateModelText}.
         </DataStateNotice>
       )}
 
@@ -587,7 +623,7 @@ export default function AgentPage() {
           </button>
         </div>
         <p className="mt-2 text-xs leading-relaxed text-[#5c6b61]">
-          Esta versao usa IA externa quando `OPENAI_API_KEY` estiver configurada no servidor. Sem chave ou em caso de falha, o nucleo supervisionado local responde automaticamente. MCPs e escrita em Ads seguem bloqueados.
+          Esta versao usa IA externa quando `OPENAI_API_KEY` estiver configurada no servidor. O agente tenta o modelo configurado e depois fallbacks seguros. MCPs e escrita em Ads seguem bloqueados.
         </p>
       </form>
     </div>

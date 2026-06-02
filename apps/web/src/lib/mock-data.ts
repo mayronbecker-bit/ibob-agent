@@ -951,7 +951,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Produto escalável',
     status: 'in_progress',
     description:
-      'V57 mostra o status da IA externa no /agent, diagnostica chave ausente/desativada e mantem fallback local antes do gran finale de MCPs.',
+      'V58 usa fallback automatico de modelos OpenAI no /agent, mostra erro sanitizado e mantem MCPs reservados para o gran finale.',
   },
   {
     number: 14,

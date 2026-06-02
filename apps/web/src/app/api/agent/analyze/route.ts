@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
-const DEFAULT_MODEL = 'gpt-5.4-mini';
+const DEFAULT_MODEL = 'gpt-5-mini';
+const MODEL_FALLBACKS = ['gpt-5-mini', 'gpt-4.1-mini'];
 const MAX_QUESTION_LENGTH = 2_000;
 const MAX_CONTEXT_CHARS = 18_000;
 
@@ -14,6 +15,8 @@ type AgentAnalyzeRequest = {
 type OpenAIErrorBody = {
   error?: {
     message?: unknown;
+    code?: unknown;
+    type?: unknown;
   };
 };
 
@@ -27,6 +30,16 @@ function normalizeError(error: unknown) {
   }
 
   return 'Falha inesperada ao consultar a IA externa.';
+}
+
+function uniqueValues(values: string[]) {
+  return Array.from(new Set(values.map((value) => value.trim()).filter(Boolean)));
+}
+
+function sanitizeOpenAIError(message: string) {
+  return message
+    .replace(/sk-[A-Za-z0-9_-]+/g, '[chave_ocultada]')
+    .replace(/Bearer\s+[A-Za-z0-9._-]+/gi, 'Bearer [token_ocultado]');
 }
 
 function compactJson(value: unknown) {
@@ -120,6 +133,7 @@ function getOpenAIConfig() {
     apiKey,
     enabled,
     model,
+    candidateModels: uniqueValues([model, ...MODEL_FALLBACKS]),
   };
 }
 
@@ -131,6 +145,7 @@ export async function GET() {
     enabled: config.enabled,
     configured: Boolean(config.apiKey),
     model: config.model,
+    candidateModels: config.candidateModels,
     fallbackAvailable: true,
   });
 }
@@ -164,52 +179,71 @@ export async function POST(request: Request) {
 
   const safeQuestion = question.slice(0, MAX_QUESTION_LENGTH);
 
-  try {
-    const openAIResponse = await fetch('https://api.openai.com/v1/responses', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${config.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: config.model,
-        instructions: buildInstructions(),
-        input: buildInput(safeQuestion, payload?.context),
-        max_output_tokens: 1_200,
-        store: false,
-      }),
-    });
+  const failures: Array<{ model: string; status: number | null; message: string }> = [];
 
-    const responsePayload = (await openAIResponse.json().catch(() => ({}))) as unknown;
+  for (const model of config.candidateModels) {
+    try {
+      const openAIResponse = await fetch('https://api.openai.com/v1/responses', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${config.apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model,
+          instructions: buildInstructions(),
+          input: buildInput(safeQuestion, payload?.context),
+          max_output_tokens: 1_200,
+          store: false,
+        }),
+      });
 
-    if (!openAIResponse.ok) {
-      const errorBody = responsePayload as OpenAIErrorBody;
-      const message =
-        typeof errorBody.error?.message === 'string'
-          ? errorBody.error.message
-          : 'A API OpenAI retornou erro.';
+      const responsePayload = (await openAIResponse.json().catch(() => ({}))) as unknown;
 
-      return NextResponse.json({ error: message, fallback: true }, { status: 502 });
+      if (!openAIResponse.ok) {
+        const errorBody = responsePayload as OpenAIErrorBody;
+        const message =
+          typeof errorBody.error?.message === 'string'
+            ? sanitizeOpenAIError(errorBody.error.message)
+            : 'A API OpenAI retornou erro.';
+
+        failures.push({ model, status: openAIResponse.status, message });
+        continue;
+      }
+
+      const content = extractOpenAIText(responsePayload);
+
+      if (!content) {
+        failures.push({
+          model,
+          status: 502,
+          message: 'A IA externa nao retornou texto analisavel.',
+        });
+        continue;
+      }
+
+      return NextResponse.json({
+        mode: 'openai',
+        model,
+        content,
+        attemptedModels: config.candidateModels,
+      });
+    } catch (error) {
+      failures.push({
+        model,
+        status: null,
+        message: sanitizeOpenAIError(normalizeError(error)),
+      });
     }
-
-    const content = extractOpenAIText(responsePayload);
-
-    if (!content) {
-      return NextResponse.json(
-        { error: 'A IA externa nao retornou texto analisavel.', fallback: true },
-        { status: 502 },
-      );
-    }
-
-    return NextResponse.json({
-      mode: 'openai',
-      model: config.model,
-      content,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      { error: normalizeError(error), fallback: true },
-      { status: 502 },
-    );
   }
+
+  return NextResponse.json(
+    {
+      error: 'A OpenAI falhou em todos os modelos disponiveis.',
+      fallback: true,
+      failures,
+      attemptedModels: config.candidateModels,
+    },
+    { status: 502 },
+  );
 }

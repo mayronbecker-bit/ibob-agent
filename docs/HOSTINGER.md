@@ -137,7 +137,7 @@ Configurar estas variaveis na Hostinger antes de reimplantar:
 
 ```text
 OPENAI_API_KEY=<chave da OpenAI>
-OPENAI_MODEL=gpt-5.4-mini
+OPENAI_MODEL=gpt-5-mini
 OPENAI_ANALYSIS_ENABLED=true
 ```
 
@@ -147,6 +147,7 @@ Observacoes:
 - Nao salvar a chave em arquivo versionado.
 - Se a chave nao estiver configurada, `/agent` continua funcionando com fallback supervisionado local.
 - A partir da v57, `/agent` mostra se a OpenAI esta pronta, sem chave ou desativada.
+- A partir da v58, se o modelo configurado falhar, a rota tenta `gpt-5-mini` e `gpt-4.1-mini` antes de cair no fallback local.
 - Google Ads, Meta Ads, CRM e MCPs continuam sem execucao nesta versao.
 
 ## Pendencias antes do primeiro deploy
@@ -250,6 +251,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-06-02: preparado pacote v55 com `/agent` para conversa supervisionada sobre vendas e marketing.
 - 2026-06-02: preparado pacote v56 com analise externa OpenAI em `/agent`, mantendo fallback local e MCPs bloqueados.
 - 2026-06-02: preparado pacote v57 com diagnostico visivel de status OpenAI em `/agent`.
+- 2026-06-02: preparado pacote v58 com fallback automatico de modelos OpenAI e detalhe sanitizado da falha.
 
 Validacao publica:
 
