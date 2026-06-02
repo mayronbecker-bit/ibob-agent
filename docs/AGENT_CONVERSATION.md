@@ -1,7 +1,7 @@
 # Conversar com o Agente
 
 Data: 2026-06-02
-Versao: v58
+Versao: v59
 
 ## Objetivo
 
@@ -69,6 +69,11 @@ A analise externa ficou mais resiliente:
 - ordem de tentativa: `OPENAI_MODEL`, `gpt-5-mini`, `gpt-4.1-mini`;
 - quando a OpenAI falha, a tela mostra o motivo sanitizado da queda para fallback.
 
+## Entrega v59
+
+- adiciona `gpt-4o-mini` como fallback extra;
+- quando a IA externa falha, o proprio balao de resposta mostra o motivo tecnico sanitizado antes da resposta local.
+
 ## Como responde
 
 O agente responde usando:
@@ -97,7 +102,7 @@ OPENAI_MODEL=gpt-5-mini
 OPENAI_ANALYSIS_ENABLED=true
 ```
 
-`gpt-5-mini` fica como padrao de custo/latencia. A rota ainda tenta `gpt-4.1-mini` como fallback se houver erro de modelo, permissao ou disponibilidade.
+`gpt-5-mini` fica como padrao de custo/latencia. A rota ainda tenta `gpt-4.1-mini` e `gpt-4o-mini` como fallback se houver erro de modelo, permissao ou disponibilidade.
 
 ## O que ainda nao faz
 

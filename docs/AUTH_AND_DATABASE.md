@@ -853,3 +853,9 @@ Estado v58:
 - a rota tenta automaticamente `OPENAI_MODEL`, `gpt-5-mini` e `gpt-4.1-mini`;
 - se todos falharem, a UI mostra erro sanitizado por modelo e cai no fallback local;
 - nenhuma migration nova foi necessaria.
+
+Estado v59:
+
+- `gpt-4o-mini` foi adicionado como fallback extra;
+- o motivo tecnico sanitizado passa a aparecer no proprio balao de resposta quando a IA externa nao entrar;
+- nenhuma migration nova foi necessaria.

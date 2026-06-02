@@ -951,7 +951,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Produto escalável',
     status: 'in_progress',
     description:
-      'V58 usa fallback automatico de modelos OpenAI no /agent, mostra erro sanitizado e mantem MCPs reservados para o gran finale.',
+      'V59 mostra o motivo tecnico do fallback dentro do /agent, adiciona gpt-4o-mini como plano extra e mantem MCPs para o gran finale.',
   },
   {
     number: 14,

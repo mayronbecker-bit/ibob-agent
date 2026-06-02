@@ -147,7 +147,8 @@ Observacoes:
 - Nao salvar a chave em arquivo versionado.
 - Se a chave nao estiver configurada, `/agent` continua funcionando com fallback supervisionado local.
 - A partir da v57, `/agent` mostra se a OpenAI esta pronta, sem chave ou desativada.
-- A partir da v58, se o modelo configurado falhar, a rota tenta `gpt-5-mini` e `gpt-4.1-mini` antes de cair no fallback local.
+- A partir da v59, se o modelo configurado falhar, a rota tenta `gpt-5-mini`, `gpt-4.1-mini` e `gpt-4o-mini` antes de cair no fallback local.
+- O motivo tecnico sanitizado aparece no proprio balao de resposta quando houver fallback.
 - Google Ads, Meta Ads, CRM e MCPs continuam sem execucao nesta versao.
 
 ## Pendencias antes do primeiro deploy
@@ -252,6 +253,7 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-06-02: preparado pacote v56 com analise externa OpenAI em `/agent`, mantendo fallback local e MCPs bloqueados.
 - 2026-06-02: preparado pacote v57 com diagnostico visivel de status OpenAI em `/agent`.
 - 2026-06-02: preparado pacote v58 com fallback automatico de modelos OpenAI e detalhe sanitizado da falha.
+- 2026-06-02: preparado pacote v59 com `gpt-4o-mini` como fallback extra e erro tecnico dentro do balao de resposta.
 
 Validacao publica:
 

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 export const runtime = 'nodejs';
 
 const DEFAULT_MODEL = 'gpt-5-mini';
-const MODEL_FALLBACKS = ['gpt-5-mini', 'gpt-4.1-mini'];
+const MODEL_FALLBACKS = ['gpt-5-mini', 'gpt-4.1-mini', 'gpt-4o-mini'];
 const MAX_QUESTION_LENGTH = 2_000;
 const MAX_CONTEXT_CHARS = 18_000;
 

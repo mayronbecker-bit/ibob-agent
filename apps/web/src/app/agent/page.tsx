@@ -246,6 +246,22 @@ async function requestExternalAgentStatus(): Promise<ExternalAgentStatus> {
   };
 }
 
+function formatFallbackWithError(response: AgentChatResponse, error: unknown) {
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : 'A IA externa nao retornou uma resposta valida.';
+
+  return [
+    'A IA externa nao entrou nesta tentativa.',
+    `Motivo tecnico: ${errorMessage}`,
+    '',
+    'Resposta de contingencia do nucleo supervisionado local:',
+    '',
+    formatAgentResponse(response),
+  ].join('\n');
+}
+
 function buildFallbackData(): AgentPageData {
   const cmoReadiness = buildCmoReadiness({
     context: mockBusinessContext,
@@ -480,7 +496,7 @@ export default function AgentPage() {
         {
           id: `assistant-fallback-${timestamp}`,
           role: 'assistant',
-          content: formatAgentResponse(fallbackResponse),
+          content: formatFallbackWithError(fallbackResponse, error),
           createdAt: nowIso(),
           response: fallbackResponse,
           mode: 'fallback',
