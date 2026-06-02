@@ -51,6 +51,7 @@ Validado em 2026-05-16:
 Protege as rotas do dashboard, incluindo:
 
 - `/`
+- `/agent`
 - `/data-trust`
 - `/proposals`
 - `/approvals`

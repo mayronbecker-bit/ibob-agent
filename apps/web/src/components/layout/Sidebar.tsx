@@ -11,6 +11,7 @@ type NavItem = {
 
 const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Visão Geral' },
+  { href: '/agent', label: 'Agente' },
   { href: '/data-trust', label: 'Data Trust Layer' },
   { href: '/proposals', label: 'Propostas' },
   { href: '/approvals', label: 'Aprovação Humana' },
@@ -33,6 +34,17 @@ function NavIcon({ href }: { href: string }) {
     return (
       <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
         <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
+      </svg>
+    );
+  }
+  if (href === '/agent') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path
+          fillRule="evenodd"
+          d="M10 2a7 7 0 00-7 7c0 1.55.504 2.982 1.356 4.142L3.25 16.46a.75.75 0 00.95.95l3.318-1.106A7 7 0 1010 2zM6.75 8.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5h-6.5zm0 3a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5h-3.5z"
+          clipRule="evenodd"
+        />
       </svg>
     );
   }

@@ -819,3 +819,13 @@ Estado v54:
 - nenhum conector externo em modo escrita foi liberado;
 - o fluxo validado termina em `execution_logs` com `is_dry_run = true`;
 - a proxima fase planejada e `Produto escalavel`, antes das integracoes finais.
+
+## Conversa com o agente
+
+Estado v55:
+
+- `/agent` adiciona um campo de conversa para perguntas de vendas e marketing;
+- a resposta usa contexto, pesquisa, estrategia e funil ja carregados;
+- nao ha LLM externo nesta versao;
+- nao ha persistencia de historico em banco nesta versao;
+- nenhuma proposta ou execucao externa e criada automaticamente.

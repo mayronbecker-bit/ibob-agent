@@ -172,3 +172,5 @@
 - V54 consolida o nucleo supervisionado como concluido no Roadmap.
 - Etapas 5 a 12 passam para concluido: hardening, contexto, pesquisa, estrategia, funil, decision engine, rule_validator e execution dry-run.
 - Criada documentacao `docs/SUPERVISED_CORE_COMPLETION.md` para registrar o fluxo validado antes da fase de produto escalavel.
+- V55 cria `/agent` para conversa supervisionada sobre vendas e marketing.
+- A primeira versao responde com regras locais usando contexto, pesquisa, estrategia e funil, sem LLM externo, sem MCP e sem escrita em Ads.

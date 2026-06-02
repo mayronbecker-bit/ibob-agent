@@ -949,9 +949,9 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 13,
     title: 'Produto escalável',
-    status: 'planned',
+    status: 'in_progress',
     description:
-      'Generalizar configuracoes da iBob. Onboarding de novos clientes, diagnostico de contexto por cliente, papeis por usuario, modelo de cobranca, limites por plano e operacao multi-cliente.',
+      'V55 inicia a fase escalavel com /agent: conversa supervisionada sobre vendas e marketing usando contexto, pesquisa, estrategia e funil.',
   },
   {
     number: 14,

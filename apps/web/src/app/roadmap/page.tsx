@@ -64,6 +64,10 @@ const activeParallelTracks = [
     title: '12. Execution Engine',
     description: 'Dry-run com preflight, rollback e auditoria validado.',
   },
+  {
+    title: '13. Produto escalavel',
+    description: 'V55 adiciona conversa supervisionada com o agente.',
+  },
 ];
 
 export default function RoadmapPage() {
@@ -117,14 +121,14 @@ export default function RoadmapPage() {
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-              Nucleo supervisionado
+              Nucleo supervisionado + produto escalavel
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 12 concluidas antes de MCPs, Ads e integracoes finais.
+              Etapas 5 a 12 concluidas; etapa 13 iniciada antes de MCPs e Ads.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v54
+            v55
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
