@@ -859,3 +859,15 @@ Estado v59:
 - `gpt-4o-mini` foi adicionado como fallback extra;
 - o motivo tecnico sanitizado passa a aparecer no proprio balao de resposta quando a IA externa nao entrar;
 - nenhuma migration nova foi necessaria.
+
+## Google Ads em modo leitura
+
+Estado v60:
+
+- `/google-ads` adiciona uma tela para analisar campanhas reais via Google Ads API;
+- `/api/integrations/google-ads/status` informa se as credenciais server-side estao configuradas, sem expor valores;
+- `/api/integrations/google-ads/campaigns` consulta campanhas por REST `searchStream`;
+- as credenciais ficam somente em variaveis de ambiente da Hostinger;
+- nenhuma credencial e salva no Supabase;
+- nenhuma migration nova foi necessaria;
+- nenhuma acao externa de escrita foi liberada.

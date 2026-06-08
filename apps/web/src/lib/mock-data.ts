@@ -949,16 +949,16 @@ export const roadmapStages: RoadmapStage[] = [
   {
     number: 13,
     title: 'Produto escalável',
-    status: 'in_progress',
+    status: 'done',
     description:
-      'V59 mostra o motivo tecnico do fallback dentro do /agent, adiciona gpt-4o-mini como plano extra e mantem MCPs para o gran finale.',
+      'Concluido como base inicial: /agent existe, IA externa tem diagnostico de quota/billing e o produto pode seguir para integracoes reais de leitura.',
   },
   {
     number: 14,
     title: 'Integrações em modo leitura',
-    status: 'planned',
+    status: 'in_progress',
     description:
-      'Etapa final de conexao externa: automatizar ingestao real de Google Ads, Meta, GA4, Orbita e CRM sem escrita externa, apos contexto, produto e governanca estarem validados.',
+      'V60 inicia Google Ads em modo leitura: status seguro de credenciais, consulta real de campanhas e analise de gasto, conversoes, CPA e ROAS sem escrita externa.',
   },
   {
     number: 15,

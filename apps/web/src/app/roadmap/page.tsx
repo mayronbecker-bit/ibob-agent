@@ -66,7 +66,11 @@ const activeParallelTracks = [
   },
   {
     title: '13. Produto escalavel',
-    description: 'V59 mostra o motivo tecnico do fallback no /agent.',
+    description: 'Base conversacional inicial concluida.',
+  },
+  {
+    title: '14. Google Ads leitura',
+    description: 'V60 analisa campanhas reais sem escrita externa.',
   },
 ];
 
@@ -121,14 +125,14 @@ export default function RoadmapPage() {
         <div className="mb-3 flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wide text-[#5c6b61]">
-              Nucleo supervisionado + produto escalavel
+              Nucleo supervisionado + integracao de leitura
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 12 concluidas; etapa 13 agora diagnostica a IA externa antes de MCPs e Ads.
+              Etapas 5 a 13 concluidas; etapa 14 inicia Google Ads em modo leitura.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v59
+            v60
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">

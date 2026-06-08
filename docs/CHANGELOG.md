@@ -179,3 +179,4 @@
 - V57 adiciona diagnostico de status da IA externa em `/agent`, mostrando se a OpenAI esta pronta, sem chave ou desativada, e remove frase ambigua do fallback local.
 - V58 troca o padrao OpenAI para `gpt-5-mini`, adiciona fallback automatico para `gpt-4.1-mini` e mostra detalhe sanitizado quando todos os modelos falham.
 - V59 adiciona `gpt-4o-mini` como fallback extra e passa a mostrar o motivo tecnico sanitizado dentro do proprio balao da resposta.
+- V60 inicia integracao Google Ads em modo leitura com `/google-ads`, status seguro de credenciais e analise de campanhas via Google Ads API REST `searchStream`, sem escrita externa.

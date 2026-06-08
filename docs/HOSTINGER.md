@@ -151,6 +151,30 @@ Observacoes:
 - O motivo tecnico sanitizado aparece no proprio balao de resposta quando houver fallback.
 - Google Ads, Meta Ads, CRM e MCPs continuam sem execucao nesta versao.
 
+## Google Ads API
+
+A partir da v60, a rota `/google-ads` pode analisar campanhas reais em modo leitura.
+
+Configurar estas variaveis na Hostinger:
+
+```text
+GOOGLE_ADS_READ_ENABLED=true
+GOOGLE_ADS_API_VERSION=v22
+GOOGLE_ADS_DEVELOPER_TOKEN=<developer-token>
+GOOGLE_ADS_CLIENT_ID=<oauth-client-id>
+GOOGLE_ADS_CLIENT_SECRET=<oauth-client-secret>
+GOOGLE_ADS_REFRESH_TOKEN=<oauth-refresh-token>
+GOOGLE_ADS_CUSTOMER_ID=<customer-id-da-conta-anunciadora>
+GOOGLE_ADS_LOGIN_CUSTOMER_ID=<manager-id-opcional>
+```
+
+Observacoes:
+
+- Essas variaveis sao server-only. Nunca usar prefixo `NEXT_PUBLIC_`.
+- Nao salvar tokens ou secrets no Git.
+- A v60 nao executa alteracoes em campanhas, budgets, lances ou anuncios.
+- Se usar MCC/manager, informar `GOOGLE_ADS_LOGIN_CUSTOMER_ID`.
+
 ## Pendencias antes do primeiro deploy
 
 - Confirmar plano Hostinger: Business, Cloud ou VPS.
@@ -254,11 +278,13 @@ Observacao: se `npm ci` falhar localmente no Windows com arquivo em uso, parar o
 - 2026-06-02: preparado pacote v57 com diagnostico visivel de status OpenAI em `/agent`.
 - 2026-06-02: preparado pacote v58 com fallback automatico de modelos OpenAI e detalhe sanitizado da falha.
 - 2026-06-02: preparado pacote v59 com `gpt-4o-mini` como fallback extra e erro tecnico dentro do balao de resposta.
+- 2026-06-08: preparado pacote v60 com `/google-ads` em modo leitura e analise de campanhas reais via Google Ads API.
 
 Validacao publica:
 
 - `/`
 - `/agent`
+- `/google-ads`
 - `/data-trust`
 - `/proposals`
 - `/approvals`

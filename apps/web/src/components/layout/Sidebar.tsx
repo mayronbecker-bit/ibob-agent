@@ -13,6 +13,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/', label: 'Visão Geral' },
   { href: '/agent', label: 'Agente' },
   { href: '/data-trust', label: 'Data Trust Layer' },
+  { href: '/google-ads', label: 'Google Ads' },
   { href: '/proposals', label: 'Propostas' },
   { href: '/approvals', label: 'Aprovação Humana' },
   { href: '/memory', label: 'Memória de Decisão' },
@@ -56,6 +57,15 @@ function NavIcon({ href }: { href: string }) {
           d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
           clipRule="evenodd"
         />
+      </svg>
+    );
+  }
+  if (href === '/google-ads') {
+    return (
+      <svg viewBox="0 0 20 20" fill="currentColor" className={cls}>
+        <path d="M4.5 15.5a2 2 0 114 0 2 2 0 01-4 0z" />
+        <path d="M6.9 12.9l4.6-8a2 2 0 013.464 2l-4.6 8a2 2 0 11-3.464-2z" />
+        <path d="M5.25 4.25a2 2 0 012.732.732l5.25 9.094a2 2 0 11-3.464 2L4.518 6.982A2 2 0 015.25 4.25z" />
       </svg>
     );
   }

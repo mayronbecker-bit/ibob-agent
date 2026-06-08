@@ -20,6 +20,31 @@ Status:
 
 Aceita.
 
+## 2026-06-08 - Antecipar Google Ads em modo leitura
+
+Contexto:
+
+A integracao OpenAI externa ficou bloqueada por quota/billing da OpenAI. O usuario solicitou pular essa etapa e partir para Google Ads, porque precisa que o agente analise campanhas reais.
+
+Decisao:
+
+Antecipar Google Ads como integracao de leitura, criando `/google-ads` e rotas server-side para consultar campanhas via Google Ads API REST. Nenhuma escrita em campanhas, budgets, lances ou anuncios sera liberada nesta fase.
+
+Motivo:
+
+O produto precisa enxergar dados reais de midia para gerar diagnosticos uteis. A leitura de campanhas permite cruzar gasto, conversoes, CPA e ROAS com contexto, funil e estrategia antes de qualquer proposta.
+
+Consequencias:
+
+- Google Ads passa para etapa 14 em andamento.
+- Credenciais ficam somente em variaveis de ambiente da Hostinger.
+- O agente analisa campanhas, mas nao executa alteracoes.
+- Achados devem passar por funil, estrategia, Decision Engine, Rule Validator, aprovacao e execution dry-run antes de qualquer acao real.
+
+Status:
+
+Aceita.
+
 ## 2026-05-25 - Decision Engine supervisionado sem execucao externa
 
 Contexto:

@@ -62,6 +62,7 @@ Os comandos do root encaminham para `apps/web`.
 - [Autenticacao e banco de dados](docs/AUTH_AND_DATABASE.md)
 - [Controle de acesso](docs/ACCESS_CONTROL.md)
 - [Conversa com o agente](docs/AGENT_CONVERSATION.md)
+- [Google Ads Integration](docs/GOOGLE_ADS_INTEGRATION.md)
 - [Integracao do blueprint da Claude](docs/CLAUDE_BLUEPRINT_INTEGRATION.md)
 - [Estrategia de produto](docs/PRODUCT_STRATEGY.md)
 - [Decisoes](docs/DECISIONS.md)
