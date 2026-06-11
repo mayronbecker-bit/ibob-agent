@@ -958,7 +958,7 @@ export const roadmapStages: RoadmapStage[] = [
     title: 'Integrações em modo leitura',
     status: 'in_progress',
     description:
-      'V60 inicia Google Ads em modo leitura: status seguro de credenciais, consulta real de campanhas e analise de gasto, conversoes, CPA e ROAS sem escrita externa.',
+      'V61 documenta o handoff para outro time e mantem a frente ativa em Google Ads leitura: credenciais, campanhas, gasto, conversoes, CPA e ROAS sem escrita externa.',
   },
   {
     number: 15,

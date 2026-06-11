@@ -70,7 +70,7 @@ const activeParallelTracks = [
   },
   {
     title: '14. Google Ads leitura',
-    description: 'V60 analisa campanhas reais sem escrita externa.',
+    description: 'V61 registra handoff e mantem Google Ads leitura ativo.',
   },
 ];
 
@@ -128,11 +128,11 @@ export default function RoadmapPage() {
               Nucleo supervisionado + integracao de leitura
             </h2>
             <p className="mt-1 text-sm text-[#5c6b61]">
-              Etapas 5 a 13 concluidas; etapa 14 inicia Google Ads em modo leitura.
+              Etapas 5 a 13 concluidas; etapa 14 segue em Google Ads leitura com handoff documentado.
             </p>
           </div>
           <span className="rounded-full border border-[#bed0c5] bg-white px-3 py-1 text-xs font-medium text-[#34473b]">
-            v60
+            v61
           </span>
         </div>
         <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
